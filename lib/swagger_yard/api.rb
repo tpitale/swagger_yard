@@ -98,15 +98,20 @@ module SwaggerYard
         {"type" => data_type.downcase}
       end
 
-      options = option_strings.split(',')
-      required = !options.delete('required').nil?
-      param_type = options.last || 'query'
+      required = false
+      param_type = 'query'
+
+      unless option_strings.nil?
+        options = option_strings[1..-2].split(',').map(&:strip)
+        required = !options.delete('required').nil?
+        param_type = options.last || 'query'
+      end
 
       parameter = {
         "paramType"     => param_type,
         "name"          => name,
         "description"   => description,
-        "required"      => required.present?,
+        "required"      => required,
         "allowMultiple" => allow_multiple.present?
       }.merge(type_hash)
     end
