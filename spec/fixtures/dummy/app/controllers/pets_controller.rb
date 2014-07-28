@@ -11,13 +11,13 @@ class PetsController < ApplicationController
 
   # return a Pet
   # @path [GET] /pets/{id}.{format_type}
-  # @parameter [integer] id(required,body) The ID for the Pet
+  # @parameter [integer] id The ID for the Pet
   def show
   end
 
   # create a Pet
   # @path [POST] /pets
-  # @parameter [Pet] pet The pet object
+  # @parameter [Pet] pet(required, body) The pet object
   def create
   end
 

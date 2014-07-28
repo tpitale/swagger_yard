@@ -89,11 +89,11 @@
           "produces":["application/json", "application/xml"],
           "parameters":[
             {
-              "paramType":"query",
+              "paramType":"body",
               "name":"pet",
               "description":"The pet object",
               "type":"Pet",
-              "required":false,
+              "required":true,
               "allowMultiple":false
             },
             {
