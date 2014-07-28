@@ -87,7 +87,6 @@ module SwaggerYard
     # Example: [Array]     status(required, body)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Integer]   media[media_type_id]                          ID of the desired media type.
     def parse_parameter(string)
-      Parameter.from_yard_object()
       # TODO: switch to :with_types_and_name on tag parsing
       data_type, name, option_strings, description = string.match(/\A\[(\w*)\]\s*([\w\[\]]*)(\(.*\))?\s*(.*)\Z/).captures
       allow_multiple = name.gsub!("[]", "")
@@ -102,8 +101,6 @@ module SwaggerYard
       options = option_strings.split(',')
       required = !options.delete('required').nil?
       param_type = options.last || 'query'
-
-      parameter = Parameter.from_yard_tag(tag).to_h
 
       parameter = {
         "paramType"     => param_type,
