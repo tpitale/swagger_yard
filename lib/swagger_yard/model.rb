@@ -1,8 +1,8 @@
 module SwaggerYard
-  # 
+  #
   # Carries id (the class name) and properties for a referenced
   #   complex model object as defined by swagger schema
-  # 
+  #
   class Model
     attr_reader :id
 
@@ -47,16 +47,18 @@ module SwaggerYard
       {
         id => {
           "id" => id,
-          "properties" => @properties.map(&:to_h)
+          "properties" => @properties.inject({}) do |properties_hash, property|
+                            properties_hash.merge!(property.to_h)
+                          end
         }
       }
     end
 
   end
 
-  # 
+  #
   # Holds the name and type for a single model property
-  # 
+  #
   class Property
     def self.from_tag(tag)
       new(tag.name, tag.types.first, tag.text)

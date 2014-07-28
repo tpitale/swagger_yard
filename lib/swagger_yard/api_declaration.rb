@@ -46,7 +46,7 @@ module SwaggerYard
         @apis[api.path] = same_api_path
       else
         @apis[api.path] = api.to_h
-      end 
+      end
     end
 
     def resource_name
@@ -58,13 +58,15 @@ module SwaggerYard
     end
 
     def to_h
-      { 
+      {
         "apiVersion"     => SwaggerYard.config.api_version,
         "swaggerVersion" => SwaggerYard.config.swagger_version,
         "basePath"       => SwaggerYard.config.api_base_path,
         "resourcePath"   => resource_path,
         "apis"           => apis.values,
-        "models"         => models.map(&:to_h)
+        "models"         => models.inject({}) do |models_hash, model|
+                              models_hash.merge!(model.to_h)
+                            end
       }
     end
 

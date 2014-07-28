@@ -116,16 +116,14 @@
       ]
     }
   ],
-  "models":[
-    {
+  "models": {
       "Pet":{
         "id":"Pet",
-        "properties":[
-          {"id":{"type":"integer"}},
-          {"name":{"type":"string"}},
-          {"age":{"type":"integer"}}
-        ]
+        "properties": {
+          "id":{"type":"integer"},
+          "name":{"type":"string"},
+          "age":{"type":"integer"}
+        }
       }
-    }
-  ]
+  }
 }
