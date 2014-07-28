@@ -1,6 +1,7 @@
 require "yard"
 require "json"
 require "swagger_yard/configuration"
+require "swagger_yard/parameter"
 require "swagger_yard/resource_listing"
 require "swagger_yard/api_declaration"
 require "swagger_yard/model"

@@ -1,6 +1,6 @@
 module SwaggerYard
   class Api
-    attr_reader :nickname, :model_names
+    attr_reader :nickname
     attr_accessor :path, :parameters, :description, :http_method, :response_class, :summary, :notes, :error_responses
 
     def initialize(resource_listing, yard_object)
@@ -8,7 +8,6 @@ module SwaggerYard
 
       @description = yard_object.docstring
       @parameters  = []
-      @model_names = []
       
       yard_object.tags.each do |tag|
         value = tag.text
@@ -17,7 +16,7 @@ module SwaggerYard
         when "path"
           parse_path(value)
         when "parameter"
-          @parameters << parse_parameter(value)
+          @parameters << parse_parameter(tag)
         when "parameter_list"
           @parameters << parse_parameter_list(value)
         when "summary"
@@ -56,8 +55,16 @@ module SwaggerYard
       }
     end
 
+    def model_names
+      @parameters.select {|p| ref?(p['type'])}.map {|p| p['type']}.uniq
+    end
+
     def valid?
       path.present?
+    end
+
+    def ref?(data_type)
+      @resource_listing.models.map(&:id).include?(data_type)
     end
 
   private
@@ -86,34 +93,8 @@ module SwaggerYard
     # Example: [Array]     status(required)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Array]     status(required, body)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Integer]   media[media_type_id]                          ID of the desired media type.
-    def parse_parameter(string)
-      # TODO: switch to :with_types_and_name on tag parsing
-      data_type, name, option_strings, description = string.match(/\A\[(\w*)\]\s*([\w\[\]]*)(\(.*\))?\s*(.*)\Z/).captures
-      allow_multiple = name.gsub!("[]", "")
-
-      type_hash = if ref?(data_type)
-        @model_names << data_type
-        {"type" => data_type}
-      else
-        {"type" => data_type.downcase}
-      end
-
-      required = false
-      param_type = 'query'
-
-      unless option_strings.nil?
-        options = option_strings[1..-2].split(',').map(&:strip)
-        required = !options.delete('required').nil?
-        param_type = options.last || 'query'
-      end
-
-      parameter = {
-        "paramType"     => param_type,
-        "name"          => name,
-        "description"   => description,
-        "required"      => required,
-        "allowMultiple" => allow_multiple.present?
-      }.merge(type_hash)
+    def parse_parameter(tag)
+      Parameter.from_yard_tag(self, tag).to_h
     end
 
     ##
@@ -139,7 +120,7 @@ module SwaggerYard
     end
 
     def add_format_parameters
-      @add_format_parameters ||= {
+      {
         "paramType"       => "path",
         "name"            => "format_type",
         "description"     => "Response format either JSON or XML",
@@ -148,12 +129,6 @@ module SwaggerYard
         "allowMultiple"   => false,
         "allowableValues" => {"valueType" => "LIST", "values" => ["json", "xml"]}
       }
-    end
-
-    private
-
-    def ref?(data_type)
-      @resource_listing.models.map(&:id).include?(data_type)
     end
   end
 end
