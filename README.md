@@ -1,13 +1,13 @@
 # SwaggerYard #
 
 The SwaggerYard gem is a Rails Engine designed to parse your Yardocs API controller.
-It'll create a Swagger-UI complaint JSON to be served out through where you mount SwaggerYard. 
+It'll create a Swagger-UI complaint JSON to be served out through where you mount SwaggerYard.
 You can mount this to the Rails app serving the REST API or you could mount it as a separate Rails app.
-Parsing of the Yardocs happens during the server startup and the data will be subsequently cached to the Rails cache you have defined. 
+Parsing of the Yardocs happens during the server startup and the data will be subsequently cached to the Rails cache you have defined.
 If your API is large expect a slow server start up time.
 
 ## Installation ##
-  
+
 Put SwaggerYard in your Gemfile:
 
     gem 'swagger_yard'
@@ -20,7 +20,7 @@ Install the gem with Bunder:
 ## Getting Started ##
 
 ### Place your configuration in a your rails initializers ###
-    
+
     # config/initializers/swagger_yard.rb
     SwaggerYard.configure do |config|
       config.swagger_version = "1.2"
@@ -60,15 +60,17 @@ class Accounts::OwnershipsController < ActionController::Base
   # @parameter          [Integer]   offset            Used for pagination of response data (default: 25 items per response). Specifies the offset of the next block of data to receive.
   # @parameter          [Array]     status            Filter by status. (e.g. status[]=1&status[]=2&status[]=3).
   # @parameter_list     [String]    sort_order        Orders response by fields. (e.g. sort_order=created_at).
-  #                     [List]      id                
-  #                     [List]      begin_at          
-  #                     [List]      end_at            
-  #                     [List]      created_at        
+  #                     [List]      id
+  #                     [List]      begin_at
+  #                     [List]      end_at
+  #                     [List]      created_at
   # @parameter          [Boolean]   sort_descending   Reverse order of sort_order sorting, make it descending.
   # @parameter          [Date]      begin_at_greater  Filters response to include only items with begin_at >= specified timestamp (e.g. begin_at_greater=2012-02-15T02:06:56Z).
   # @parameter          [Date]      begin_at_less     Filters response to include only items with begin_at <= specified timestamp (e.g. begin_at_less=2012-02-15T02:06:56Z).
   # @parameter          [Date]      end_at_greater    Filters response to include only items with end_at >= specified timestamp (e.g. end_at_greater=2012-02-15T02:06:56Z).
   # @parameter          [Date]      end_at_less       Filters response to include only items with end_at <= specified timestamp (e.g. end_at_less=2012-02-15T02:06:56Z).
+  #
+  # @response_class     [OwnershipList]               Ownerships associated with the account
   #
   def index
     ...
@@ -79,13 +81,13 @@ end
 ### Here is an example of how to use SwaggerYard in your Model ###
 
 ```ruby
-# 
+#
 # @model Pet
-# 
+#
 # @property id    [integer]   the identifier for the pet
 # @property name  [string]    the name of the pet
 # @property age   [integer]   the age of the pet
-# 
+#
 class Pet
 end
 ```
@@ -111,7 +113,7 @@ There are two generators that you can use, if you need to customize the UI/JS (o
      rails g swagger_yard:ui
      rails g swagger_yard:js
 
-They both copy over their respective files over to your Rails app to be customized. 
+They both copy over their respective files over to your Rails app to be customized.
 See [rails engines overriding views](http://guides.rubyonrails.org/engines.html#overriding-views) for more info
 
 Copying over JS requires that ActionDispatch::Static middleware be used (by default it should in use).
@@ -127,4 +129,3 @@ By default SwaggerYard will use a slightly modify version of the swagger-ui. Cha
 * [Swagger-ui](https://github.com/wordnik/swagger-ui)
 * [Yard](https://github.com/lsegal/yard)
 * [Swagger-spec version 1.2](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md)
-

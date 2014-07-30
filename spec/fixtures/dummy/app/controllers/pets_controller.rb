@@ -1,8 +1,8 @@
 # @resource Pet
 # @resource_path /pets
-# 
+#
 # This document describes the API for interacting with Pet resources
-# 
+#
 class PetsController < ApplicationController
   # return a list of Pets
   # @path [GET] /pets.{format_type}
@@ -13,6 +13,7 @@ class PetsController < ApplicationController
   # return a Pet
   # @path [GET] /pets/{id}.{format_type}
   # @parameter [integer] id The ID for the Pet
+  # @response_class [Pet]
   def show
   end
 

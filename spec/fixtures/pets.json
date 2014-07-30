@@ -48,7 +48,7 @@
         {
           "httpMethod":"GET",
           "nickname":"pets-id-format-type-get",
-          "responseClass":"void",
+          "responseClass":"Pet",
           "produces":["application/json", "application/xml"],
           "parameters":[
             {

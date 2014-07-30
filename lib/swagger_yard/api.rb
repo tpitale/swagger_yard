@@ -8,7 +8,7 @@ module SwaggerYard
 
       @description = yard_object.docstring
       @parameters  = []
-      
+
       yard_object.tags.each do |tag|
         value = tag.text
 
@@ -23,6 +23,8 @@ module SwaggerYard
           @summary = value
         when "notes"
           @notes = value.gsub("\n", "<br\>")
+        when "response_class"
+          @response_class = parse_response_class(value)
         end
       end
 
@@ -34,7 +36,7 @@ module SwaggerYard
       @nickname ||= "#{http_method}".camelize
     end
 
-    def operation 
+    def operation
       {
         "httpMethod"     => http_method,
         "nickname"       => path[1..-1].gsub(/[^a-zA-Z\d:]/, '-').squeeze("-") + http_method.downcase,
@@ -75,7 +77,7 @@ module SwaggerYard
       @http_method, @path = string.match(/^\[(\w*)\]\s*(.*)$/).captures
 
       path_params = @path.scan(/\{([^\}]+)\}/).flatten.reject { |value| value == "format_type" }
-      
+
       path_params.each do |path_param|
         @parameters << {
           "paramType"     => "path",
@@ -97,15 +99,22 @@ module SwaggerYard
       Parameter.from_yard_tag(self, tag).to_h
     end
 
+
+    ##
+    # Example: [Pet]
+    def parse_response_class(string)
+      string.match(/^\[(\w*)\]\s*$/).captures.first
+    end
+
     ##
     # Example: [String]    sort_order  Orders ownerships by fields. (e.g. sort_order=created_at)
-    #          [List]      id              
-    #          [List]      begin_at        
-    #          [List]      end_at          
-    #          [List]      created_at      
+    #          [List]      id
+    #          [List]      begin_at
+    #          [List]      end_at
+    #          [List]      created_at
     def parse_parameter_list(string)
       data_type, name, required, description, set_string = string.match(/\A\[(\w*)\]\s*(\w*)(\(required\))?\s*(.*)\n([.\s\S]*)\Z/).captures
-      
+
       list_values = set_string.split("[List]").map(&:strip).reject { |string| string.empty? }
 
       parameter = {
