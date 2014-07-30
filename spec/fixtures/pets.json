@@ -82,7 +82,16 @@
           ],
           "summary":"return a Pet",
           "notes":null,
-          "errorResponses":null
+          "errorResponses":[
+            {
+              "code": 401,
+              "reason": "Not authorized to view the pet"
+            },
+            {
+              "code": 404,
+              "reason": "No such pet found"
+            }
+          ]
         }
       ]
     },
