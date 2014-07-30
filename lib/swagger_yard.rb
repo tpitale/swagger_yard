@@ -31,10 +31,10 @@ module SwaggerYard
 
     #
     # Use YARD to parse object tags from a file
-    # 
+    #
     # @param file_path [string] The complete path to file
     # @return [YARD] objects representing class/methods and tags from the file
-    # 
+    #
     def yard_objects_from_file(file_path)
       ::YARD::Registry.clear
       ::YARD.parse(file_path)
@@ -59,6 +59,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Api Summary", :summary)
       ::YARD::Tags::Library.define_tag("Model resource", :model)
       ::YARD::Tags::Library.define_tag("Model property", :property, :with_types_and_name)
+      ::YARD::Tags::Library.define_tag("Error response", :error_response)
     end
   end
 end

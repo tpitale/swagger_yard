@@ -8,7 +8,6 @@ module SwaggerYard
 
       @description = yard_object.docstring
       @parameters  = []
-      
       yard_object.tags.each do |tag|
         value = tag.text
 
@@ -23,8 +22,13 @@ module SwaggerYard
           @summary = value
         when "notes"
           @notes = value.gsub("\n", "<br\>")
+        when "error_response"
+          @error_responses ||= []
+          @error_responses << parse_error_response(value)
         end
       end
+
+      @error_responses.sort_by! { |error_response| error_response["code"] } if @error_responses
 
       @parameters.sort_by { |parameter| parameter["name"] }
       @parameters << add_format_parameters
@@ -34,7 +38,7 @@ module SwaggerYard
       @nickname ||= "#{http_method}".camelize
     end
 
-    def operation 
+    def operation
       {
         "httpMethod"     => http_method,
         "nickname"       => path[1..-1].gsub(/[^a-zA-Z\d:]/, '-').squeeze("-") + http_method.downcase,
@@ -75,7 +79,7 @@ module SwaggerYard
       @http_method, @path = string.match(/^\[(\w*)\]\s*(.*)$/).captures
 
       path_params = @path.scan(/\{([^\}]+)\}/).flatten.reject { |value| value == "format_type" }
-      
+
       path_params.each do |path_param|
         @parameters << {
           "paramType"     => "path",
@@ -88,6 +92,10 @@ module SwaggerYard
       end
     end
 
+    def parse_error_response(string)
+      code, reason = string.match(/^\[(\d*)\]\s*(.*)$/).captures
+      { "code" => Integer(code), "reason" => reason }
+    end
     ##
     # Example: [Array]     status            Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Array]     status(required)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
@@ -99,13 +107,13 @@ module SwaggerYard
 
     ##
     # Example: [String]    sort_order  Orders ownerships by fields. (e.g. sort_order=created_at)
-    #          [List]      id              
-    #          [List]      begin_at        
-    #          [List]      end_at          
-    #          [List]      created_at      
+    #          [List]      id
+    #          [List]      begin_at
+    #          [List]      end_at
+    #          [List]      created_at
     def parse_parameter_list(string)
       data_type, name, required, description, set_string = string.match(/\A\[(\w*)\]\s*(\w*)(\(required\))?\s*(.*)\n([.\s\S]*)\Z/).captures
-      
+
       list_values = set_string.split("[List]").map(&:strip).reject { |string| string.empty? }
 
       parameter = {
