@@ -11,7 +11,8 @@
         {
           "httpMethod":"GET",
           "nickname":"pets-format-type-get",
-          "type":"void",
+          "type":"array",
+          "items":{"$ref":"Pet"},
           "produces":["application/json", "application/xml"],
           "parameters":[
             {

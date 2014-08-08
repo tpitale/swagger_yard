@@ -70,6 +70,7 @@ class Accounts::OwnershipsController < ActionController::Base
   # @parameter          [Date]      end_at_greater    Filters response to include only items with end_at >= specified timestamp (e.g. end_at_greater=2012-02-15T02:06:56Z).
   # @parameter          [Date]      end_at_less       Filters response to include only items with end_at <= specified timestamp (e.g. end_at_less=2012-02-15T02:06:56Z).
   #
+  # @response_type [array, Pet]
   def index
     ...
   end

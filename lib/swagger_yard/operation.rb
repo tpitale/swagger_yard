@@ -18,7 +18,7 @@ module SwaggerYard
           when "parameter_list"
             operation.add_parameter_list(tag)
           when "response_type"
-            operation.response_type = tag.text
+            operation.response_type = ResponseType.from_tag(tag)
           when "error_message"
             operation.add_error_message(tag)
           when "summary"
@@ -45,16 +45,21 @@ module SwaggerYard
     end
 
     def to_h
-      {
+      res = {
         "httpMethod"        => http_method,
         "nickname"          => nickname,
-        "type"              => response_type || "void",
+        "type"              => "void",
+        "items"             => nil,
         "produces"          => ["application/json", "application/xml"],
         "parameters"        => parameters.map(&:to_h),
         "summary"           => summary || @api.description,
         "notes"             => notes,
         "responseMessages"  => error_messages
       }
+
+      res.merge!(response_type.to_h) if response_type
+      res.reject! {|k,v| k == 'items' && v == nil}
+      res
     end
 
     ##
@@ -80,10 +85,10 @@ module SwaggerYard
 
     ##
     # Example: [String]    sort_order  Orders ownerships by fields. (e.g. sort_order=created_at)
-    #          [List]      id              
-    #          [List]      begin_at        
-    #          [List]      end_at          
-    #          [List]      created_at      
+    #          [List]      id
+    #          [List]      begin_at
+    #          [List]      end_at
+    #          [List]      created_at
     def add_parameter_list(tag)
       # TODO: switch to using Parameter.from_yard_tag
       data_type, name, required, description, list_string = parse_parameter_list(tag)

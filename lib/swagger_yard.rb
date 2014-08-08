@@ -4,6 +4,7 @@ require "swagger_yard/configuration"
 require "swagger_yard/parameter"
 require "swagger_yard/property"
 require "swagger_yard/operation"
+require "swagger_yard/response_type"
 require "swagger_yard/authorization"
 require "swagger_yard/resource_listing"
 require "swagger_yard/api_declaration"
@@ -34,10 +35,10 @@ module SwaggerYard
 
     #
     # Use YARD to parse object tags from a file
-    # 
+    #
     # @param file_path [string] The complete path to file
     # @return [YARD] objects representing class/methods and tags from the file
-    # 
+    #
     def yard_objects_from_file(file_path)
       ::YARD::Registry.clear
       ::YARD.parse(file_path)
@@ -58,7 +59,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Parameter list", :parameter_list)
       ::YARD::Tags::Library.define_tag("Status code", :status_code)
       ::YARD::Tags::Library.define_tag("Implementation notes", :notes)
-      ::YARD::Tags::Library.define_tag("Response type", :response_type)
+      ::YARD::Tags::Library.define_tag("Response type", :response_type, :with_types)
       ::YARD::Tags::Library.define_tag("Error response message", :error_message, :with_types_and_name)
       ::YARD::Tags::Library.define_tag("Api Summary", :summary)
       ::YARD::Tags::Library.define_tag("Model resource", :model)
