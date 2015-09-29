@@ -61,7 +61,7 @@ module SwaggerYard
 
     def swagger_v2
       method      = http_method.downcase
-      description = notes # TODO nullable or something?
+      description = notes || ""
       params      = parameters.map(&:swagger_v2)
       responses   = { default: { description: summary || @api.description } }
 

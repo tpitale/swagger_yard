@@ -40,14 +40,6 @@ module SwaggerYard
       operations.inject({}) do |hsh, op|
         hsh.deep_merge(op.path => op.swagger_v2)
       end
-      # I want [full path] -> api
-      # controllers.inject({}) do |hsh, (base_path, decl)|
-      #   p [base_path, decl.to_s]
-      #   decl.apis.each do |path, api|
-      #     p [path]
-      #     hsh.update(path => {})
-      #   end
-      # end
     end
 
     def model_objects
