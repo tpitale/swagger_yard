@@ -18,4 +18,12 @@ RSpec.describe SwaggerYard::Swagger do
                                                        a_parameter_named("format_type")) }
   end
 
+  context "#/definitions/Pet" do
+    subject { swagger[:definitions]["Pet"] }
+
+    it { is_expected.to_not be_empty }
+
+    its([:properties]) { are_expected.to include("id", "names", "age", "relatives") }
+    its([:required])   { is_expected.to eq(["id", "relatives"])}
+  end
 end
