@@ -32,5 +32,11 @@ module SwaggerYard
       result["description"] = description if description
       result
     end
+
+    def swagger_v2
+      @type.swagger_v2.tap do |h|
+        h["description"] = description if description
+      end
+    end
   end
 end

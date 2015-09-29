@@ -50,6 +50,10 @@ module SwaggerYard
       # end
     end
 
+    def model_objects
+      models.inject({}) {|h,m| h.merge(m.id => m.swagger_v2)}
+    end
+
   private
     def list_api_declarations
       controllers.values.sort_by(&:resource_path).map(&:listing_hash)

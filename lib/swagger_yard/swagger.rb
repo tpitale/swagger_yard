@@ -9,12 +9,14 @@ module SwaggerYard
 
   class Swagger
     def swagger_v2
+      resources = ResourceListing.all
+
       { swagger:     "2.0",
         info:        Info.new.swagger_v2,
         host:        URI(SwaggerYard.config.api_base_path).host,
         basePath:    URI(SwaggerYard.config.api_base_path).request_uri,
-        paths:       ResourceListing.all.path_objects,
-        definitions: {} }
+        paths:       resources.path_objects,
+        definitions: resources.model_objects }
     end
   end
 end

@@ -65,5 +65,10 @@ module SwaggerYard
         "required" => @properties.select(&:required?).map(&:name)
       }
     end
+
+    def swagger_v2
+      { properties: @properties.inject({}) {|h, p| h.merge(p.name => p.swagger_v2)},
+        required:   @properties.select(&:required?).map(&:name) }
+    end
   end
 end
