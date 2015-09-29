@@ -69,6 +69,15 @@ module SwaggerYard
         responses[:default][:schema] = response_type.swagger_v2
       end
 
+      unless error_messages.empty?
+        error_messages.each do |err|
+          responses[err["code"].to_s] = {}.tap do |h|
+            h[:description] = err["message"]
+            h[:schema] = Type.from_type_list(err["responseModel"]).swagger_v2 if err["responseModel"]
+          end
+        end
+      end
+
       {
         method => {
           description: description || "",
