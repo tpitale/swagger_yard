@@ -12,6 +12,8 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(:keys) { are_expected.to eq(["get"]) }
 
+    its([:get, :operationId]) { is_expected.to eq("Pet-show") }
+
     its([:get, :tags]) { are_expected.to include("Pet") }
 
     its([:get, :responses]) { are_expected.to include(:default, "404", "400") }

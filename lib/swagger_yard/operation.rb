@@ -1,6 +1,6 @@
 module SwaggerYard
   class Operation
-    attr_accessor :summary, :notes
+    attr_accessor :summary, :notes, :ruby_method
     attr_reader :path, :http_method, :error_messages, :response_type
     attr_reader :parameters, :model_names
 
@@ -9,6 +9,7 @@ module SwaggerYard
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, api)
       new(api).tap do |operation|
+        operation.ruby_method = yard_object.name(false)
         yard_object.tags.each do |tag|
           case tag.tag_name
           when "path"
@@ -79,10 +80,11 @@ module SwaggerYard
       end
 
       op_hash = {
-        summary:    summary || @api.description,
-        tags:       [@api.api_declaration.resource].compact,
-        parameters: params,
-        responses:  responses,
+        summary:     summary || @api.description,
+        tags:        [@api.api_declaration.resource].compact,
+        operationId: "#{@api.api_declaration.resource}-#{ruby_method}",
+        parameters:  params,
+        responses:   responses,
       }.tap do |h|
         h[:description] = description if description.present?
       end
