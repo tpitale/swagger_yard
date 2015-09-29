@@ -33,6 +33,23 @@ module SwaggerYard
       }
     end
 
+    def path_objects
+      operations = controllers.values.flat_map do |api_decl|
+        api_decl.apis.values.flat_map(&:operations)
+      end
+      operations.inject({}) do |hsh, op|
+        hsh.deep_merge(op.path => op.swagger_v2)
+      end
+      # I want [full path] -> api
+      # controllers.inject({}) do |hsh, (base_path, decl)|
+      #   p [base_path, decl.to_s]
+      #   decl.apis.each do |path, api|
+      #     p [path]
+      #     hsh.update(path => {})
+      #   end
+      # end
+    end
+
   private
     def list_api_declarations
       controllers.values.sort_by(&:resource_path).map(&:listing_hash)

@@ -1,6 +1,6 @@
 module SwaggerYard
   class Api
-    attr_accessor :path, :description
+    attr_accessor :path, :description, :operations
 
     def self.path_from_yard_object(yard_object)
       if tag = yard_object.tags.detect {|t| t.tag_name == "path"}

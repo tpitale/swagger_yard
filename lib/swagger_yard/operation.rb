@@ -59,6 +59,25 @@ module SwaggerYard
       end
     end
 
+    def swagger_v2
+      method      = http_method.downcase
+      description = notes # TODO nullable or something?
+      params      = parameters.map(&:swagger_v2)
+      responses   = { default: { description: summary || @api.description } }
+
+      if response_type.present?
+        responses[:default][:schema] = response_type.swagger_v2
+      end
+
+      {
+        method => {
+          description: description || "",
+          parameters: params,
+          responses: responses,
+        }
+      }
+    end
+
     ##
     # Example: [GET] /api/v2/ownerships.{format_type}
     # Example: [PUT] /api/v1/accounts/{account_id}.{format_type}

@@ -14,7 +14,7 @@ require File.expand_path('../fixtures/dummy/config/initializers/swagger_yard.rb'
 
 SwaggerYard.register_custom_yard_tags!
 
-# Dir["./spec/support/**/*.rb"].each {|f| require f}
+Dir["./spec/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true

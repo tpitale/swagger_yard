@@ -1,20 +1,20 @@
 module SwaggerYard
   class Info
-    def to_json
-      { title: SwaggerYard.config.title,
+    def swagger_v2
+      { title:       SwaggerYard.config.title,
         description: SwaggerYard.config.description,
-        version: SwaggerYard.config.api_version }
+        version:     SwaggerYard.config.api_version }
     end
   end
 
   class Swagger
-    def to_json
-      { swagger: "2.0",
-        info: Info.new.to_json,
-        host: URI(SwaggerYard.config.api_base_path).host,
-        basePath: URI(SwaggerYard.config.api_base_path).request_uri,
-        paths: {}
-        }
+    def swagger_v2
+      { swagger:     "2.0",
+        info:        Info.new.swagger_v2,
+        host:        URI(SwaggerYard.config.api_base_path).host,
+        basePath:    URI(SwaggerYard.config.api_base_path).request_uri,
+        paths:       ResourceListing.all.path_objects,
+        definitions: {} }
     end
   end
 end
