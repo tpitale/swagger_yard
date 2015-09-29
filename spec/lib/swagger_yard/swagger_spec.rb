@@ -5,12 +5,14 @@ RSpec.describe SwaggerYard::Swagger do
 
   it_behaves_like SwaggerYard::Swagger
 
-  context "/pets/{id}.{format_type}" do
+  context "#/paths//pets/{id}.{format_type}" do
     subject { swagger[:paths]["/pets/{id}.{format_type}"] }
 
     it { is_expected.to_not be_empty }
 
     its(:keys) { are_expected.to eq(["get"]) }
+
+    its([:get, :tags]) { are_expected.to include("Pet") }
 
     its([:get, :responses]) { are_expected.to include(:default, "404", "400") }
 
@@ -25,5 +27,11 @@ RSpec.describe SwaggerYard::Swagger do
 
     its([:properties]) { are_expected.to include("id", "names", "age", "relatives") }
     its([:required])   { is_expected.to eq(["id", "relatives"])}
+  end
+
+  context "#/tags" do
+    subject { swagger[:tags] }
+
+    it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport"))}
   end
 end

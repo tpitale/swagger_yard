@@ -33,6 +33,12 @@ module SwaggerYard
       }
     end
 
+    def swagger_v2
+      { paths:       path_objects,
+        definitions: model_objects,
+        tags:        tag_objects }
+    end
+
     def path_objects
       operations = controllers.values.flat_map do |api_decl|
         api_decl.apis.values.flat_map(&:operations)
@@ -44,6 +50,13 @@ module SwaggerYard
 
     def model_objects
       models.inject({}) {|h,m| h.merge(m.id => m.swagger_v2)}
+    end
+
+    def tag_objects
+      controllers.values.flat_map do |api_decl|
+        { name: api_decl.resource,
+          description: api_decl.description }
+      end
     end
 
   private

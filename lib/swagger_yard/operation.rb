@@ -78,13 +78,16 @@ module SwaggerYard
         end
       end
 
-      {
-        method => {
-          description: description || "",
-          parameters: params,
-          responses: responses,
-        }
-      }
+      op_hash = {
+        summary:    summary || @api.description,
+        tags:       [@api.api_declaration.resource].compact,
+        parameters: params,
+        responses:  responses,
+      }.tap do |h|
+        h[:description] = description if description.present?
+      end
+
+      { method => op_hash }
     end
 
     ##
