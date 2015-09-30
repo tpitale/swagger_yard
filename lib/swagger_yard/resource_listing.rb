@@ -34,9 +34,10 @@ module SwaggerYard
     end
 
     def swagger_v2
-      { paths:       path_objects,
-        definitions: model_objects,
-        tags:        tag_objects }
+      { paths:               path_objects,
+        definitions:         model_objects,
+        tags:                tag_objects,
+        securityDefinitions: security_objects }
     end
 
     def path_objects
@@ -57,6 +58,10 @@ module SwaggerYard
         { name: api_decl.resource,
           description: api_decl.description }
       end
+    end
+
+    def security_objects
+      authorizations.inject({}) {|h,auth| h[auth.name] = auth.swagger_v2; h }
     end
 
   private

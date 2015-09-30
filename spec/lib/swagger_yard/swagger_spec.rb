@@ -20,6 +20,8 @@ RSpec.describe SwaggerYard::Swagger do
 
     its([:get, :parameters]) { are_expected.to include(a_parameter_named("id"),
                                                        a_parameter_named("format_type")) }
+
+    its([:get, :security]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
   end
 
   context "#/definitions/Pet" do
@@ -35,5 +37,14 @@ RSpec.describe SwaggerYard::Swagger do
     subject { swagger[:tags] }
 
     it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport"))}
+  end
+
+  context "#/securityDefinitions" do
+    subject { swagger[:securityDefinitions] }
+
+    it { is_expected.to eq("header_x_application_api_key" => {
+                             "type" => "apiKey",
+                             "name" => "X-APPLICATION-API-KEY",
+                             "in" => "header"}) }
   end
 end

@@ -87,6 +87,11 @@ module SwaggerYard
         responses:   responses,
       }.tap do |h|
         h[:description] = description if description.present?
+
+        authorizations = @api.api_declaration.authorizations
+        unless authorizations.empty?
+          h[:security] = authorizations.map {|k,v| { k => v} }
+        end
       end
 
       { method => op_hash }
