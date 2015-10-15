@@ -129,7 +129,9 @@ end
 
 ## UI ##
 
-It is advisable to use something like [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3) for your UI needs inside of Rails.
+We suggest using something like [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3) for your UI needs inside of Rails.
+
+To generate JSON from your code on request, checkout the [swagger_yard-rails](https://github.com/tpitale/swagger_yard-rails) project. This provides an engine to parse and render the json required for use by swagger-ui_rails.
 
 ## More Information ##
 
