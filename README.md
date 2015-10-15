@@ -1,10 +1,6 @@
 # SwaggerYard #
 
-The SwaggerYard gem is a Rails Engine designed to parse your Yardocs API controller.
-It'll create a Swagger-UI complaint JSON to be served out through where you mount SwaggerYard.
-You can mount this to the Rails app serving the REST API or you could mount it as a separate Rails app.
-Parsing of the Yardocs happens during the server startup and the data will be subsequently cached to the Rails cache you have defined.
-If your API is large expect a slow server start up time.
+SwaggerYard is a gem to convert extended YARD syntax comments into the swagger spec compliant json format.
 
 ## Installation ##
 
@@ -33,10 +29,8 @@ Install the gem with Bunder:
       config.api_base_path = "http://localhost:3000/api"
     end
 
-### Mount your engine ###
-
-	# config/routes.rb
-	mount SwaggerYard::Engine, at: "/swagger"
+    # register swagger tags with YARD
+    SwaggerYard.register_custom_yard_tags!
 
 ## Example Documentation ##
 
@@ -133,32 +127,14 @@ class PetController < ApplicationController
 end
 ```
 
-![Web UI](https://raw.github.com/tpitale/swagger_yard/master/example/web-ui.png)
+## UI ##
 
-## Seeing the Swagger JSON ##
-
-You should now be able to start your application and visit `http://local-dev.domain:port/swagger/doc` (if the engine is mounted at `/swagger` as above). You should see the output list each of the controllers you documented, and the paths to see their specific APIs.
-
-To see a specific controller visit `http://local-dev.domain:port/swagger/api/accounts/ownerships` as given in the `@resource_path` in the example above.
-
-## Generators ##
-
-There are two generators that you can use, if you need to customize the UI/JS (optional)
-
-     rails g swagger_yard:ui
-     rails g swagger_yard:js
-
-They both copy over their respective files over to your Rails app to be customized.
-See [rails engines overriding views](http://guides.rubyonrails.org/engines.html#overriding-views) for more info
-
-Copying over JS requires that ActionDispatch::Static middleware be used (by default it should in use).
-
-## Notes ##
-
-By default SwaggerYard will use a slightly modify version of the swagger-ui. Changes to the JS code are indicated with "SwaggerYard changes" comments. The changes are mainly to support Rails way of supporting an array of parameters.
+It is advisable to use something like [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3) for your UI needs inside of Rails.
 
 ## More Information ##
 
 * [Swagger-ui](https://github.com/wordnik/swagger-ui)
+* [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
 * [Yard](https://github.com/lsegal/yard)
 * [Swagger-spec version 1.2](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md)
+* [Swagger-spec version 2.0](https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md)

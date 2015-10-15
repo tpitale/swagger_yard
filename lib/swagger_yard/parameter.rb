@@ -60,7 +60,7 @@ module SwaggerYard
         "name"            => name,
         "description"     => description,
         "required"        => required,
-        "allowMultiple"   => allow_multiple.present?,
+        "allowMultiple"   => !!allow_multiple,
         "allowableValues" => allowable_values_hash 
       }.merge(@type.to_h).reject {|k,v| v.nil?}
     end

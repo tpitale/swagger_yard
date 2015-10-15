@@ -1,3 +1,9 @@
+## SwaggerYard 0.1.0 -- 15-10-2015 ##
+
+* !REMOVE RAILS ENGINE AND UI!
+
+    *Tony Pitale <@tpitale>*
+
 ## SwaggerYard 0.0.7 ##
 
 *   Allow deeply nested model objects

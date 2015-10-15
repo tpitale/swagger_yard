@@ -4,15 +4,15 @@ SimpleCov.start
 ENV["RAILS_ENV"] = "development"
 
 require 'bundler/setup'
-
-require 'rspec'
-require 'mocha/api'
-require 'bourne'
+Bundler.require
 
 # Load Rails, which loads our swagger_yard
-require File.expand_path('../fixtures/dummy/config/application.rb', __FILE__)
+# require File.expand_path('../fixtures/dummy/config/application.rb', __FILE__)
 
-# require File.expand_path('../../lib/swagger_yard', __FILE__)
+require File.expand_path('../../lib/swagger_yard', __FILE__)
+require File.expand_path('../fixtures/dummy/config/initializers/swagger_yard.rb', __FILE__)
+
+SwaggerYard.register_custom_yard_tags!
 
 # Dir["./spec/support/**/*.rb"].each {|f| require f}
 

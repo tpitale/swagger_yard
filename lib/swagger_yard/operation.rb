@@ -92,7 +92,7 @@ module SwaggerYard
       allowable_values = parse_list_values(list_string)
 
       @parameters << Parameter.new(name, Type.new(data_type.downcase), description, {
-        required: required.present?,
+        required: !!required,
         param_type: "query",
         allow_multiple: false,
         allowable_values: allowable_values
@@ -108,7 +108,7 @@ module SwaggerYard
       @error_messages << {
         "code" => Integer(tag.name),
         "message" => tag.text,
-        "responseModel" => Array.wrap(tag.types).first
+        "responseModel" => Array(tag.types).first
       }.reject {|_,v| v.nil?}
     end
 
