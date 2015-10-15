@@ -18,4 +18,10 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_runtime_dependency 'yard'
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'mocha'
+  s.add_development_dependency 'bourne'
 end
