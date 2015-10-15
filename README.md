@@ -29,6 +29,9 @@ Install the gem with Bunder:
       config.api_base_path = "http://localhost:3000/api"
     end
 
+    # register swagger tags with YARD
+    SwaggerYard.register_custom_yard_tags!
+
 ## Example Documentation ##
 
 ### Here is an example of how to use SwaggerYard in your Controller ###
