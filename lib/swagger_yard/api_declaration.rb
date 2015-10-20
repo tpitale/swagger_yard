@@ -87,6 +87,11 @@ module SwaggerYard
       }
     end
 
+    def to_tag
+      { "name"        => resource,
+        "description" => description }
+    end
+
     private
     def model_names_from_apis
       apis.values.map(&:model_names).flatten.uniq

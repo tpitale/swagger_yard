@@ -39,15 +39,6 @@ module SwaggerYard
     end
 
     def to_h
-      type_tag = ref? ? "$ref" : "type"
-      if array?
-        {"type"=>"array", "items"=> { type_tag => name }}
-      else
-        {"type"=>name}
-      end
-    end
-
-    def swagger_v2
       type = if ref?
         { "$ref" => "#/definitions/#{name}"}
       else

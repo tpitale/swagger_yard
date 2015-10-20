@@ -45,10 +45,6 @@ module SwaggerYard
       ::YARD::Registry.all
     end
 
-    def yard_objects_from_resource(resource_name)
-      yard_objects_from_file(resource_to_file_path[resource_name])
-    end
-
     ##
     # Register some custom yard tags used by swagger-ui
     def register_custom_yard_tags!

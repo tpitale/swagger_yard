@@ -31,9 +31,7 @@ module SwaggerYard
 
     def to_h
       {
-        "path"        => path,
-        "description" => description,
-        "operations"  => @operations.map(&:to_h)
+        path => @operations.map(&:to_h)
       }
     end
 

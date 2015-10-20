@@ -46,35 +46,20 @@ module SwaggerYard
     end
 
     def to_h
-      {
-        "httpMethod"        => http_method,
-        "nickname"          => nickname,
-        "type"              => "void",
-        "produces"          => ["application/json", "application/xml"],
-        "parameters"        => parameters.map(&:to_h),
-        "summary"           => summary || @api.description,
-        "notes"             => notes,
-        "responseMessages"  => error_messages
-      }.tap do |h|
-        h.merge!(response_type.to_h) if response_type
-      end
-    end
-
-    def swagger_v2
       method      = http_method.downcase
       description = notes || ""
-      params      = parameters.map(&:swagger_v2)
+      params      = parameters.map(&:to_h)
       responses   = { "default" => { "description" => summary || @api.description } }
 
       if response_type
-        responses["default"]["schema"] = response_type.swagger_v2
+        responses["default"]["schema"] = response_type.to_h
       end
 
       unless error_messages.empty?
         error_messages.each do |err|
           responses[err["code"].to_s] = {}.tap do |h|
             h["description"] = err["message"]
-            h["schema"] = Type.from_type_list(Array(err["responseModel"])).swagger_v2 if err["responseModel"]
+            h["schema"] = Type.from_type_list(Array(err["responseModel"])).to_h if err["responseModel"]
           end
         end
       end

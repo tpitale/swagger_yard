@@ -26,14 +26,6 @@ module SwaggerYard
     end
 
     def to_h
-      {
-        "type" => type,
-        "passAs" => @pass_as,
-        "keyname" => @key
-      }
-    end
-
-    def swagger_v2
       { "type" => type,
         "name" => @key,
         "in"   => @pass_as }

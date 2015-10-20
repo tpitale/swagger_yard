@@ -1,22 +1,285 @@
 {
-  "apiVersion":"1.0",
-  "swaggerVersion":"1.2",
-  "basePath":"http://localhost:3000/swagger/api",
-  "apis":[
+  "paths": {
+    "/pets.{format_type}": {
+      "get": {
+        "summary": "return a list of Pets",
+        "tags": [
+          "Pet"
+        ],
+        "operationId": "Pet-index",
+        "parameters": [
+          {
+            "name": "client_name",
+            "description": "The name of the client using the API",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "format_type",
+            "description": "Response format either JSON or XML",
+            "required": true,
+            "in": "path",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "return a list of Pets",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pet"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "header_x_application_api_key": []
+          }
+        ]
+      }
+    },
+    "/pets/{id}.{format_type}": {
+      "get": {
+        "summary": "return a Pet",
+        "tags": [
+          "Pet"
+        ],
+        "operationId": "Pet-show",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Scope response to id",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "description": "The ID for the Pet",
+            "required": false,
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "format_type",
+            "description": "Response format either JSON or XML",
+            "required": true,
+            "in": "path",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "return a Pet",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          "404": {
+            "description": "Pet not found",
+            "schema": {
+              "$ref": "#/definitions/EmptyPet"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          }
+        },
+        "security": [
+          {
+            "header_x_application_api_key": []
+          }
+        ]
+      }
+    },
+    "/pets": {
+      "post": {
+        "summary": "create a Pet",
+        "tags": [
+          "Pet"
+        ],
+        "operationId": "Pet-create",
+        "parameters": [
+          {
+            "name": "pet",
+            "description": "The pet object",
+            "required": true,
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          {
+            "name": "format_type",
+            "description": "Response format either JSON or XML",
+            "required": true,
+            "in": "path",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "create a Pet"
+          }
+        },
+        "security": [
+          {
+            "header_x_application_api_key": []
+          }
+        ]
+      }
+    },
+    "/transports.{format_type}": {
+      "get": {
+        "summary": "return a list of Transports",
+        "tags": [
+          "Transport"
+        ],
+        "operationId": "Transport-index",
+        "parameters": [
+          {
+            "name": "format_type",
+            "description": "Response format either JSON or XML",
+            "required": true,
+            "in": "path",
+            "enum": [
+              "json",
+              "xml"
+            ],
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "return a list of Transports",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Transport"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "header_x_application_api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AnimalThing": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "the identifier for the animal thing"
+        },
+        "type": {
+          "type": "string",
+          "description": "the type of animal"
+        },
+        "possessions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Possession"
+          },
+          "description": "animal's possessions"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "Pet": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "the identifier for the pet"
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "the names for the pet"
+        },
+        "age": {
+          "type": "integer",
+          "description": "the age of the pet"
+        },
+        "relatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnimalThing"
+          },
+          "description": "other Pets in its family"
+        }
+      },
+      "required": [
+        "id",
+        "relatives"
+      ]
+    },
+    "Possession": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "the name of the possession"
+        },
+        "value": {
+          "type": "float",
+          "description": "the value of the possession"
+        }
+      },
+      "required": []
+    },
+    "Transport": {
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "the identifier for the transport"
+        },
+        "wheels": {
+          "type": "integer",
+          "description": "the number of wheels"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  },
+  "tags": [
     {
-      "path":"/pets",
-      "description":"This document describes the API for interacting with Pet resources"
+      "name": "Pet",
+      "description": "This document describes the API for interacting with Pet resources"
     },
     {
-      "path":"/transports",
-      "description":"This document describes the API for interacting with Transport resources"
+      "name": "Transport",
+      "description": "This document describes the API for interacting with Transport resources"
     }
   ],
-  "authorizations":{
-    "header_x_application_api_key":{
-      "type":"apiKey",
-      "passAs":"header",
-      "keyname":"X-APPLICATION-API-KEY"
+  "securityDefinitions": {
+    "header_x_application_api_key": {
+      "type": "apiKey",
+      "name": "X-APPLICATION-API-KEY",
+      "in": "header"
     }
   }
 }

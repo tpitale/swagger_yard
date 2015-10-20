@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe SwaggerYard::Swagger do
-  subject(:swagger) { SwaggerYard::Swagger.new.swagger_v2 }
+  subject(:swagger) { SwaggerYard::Swagger.new.to_h }
 
   it_behaves_like SwaggerYard::Swagger
 

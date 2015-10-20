@@ -57,18 +57,8 @@ module SwaggerYard
     end
 
     def to_h
-      raise "Model is missing @model tag" if id.nil?
-
-      {
-        "id" => id,
-        "properties" => Hash[@properties.map {|property| [property.name, property.to_h]}],
-        "required" => @properties.select(&:required?).map(&:name)
-      }
-    end
-
-    def swagger_v2
       {}.tap do |h|
-        h["properties"] = Hash[@properties.map {|p| [p.name, p.swagger_v2]}]
+        h["properties"] = Hash[@properties.map {|p| [p.name, p.to_h]}]
         h["required"] = @properties.select(&:required?).map(&:name) if @properties.detect(&:required?)
       end
     end
