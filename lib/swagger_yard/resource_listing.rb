@@ -3,6 +3,10 @@ module SwaggerYard
     attr_reader :api_declarations, :resource_to_file_path
     attr_accessor :authorizations
 
+    def self.all
+      new(SwaggerYard.config.controller_path, SwaggerYard.config.model_path)
+    end
+
     def initialize(controller_path, model_path)
       @model_path = model_path
       @controller_path = controller_path
@@ -31,6 +35,38 @@ module SwaggerYard
         "apis"            => list_api_declarations,
         "authorizations"  => authorizations_hash
       }
+    end
+
+    def swagger_v2
+      { "paths"               => path_objects,
+        "definitions"         => model_objects,
+        "tags"                => tag_objects,
+        "securityDefinitions" => security_objects }
+    end
+
+    def path_objects
+      operations = controllers.values.flat_map do |api_declaration|
+        api_declaration.apis.values.flat_map(&:operations)
+      end
+      operations.inject({}) do |hsh, op|
+        existing_ops = hsh[op.path] || {}
+        hsh.merge(op.path => existing_ops.merge(op.swagger_v2))
+      end
+    end
+
+    def model_objects
+      models.inject({}) {|h,m| h.merge(m.id => m.swagger_v2)}
+    end
+
+    def tag_objects
+      controllers.values.flat_map do |api_declaration|
+        { "name"        => api_declaration.resource,
+          "description" => api_declaration.description }
+      end
+    end
+
+    def security_objects
+      authorizations.inject({}) {|h,auth| h[auth.name] = auth.swagger_v2; h }
     end
 
   private

@@ -30,5 +30,18 @@ module SwaggerYard
         {"type"=>name}
       end
     end
+
+    def swagger_v2
+      type = if ref?
+        { "$ref" => "#/definitions/#{name}"}
+      else
+        { "type" => name }
+      end
+      if array?
+        { "type" => "array", "items" => type }
+      else
+        type
+      end
+    end
   end
 end

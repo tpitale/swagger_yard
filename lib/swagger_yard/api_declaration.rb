@@ -1,6 +1,6 @@
 module SwaggerYard
   class ApiDeclaration
-    attr_accessor :description, :resource_path
+    attr_accessor :description, :resource, :resource_path
     attr_reader :apis, :authorizations
 
     def initialize(resource_listing)
@@ -32,7 +32,8 @@ module SwaggerYard
     end
 
     def add_listing_info(listing_info)
-      @description = listing_info.description
+      @description   = listing_info.description
+      @resource      = listing_info.resource
       @resource_path = listing_info.resource_path
 
       # we only have api_key auth, the value for now is always empty array

@@ -1,6 +1,6 @@
 module SwaggerYard
   class Operation
-    attr_accessor :summary, :notes
+    attr_accessor :summary, :notes, :ruby_method
     attr_reader :path, :http_method, :error_messages, :response_type
     attr_reader :parameters, :model_names
 
@@ -9,6 +9,7 @@ module SwaggerYard
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, api)
       new(api).tap do |operation|
+        operation.ruby_method = yard_object.name(false)
         yard_object.tags.each do |tag|
           case tag.tag_name
           when "path"
@@ -57,6 +58,43 @@ module SwaggerYard
       }.tap do |h|
         h.merge!(response_type.to_h) if response_type
       end
+    end
+
+    def swagger_v2
+      method      = http_method.downcase
+      description = notes || ""
+      params      = parameters.map(&:swagger_v2)
+      responses   = { "default" => { "description" => summary || @api.description } }
+
+      if response_type
+        responses["default"]["schema"] = response_type.swagger_v2
+      end
+
+      unless error_messages.empty?
+        error_messages.each do |err|
+          responses[err["code"].to_s] = {}.tap do |h|
+            h["description"] = err["message"]
+            h["schema"] = Type.from_type_list(Array(err["responseModel"])).swagger_v2 if err["responseModel"]
+          end
+        end
+      end
+
+      op_hash = {
+        "summary"     => summary || @api.description,
+        "tags"        => [@api.api_declaration.resource].compact,
+        "operationId" => "#{@api.api_declaration.resource}-#{ruby_method}",
+        "parameters"  => params,
+        "responses"   => responses,
+      }.tap do |h|
+        h["description"] = description unless description.to_s.empty?
+
+        authorizations = @api.api_declaration.authorizations
+        unless authorizations.empty?
+          h["security"] = authorizations.map {|k,v| { k => v} }
+        end
+      end
+
+      { method => op_hash }
     end
 
     ##

@@ -61,8 +61,26 @@ module SwaggerYard
         "description"     => description,
         "required"        => required,
         "allowMultiple"   => !!allow_multiple,
-        "allowableValues" => allowable_values_hash 
+        "allowableValues" => allowable_values_hash
       }.merge(@type.to_h).reject {|k,v| v.nil?}
+    end
+
+    def swagger_v2
+      { "name"        => name,
+        "description" => description,
+        "required"    => required,
+        "in"          => param_type
+      }.tap do |h|
+        if !Array(allowable_values).empty?
+          h["enum"] = allowable_values
+        end
+        if h["in"] == "body"
+          h["schema"] = @type.swagger_v2
+        else
+          h.update(@type.swagger_v2)
+        end
+        h["collectionFormat"] = 'multi' if !Array(allow_multiple).empty? && h["items"]
+      end
     end
   end
 end
