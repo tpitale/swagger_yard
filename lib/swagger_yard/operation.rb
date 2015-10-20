@@ -64,33 +64,33 @@ module SwaggerYard
       method      = http_method.downcase
       description = notes || ""
       params      = parameters.map(&:swagger_v2)
-      responses   = { default: { description: summary || @api.description } }
+      responses   = { "default" => { "description" => summary || @api.description } }
 
-      if response_type.present?
-        responses[:default][:schema] = response_type.swagger_v2
+      if response_type
+        responses["default"]["schema"] = response_type.swagger_v2
       end
 
       unless error_messages.empty?
         error_messages.each do |err|
           responses[err["code"].to_s] = {}.tap do |h|
-            h[:description] = err["message"]
-            h[:schema] = Type.from_type_list(err["responseModel"]).swagger_v2 if err["responseModel"]
+            h["description"] = err["message"]
+            h["schema"] = Type.from_type_list(Array(err["responseModel"])).swagger_v2 if err["responseModel"]
           end
         end
       end
 
       op_hash = {
-        summary:     summary || @api.description,
-        tags:        [@api.api_declaration.resource].compact,
-        operationId: "#{@api.api_declaration.resource}-#{ruby_method}",
-        parameters:  params,
-        responses:   responses,
+        "summary"     => summary || @api.description,
+        "tags"        => [@api.api_declaration.resource].compact,
+        "operationId" => "#{@api.api_declaration.resource}-#{ruby_method}",
+        "parameters"  => params,
+        "responses"   => responses,
       }.tap do |h|
-        h[:description] = description if description.present?
+        h["description"] = description unless description.to_s.empty?
 
         authorizations = @api.api_declaration.authorizations
         unless authorizations.empty?
-          h[:security] = authorizations.map {|k,v| { k => v} }
+          h["security"] = authorizations.map {|k,v| { k => v} }
         end
       end
 

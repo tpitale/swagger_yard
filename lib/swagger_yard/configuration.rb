@@ -4,6 +4,7 @@ module SwaggerYard
     attr_accessor :swagger_version, :api_version
     attr_accessor :title, :description
     attr_accessor :enable, :reload
+    attr_accessor :controller_path, :model_path
 
     def initialize
       self.swagger_version = "1.1"

@@ -36,12 +36,3 @@ describe SwaggerYard, '.generate' do
     end
   end
 end
-
-RSpec.describe SwaggerYard, 'routes', :type => :request do
-  context 'api' do
-    it 'renders a resource listing' do
-      get '/api'
-      expect(response.code).to eq("200")
-    end
-  end
-end

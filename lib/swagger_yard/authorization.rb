@@ -34,9 +34,9 @@ module SwaggerYard
     end
 
     def swagger_v2
-      { type: type,
-        name: @key,
-        in: @pass_as }
+      { "type" => type,
+        "name" => @key,
+        "in"   => @pass_as }
     end
   end
 end
