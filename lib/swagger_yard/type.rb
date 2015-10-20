@@ -22,6 +22,22 @@ module SwaggerYard
 
     alias :array? :array
 
+    def json_type
+      type, format = name, nil
+      case name
+      when "float", "double"
+        type = "number"
+        format = name
+      when "date-time", "date", "time"
+        type = "string"
+        format = name
+      end
+      {}.tap do |h|
+        h["type"]   = type
+        h["format"] = format if format
+      end
+    end
+
     def to_h
       type_tag = ref? ? "$ref" : "type"
       if array?
@@ -35,7 +51,7 @@ module SwaggerYard
       type = if ref?
         { "$ref" => "#/definitions/#{name}"}
       else
-        { "type" => name }
+        json_type
       end
       if array?
         { "type" => "array", "items" => type }
