@@ -5,6 +5,12 @@ RSpec.describe SwaggerYard::Swagger do
 
   it_behaves_like SwaggerYard::Swagger
 
+  it "is valid" do
+    errors = Apivore::Swagger.new(swagger).validate
+    puts *errors unless errors.empty?
+    expect(errors).to be_empty
+  end
+
   context "#/paths//pets/{id}.{format_type}" do
     subject { swagger["paths"]["/pets/{id}.{format_type}"] }
 

@@ -67,8 +67,10 @@ module SwaggerYard
     end
 
     def swagger_v2
-      { "properties" => @properties.inject({}) {|h, p| h.merge(p.name => p.swagger_v2)},
-        "required"   => @properties.select(&:required?).map(&:name) }
+      {}.tap do |h|
+        h["properties"] = Hash[@properties.map {|p| [p.name, p.swagger_v2]}]
+        h["required"] = @properties.select(&:required?).map(&:name) if @properties.detect(&:required?)
+      end
     end
   end
 end
