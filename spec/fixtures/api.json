@@ -243,11 +243,11 @@
           "description": "the name of the possession"
         },
         "value": {
-          "type": "float",
+          "type": "number",
+          "format": "float",
           "description": "the value of the possession"
         }
-      },
-      "required": []
+      }
     },
     "Transport": {
       "properties": {

@@ -64,7 +64,7 @@ module SwaggerYard
         end
       end
 
-      op_hash = {
+      {
         "summary"     => summary || @api.description,
         "tags"        => [@api.api_declaration.resource].compact,
         "operationId" => "#{@api.api_declaration.resource}-#{ruby_method}",
@@ -78,8 +78,6 @@ module SwaggerYard
           h["security"] = authorizations.map {|k,v| { k => v} }
         end
       end
-
-      { method => op_hash }
     end
 
     ##

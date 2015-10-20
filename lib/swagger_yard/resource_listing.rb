@@ -30,12 +30,8 @@ module SwaggerYard
     end
 
     def path_objects
-      operations = controllers.flat_map do |api_declaration|
-        api_declaration.apis.values.flat_map(&:operations)
-      end
-      operations.inject({}) do |hsh, op|
-        existing_ops = hsh[op.path] || {}
-        hsh.merge(op.path => existing_ops.merge(op.to_h))
+      controllers.map(&:apis_hash).inject({}) do |h, api_hash|
+        h.merge api_hash
       end
     end
 
@@ -66,7 +62,7 @@ module SwaggerYard
     end
 
     def parse_controllers
-      return {} unless @controller_path
+      return [] unless @controller_path
 
       Dir[@controller_path].map do |file_path|
         create_api_declaration(file_path)
