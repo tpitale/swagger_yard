@@ -68,18 +68,6 @@ module SwaggerYard
       @resource_listing.models.map(&:id).include?(name)
     end
 
-    # def to_h
-    #   {
-    #     "apiVersion"     => SwaggerYard.config.api_version,
-    #     "swaggerVersion" => SwaggerYard.config.swagger_version,
-    #     "basePath"       => SwaggerYard.config.api_base_path,
-    #     "resourcePath"   => resource_path,
-    #     "apis"           => apis.values.map(&:to_h),
-    #     "models"         => Hash[models.map {|m| [m.id, m.to_h]}],
-    #     "authorizations"  => authorizations
-    #   }
-    # end
-
     def apis_hash
       Hash[apis.map {|path, api| [path, api.operations_hash]}]
     end
