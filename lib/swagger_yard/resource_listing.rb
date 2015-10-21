@@ -30,9 +30,7 @@ module SwaggerYard
     end
 
     def path_objects
-      controllers.map(&:apis_hash).inject({}) do |h, api_hash|
-        h.merge api_hash
-      end
+      controllers.map(&:apis_hash).reduce({}, :merge)
     end
 
     # Resources
