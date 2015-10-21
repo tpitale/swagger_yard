@@ -1,6 +1,6 @@
 module SwaggerYard
   class Info
-    def swagger_v2
+    def to_h
       { "title"       => SwaggerYard.config.title,
         "description" => SwaggerYard.config.description,
         "version"     => SwaggerYard.config.api_version }
@@ -8,12 +8,12 @@ module SwaggerYard
   end
 
   class Swagger
-    def swagger_v2
+    def to_h
       { "swagger"  => "2.0",
-        "info"     => Info.new.swagger_v2,
+        "info"     => Info.new.to_h,
         "host"     => URI(SwaggerYard.config.api_base_path).host,
         "basePath" => URI(SwaggerYard.config.api_base_path).request_uri
-      }.merge(ResourceListing.all.swagger_v2)
+      }.merge(ResourceListing.all.to_h)
     end
   end
 end

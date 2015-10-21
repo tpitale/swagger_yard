@@ -55,17 +55,6 @@ module SwaggerYard
     end
 
     def to_h
-      {
-        "paramType"       => param_type,
-        "name"            => name,
-        "description"     => description,
-        "required"        => required,
-        "allowMultiple"   => !!allow_multiple,
-        "allowableValues" => allowable_values_hash
-      }.merge(@type.to_h).reject {|k,v| v.nil?}
-    end
-
-    def swagger_v2
       { "name"        => name,
         "description" => description,
         "required"    => required,
@@ -75,9 +64,9 @@ module SwaggerYard
           h["enum"] = allowable_values
         end
         if h["in"] == "body"
-          h["schema"] = @type.swagger_v2
+          h["schema"] = @type.to_h
         else
-          h.update(@type.swagger_v2)
+          h.update(@type.to_h)
         end
         h["collectionFormat"] = 'multi' if !Array(allow_multiple).empty? && h["items"]
       end

@@ -23,10 +23,10 @@ module SwaggerYard
 
     def add_yard_object(yard_object)
       case yard_object.type
-      when :class
+      when :class # controller
         add_listing_info(ListingInfo.new(yard_object))
         add_authorizations_to_resource_listing(yard_object)
-      when :method
+      when :method # actions
         add_api(yard_object)
       end
     end
@@ -34,7 +34,7 @@ module SwaggerYard
     def add_listing_info(listing_info)
       @description   = listing_info.description
       @resource      = listing_info.resource
-      @resource_path = listing_info.resource_path
+      @resource_path = listing_info.resource_path # required for valid? but nothing else
 
       # we only have api_key auth, the value for now is always empty array
       @authorizations = Hash[listing_info.authorizations.uniq.map {|k| [k, []]}]
@@ -68,23 +68,13 @@ module SwaggerYard
       @resource_listing.models.map(&:id).include?(name)
     end
 
-    def to_h
-      {
-        "apiVersion"     => SwaggerYard.config.api_version,
-        "swaggerVersion" => SwaggerYard.config.swagger_version,
-        "basePath"       => SwaggerYard.config.api_base_path,
-        "resourcePath"   => resource_path,
-        "apis"           => apis.values.map(&:to_h),
-        "models"         => Hash[models.map {|m| [m.id, m.to_h]}],
-        "authorizations"  => authorizations
-      }
+    def apis_hash
+      Hash[apis.map {|path, api| [path, api.operations_hash]}]
     end
 
-    def listing_hash
-      {
-        "path"        => resource_path,
-        "description" => description
-      }
+    def to_tag
+      { "name"        => resource,
+        "description" => description }
     end
 
     private

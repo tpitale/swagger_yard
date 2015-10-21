@@ -28,13 +28,7 @@ module SwaggerYard
     end
 
     def to_h
-      result = @type.to_h
-      result["description"] = description if description
-      result
-    end
-
-    def swagger_v2
-      @type.swagger_v2.tap do |h|
+      @type.to_h.tap do |h|
         h["description"] = description if description
       end
     end

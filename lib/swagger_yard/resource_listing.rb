@@ -1,6 +1,5 @@
 module SwaggerYard
   class ResourceListing
-    attr_reader :api_declarations, :resource_to_file_path
     attr_accessor :authorizations
 
     def self.all
@@ -23,21 +22,7 @@ module SwaggerYard
       @controllers ||= parse_controllers
     end
 
-    def declaration_for(resource_name)
-      controllers[resource_name]
-    end
-
     def to_h
-      {
-        "apiVersion"      => SwaggerYard.config.api_version,
-        "swaggerVersion"  => SwaggerYard.config.swagger_version,
-        "basePath"        => SwaggerYard.config.swagger_spec_base_path,
-        "apis"            => list_api_declarations,
-        "authorizations"  => authorizations_hash
-      }
-    end
-
-    def swagger_v2
       { "paths"               => path_objects,
         "definitions"         => model_objects,
         "tags"                => tag_objects,
@@ -45,35 +30,25 @@ module SwaggerYard
     end
 
     def path_objects
-      operations = controllers.values.flat_map do |api_declaration|
-        api_declaration.apis.values.flat_map(&:operations)
+      controllers.map(&:apis_hash).inject({}) do |h, api_hash|
+        h.merge api_hash
       end
-      operations.inject({}) do |hsh, op|
-        existing_ops = hsh[op.path] || {}
-        hsh.merge(op.path => existing_ops.merge(op.swagger_v2))
-      end
+    end
+
+    # Resources
+    def tag_objects
+      controllers.map(&:to_tag)
     end
 
     def model_objects
-      models.inject({}) {|h,m| h.merge(m.id => m.swagger_v2)}
-    end
-
-    def tag_objects
-      controllers.values.flat_map do |api_declaration|
-        { "name"        => api_declaration.resource,
-          "description" => api_declaration.description }
-      end
+      Hash[models.map {|m| [m.id, m.to_h]}]
     end
 
     def security_objects
-      authorizations.inject({}) {|h,auth| h[auth.name] = auth.swagger_v2; h }
+      Hash[authorizations.map {|auth| [auth.name, auth.to_h]}]
     end
 
-  private
-    def list_api_declarations
-      controllers.values.sort_by(&:resource_path).map(&:listing_hash)
-    end
-
+    private
     def parse_models
       return [] unless @model_path
 
@@ -83,25 +58,17 @@ module SwaggerYard
     end
 
     def parse_controllers
-      return {} unless @controller_path
+      return [] unless @controller_path
 
-      Hash[Dir[@controller_path].map do |file_path|
-        declaration = create_api_declaration(file_path)
-
-        [declaration.resource_name, declaration] if declaration.valid?
-      end.compact]
+      Dir[@controller_path].map do |file_path|
+        create_api_declaration(file_path)
+      end.select(&:valid?)
     end
 
     def create_api_declaration(file_path)
       yard_objects = SwaggerYard.yard_objects_from_file(file_path)
 
       ApiDeclaration.new(self).add_yard_objects(yard_objects)
-    end
-
-    def authorizations_hash
-      Hash[
-        authorizations.map(&:name).zip(authorizations.map(&:to_h)) # ugh
-      ]
     end
   end
 end
