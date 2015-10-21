@@ -5,8 +5,8 @@ module SwaggerYard
     def self.path_from_yard_object(yard_object)
       if tag = yard_object.tags.detect {|t| t.tag_name == "path"}
         tag.text
-      else
-        nil
+      elsif fn = SwaggerYard.config.path_discovery_function
+        fn[yard_object]
       end
     end
 

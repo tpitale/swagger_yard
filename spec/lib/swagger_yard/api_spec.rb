@@ -18,5 +18,30 @@ describe SwaggerYard::Api do
         expect(api.path).to eq("/accounts/ownerships.{format_type}")
       end
     end
+
+    context "with dynamic path discovery" do
+      let(:tags) { [] }
+
+      before(:each) do
+        yard_object.stubs(:tags).returns(tags)
+        SwaggerYard.configure do |config|
+          @prev_fn = config.path_discovery_function
+          config.path_discovery_function = -> obj do
+            expect(obj).to respond_to(:tags)
+            '/blah'
+          end
+        end
+      end
+
+      after(:each) do
+        SwaggerYard.configure do |config|
+          config.path_discovery_function = @prev_fn
+        end
+      end
+
+      it 'calls the provided function to determine the path' do
+        expect(api.path).to eq('/blah')
+      end
+    end
   end
 end
