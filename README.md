@@ -137,8 +137,25 @@ To generate JSON from your code on request, checkout the [swagger_yard-rails](ht
 
 ## More Information ##
 
-* [Swagger-ui](https://github.com/wordnik/swagger-ui)
 * [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
-* [Yard](https://github.com/lsegal/yard)
-* [Swagger-spec version 1.2](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md)
+* [swagger_yard-rails](https://github.com/tpitale/swagger_yard-rails)
 * [Swagger-spec version 2.0](https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md)
+* [Yard](https://github.com/lsegal/yard)
+
+## Current Parsing "Tree" Structure ##
+
+ResourceListing
+|
+-> ApiDeclaration (controller)
+| |
+| -> ListingInfo (controller class)
+| -> Authorization (header/param for auth, also added to ResourceListing?)
+| -> Api(s) (controller action, by path)
+|   |
+|   -> Operation(s) (controller action with HTTP method)
+|     |
+|     -> Parameter(s) (action param)
+| 
+-> Model (model)
+  |
+  -> Properties (model attributes)

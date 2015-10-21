@@ -34,7 +34,7 @@ module SwaggerYard
     def add_listing_info(listing_info)
       @description   = listing_info.description
       @resource      = listing_info.resource
-      @resource_path = listing_info.resource_path # TODO: remove
+      @resource_path = listing_info.resource_path # required for valid? but nothing else
 
       # we only have api_key auth, the value for now is always empty array
       @authorizations = Hash[listing_info.authorizations.uniq.map {|k| [k, []]}]

@@ -48,11 +48,7 @@ module SwaggerYard
       Hash[authorizations.map {|auth| [auth.name, auth.to_h]}]
     end
 
-  private
-    def list_api_declarations
-      controllers.sort_by(&:resource_path).map(&:listing_hash)
-    end
-
+    private
     def parse_models
       return [] unless @model_path
 
