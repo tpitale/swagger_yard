@@ -159,3 +159,23 @@ ResourceListing
 -> Model (model)
   |
   -> Properties (model attributes)
+
+### Path Discovery Function ##
+
+SwaggerYard configuration allows setting of a "path discovery function" which
+will be called for controller action method documentation that have no `@path`
+tag.
+
+```ruby
+SwaggerYard.configure do |config|
+  config.path_discovery_function = ->(yard_obj) do
+    # code here to inspect the yard doc object
+	# and return a path for the api
+  end
+end
+```
+
+In [swagger_yard-rails][], this hook is used to set a function that inspects the
+Rails routing tables to reverse look up and compute paths.
+
+[swagger_yard-rails]: https://github.com/tpitale/swagger-yard_rails
