@@ -11,7 +11,7 @@ module SwaggerYard
     end
 
     def valid?
-      !@resource_path.nil?
+      !@resource.nil?
     end
 
     def add_yard_objects(yard_objects)
@@ -54,10 +54,6 @@ module SwaggerYard
       yard_object.tags.select {|t| t.tag_name == "authorization"}.each do |t|
         @resource_listing.authorizations << Authorization.from_yard_object(t)
       end
-    end
-
-    def resource_name
-      @resource_path
     end
 
     def models
