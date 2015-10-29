@@ -29,10 +29,16 @@ describe SwaggerYard, '.generate' do
   end
 
   context "for non-controllers (modules) in the path" do
-    let(:controllers_path) {File.expand_path('../../fixtures/dummy/app/controllers/**/*.rb', __FILE__)}
+    let(:controllers_path) {File.expand_path("#{app_path}/controllers/**/*.rb", __FILE__)}
+    let(:resources) { SwaggerYard::ResourceListing.new(controllers_path, nil) }
 
     it 'does not error' do
-      expect { SwaggerYard::ResourceListing.new(controllers_path, nil).to_h }.to_not raise_error
+      expect { resources.to_h }.to_not raise_error
+    end
+
+    it 'does not create resources that are not tagged as @resource' do
+      expect(resources.controllers.detect {|c|
+               c.description =~ /NotAResourceController/ }).to be_nil
     end
   end
 end
