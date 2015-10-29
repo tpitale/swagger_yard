@@ -18,8 +18,6 @@ describe SwaggerYard::Api do
     end
 
     context "with dynamic path discovery" do
-      include SilenceLogger
-
       let(:tags) { [] }
 
       before(:each) do
@@ -44,6 +42,7 @@ describe SwaggerYard::Api do
       end
 
       context "when the function raises" do
+        include SilenceLogger
         before { SwaggerYard.config.path_discovery_function = ->(obj) { raise "error" } }
         its(:path) { is_expected.to be_nil }
       end
