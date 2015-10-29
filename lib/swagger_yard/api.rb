@@ -6,7 +6,14 @@ module SwaggerYard
       if tag = yard_object.tags.detect {|t| t.tag_name == "path"}
         tag.text
       elsif fn = SwaggerYard.config.path_discovery_function
-        fn[yard_object]
+        begin
+          method, path = fn[yard_object]
+          yard_object.add_tag YARD::Tags::Tag.new("path", path, [method]) if path
+          path
+        rescue => e
+          YARD::Logger.instance.warn e.message
+          nil
+        end
       end
     end
 

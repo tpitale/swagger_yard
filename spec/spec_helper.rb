@@ -26,4 +26,6 @@ RSpec.configure do |config|
   config.mock_with :mocha
 
   config.order = 'random'
+
+  config.include SaveConfig
 end

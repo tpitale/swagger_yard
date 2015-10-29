@@ -5,7 +5,7 @@ describe SwaggerYard::Api do
     let(:yard_object) {stub(docstring: 'A Description')}
     let(:api_declaration) {SwaggerYard::ApiDeclaration.new(nil)}
 
-    let(:api) {SwaggerYard::Api.from_yard_object(yard_object, api_declaration)}
+    subject(:api) {SwaggerYard::Api.from_yard_object(yard_object, api_declaration)}
 
     context "from yard object" do
       let(:tags) { [stub(tag_name: "path", types: ["GET"], text: "/accounts/ownerships.{format_type}")] }
@@ -14,33 +14,38 @@ describe SwaggerYard::Api do
         yard_object.stubs(:tags).returns(tags)
       end
 
-      it 'to have a path' do
-        expect(api.path).to eq("/accounts/ownerships.{format_type}")
-      end
+      its(:path) { is_expected.to eq("/accounts/ownerships.{format_type}") }
     end
 
     context "with dynamic path discovery" do
+      include SilenceLogger
+
       let(:tags) { [] }
 
       before(:each) do
         yard_object.stubs(:tags).returns(tags)
-        SwaggerYard.configure do |config|
-          @prev_fn = config.path_discovery_function
-          config.path_discovery_function = -> obj do
-            expect(obj).to respond_to(:tags)
-            '/blah'
-          end
+        yard_object.stubs(:add_tag)
+        SwaggerYard.config.path_discovery_function = -> obj do
+          expect(obj).to respond_to(:tags)
+          ['GET', '/blah']
         end
       end
 
-      after(:each) do
-        SwaggerYard.configure do |config|
-          config.path_discovery_function = @prev_fn
-        end
-      end
+      its(:path) { is_expected.to eq('/blah') }
 
       it 'calls the provided function to determine the path' do
-        expect(api.path).to eq('/blah')
+        yard_object.expects(:add_tag)
+        expect(SwaggerYard::Api.path_from_yard_object(yard_object)).to eq('/blah')
+      end
+
+      context "when the function returns nil" do
+        before { SwaggerYard.config.path_discovery_function = ->(obj) { nil } }
+        its(:path) { is_expected.to be_nil }
+      end
+
+      context "when the function raises" do
+        before { SwaggerYard.config.path_discovery_function = ->(obj) { raise "error" } }
+        its(:path) { is_expected.to be_nil }
       end
     end
   end

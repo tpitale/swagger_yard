@@ -164,13 +164,14 @@ ResourceListing
 
 SwaggerYard configuration allows setting of a "path discovery function" which
 will be called for controller action method documentation that have no `@path`
-tag.
+tag. The function should return an array containing `["<method>", "<path>"]` if
+any can be determined.
 
 ```ruby
 SwaggerYard.configure do |config|
   config.path_discovery_function = ->(yard_obj) do
     # code here to inspect the yard doc object
-	# and return a path for the api
+	# and return a [method, path] for the api
   end
 end
 ```
