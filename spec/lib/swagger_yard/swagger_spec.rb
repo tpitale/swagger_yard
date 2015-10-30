@@ -11,6 +11,12 @@ RSpec.describe SwaggerYard::Swagger do
     expect(errors).to be_empty
   end
 
+  context "#/paths" do
+    subject { swagger["paths"] }
+
+    its(:size) { is_expected.to eq(4) }
+  end
+
   context "#/paths//pets/{id}.{format_type}" do
     subject { swagger["paths"]["/pets/{id}.{format_type}"] }
 
@@ -30,12 +36,25 @@ RSpec.describe SwaggerYard::Swagger do
     its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
   end
 
+  context "#/definitions" do
+    subject(:definitions) { swagger["definitions"] }
+
+    its(:keys) { are_expected.to eq(["AnimalThing", "Pet", "Possession", "Transport"]) }
+
+    its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
+
+    its(["Pet", "properties"]) { are_expected.to include("id", "names", "age", "relatives") }
+
+    its(["Possession", "properties"]) { are_expected.to include("name", "value") }
+
+    its(["Transport", "properties"]) { are_expected.to include("id", "wheels") }
+  end
+
   context "#/definitions/Pet" do
     subject { swagger["definitions"]["Pet"] }
 
     it { is_expected.to_not be_empty }
 
-    its(["properties"]) { are_expected.to include("id", "names", "age", "relatives") }
     its(["required"])   { is_expected.to eq(["id", "relatives"])}
   end
 

@@ -9,9 +9,6 @@ Bundler.require
 require 'rspec/its'
 require 'apivore'
 
-# Load Rails, which loads our swagger_yard
-# require File.expand_path('../fixtures/dummy/config/application.rb', __FILE__)
-
 require File.expand_path('../../lib/swagger_yard', __FILE__)
 require File.expand_path('../fixtures/dummy/config/initializers/swagger_yard.rb', __FILE__)
 
