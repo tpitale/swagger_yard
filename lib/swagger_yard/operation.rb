@@ -1,7 +1,7 @@
 module SwaggerYard
   class Operation
-    attr_accessor :summary, :notes, :ruby_method
-    attr_reader :path, :http_method, :error_messages, :response_type
+    attr_accessor :description, :summary, :ruby_method
+    attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
     attr_reader :parameters, :model_names
 
     PARAMETER_LIST_REGEX = /\A\[(\w*)\]\s*(\w*)(\(required\))?\s*(.*)\n([.\s\S]*)\Z/
@@ -10,6 +10,7 @@ module SwaggerYard
     def self.from_yard_object(yard_object, api)
       new(api).tap do |operation|
         operation.ruby_method = yard_object.name(false)
+        operation.description = yard_object.docstring
         yard_object.tags.each do |tag|
           case tag.tag_name
           when "path"
@@ -19,13 +20,11 @@ module SwaggerYard
           when "parameter_list"
             operation.add_parameter_list(tag)
           when "response_type"
-            operation.add_response_type(Type.from_type_list(tag.types))
+            operation.add_response_type(Type.from_type_list(tag.types), tag.text)
           when "error_message"
             operation.add_error_message(tag)
           when "summary"
             operation.summary = tag.text
-          when "notes"
-            operation.notes = tag.text.gsub("\n", "<br\>")
           end
         end
 
@@ -36,6 +35,7 @@ module SwaggerYard
 
     def initialize(api)
       @api = api
+      @description = ""
       @parameters = []
       @model_names = []
       @error_messages = []
@@ -45,11 +45,14 @@ module SwaggerYard
       @path[1..-1].gsub(/[^a-zA-Z\d:]/, '-').squeeze("-") + http_method.downcase
     end
 
+    def summary
+      @summary || description.split("\n\n").first
+    end
+
     def to_h
       method      = http_method.downcase
-      description = notes || ""
       params      = parameters.map(&:to_h)
-      responses   = { "default" => { "description" => summary || @api.description } }
+      responses   = { "default" => { "description" => response_desc || summary } }
 
       if response_type
         responses["default"]["schema"] = response_type.to_h
@@ -65,13 +68,13 @@ module SwaggerYard
       end
 
       {
-        "summary"     => summary || @api.description,
         "tags"        => [@api.api_declaration.resource].compact,
         "operationId" => "#{@api.api_declaration.resource}-#{ruby_method}",
         "parameters"  => params,
         "responses"   => responses,
       }.tap do |h|
-        h["description"] = description unless description.to_s.empty?
+        h["description"] = description unless description.empty?
+        h["summary"]     = summary unless summary.empty?
 
         authorizations = @api.api_declaration.authorizations
         unless authorizations.empty?
@@ -120,9 +123,13 @@ module SwaggerYard
       })
     end
 
-    def add_response_type(type)
+    ##
+    # Exaample:
+    # @response_type [Ownership] the requested ownership
+    def add_response_type(type, desc)
       model_names << type.model_name
       @response_type = type
+      @response_desc = desc
     end
 
     def add_error_message(tag)
