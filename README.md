@@ -51,7 +51,7 @@ class Accounts::OwnershipsController < ActionController::Base
   ##
   # Returns a list of ownerships associated with the account.
   #
-  # @notes Status can be -1(Deleted), 0(Inactive), 1(Active), 2(Expired) and 3(Cancelled).
+  # Status can be -1(Deleted), 0(Inactive), 1(Active), 2(Expired) and 3(Cancelled).
   #
   # @path [GET] /accounts/ownerships.{format_type}
   #
