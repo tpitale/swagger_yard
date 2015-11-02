@@ -32,14 +32,6 @@ module SwaggerYard
       @operations << Operation.from_yard_object(yard_object, self)
     end
 
-    def model_names
-      @operations.map(&:model_names).flatten.compact.uniq
-    end
-
-    def ref?(data_type)
-      @api_declaration.ref?(data_type)
-    end
-
     def operations_hash
       Hash[@operations.map {|op| [op.http_method.downcase, op.to_h]}]
     end

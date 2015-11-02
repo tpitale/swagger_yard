@@ -40,10 +40,6 @@ module SwaggerYard
       @allow_multiple = options[:allow_multiple] || false
     end
 
-    def type
-      @type.name
-    end
-
     def to_h
       { "name"        => name,
         "description" => description,

@@ -56,14 +56,6 @@ module SwaggerYard
       end
     end
 
-    def models
-      (api_models + property_models).uniq
-    end
-
-    def ref?(name)
-      @resource_listing.models.map(&:id).include?(name)
-    end
-
     def apis_hash
       Hash[apis.map {|path, api| [path, api.operations_hash]}]
     end
@@ -71,25 +63,6 @@ module SwaggerYard
     def to_tag
       { "name"        => resource,
         "description" => description }
-    end
-
-    private
-    def model_names_from_apis
-      apis.values.map(&:model_names).flatten.uniq
-    end
-
-    # models selected by the names of models referenced in APIs
-    def api_models
-      @resource_listing.models.select {|m| model_names_from_apis.include?(m.id)}
-    end
-
-    def model_names_from_model_properties
-      api_models.map{|model| model.recursive_properties_model_names(@resource_listing.models) }.flatten.uniq
-    end
-
-    # models selected by names used in properties in models used in APIs
-    def property_models
-      @resource_listing.models.select {|m| model_names_from_model_properties.include?(m.id)}
     end
   end
 end

@@ -5,6 +5,7 @@
 # @property names               [Array<string>]       the names for the pet
 # @property age                 [integer]             the age of the pet
 # @property relatives(required) [Array<AnimalThing>]  other Pets in its family
+# @property birthday            [date]                the pet's birthday
 #
 class Pet
 end

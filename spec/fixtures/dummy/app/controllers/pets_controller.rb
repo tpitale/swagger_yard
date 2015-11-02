@@ -7,6 +7,7 @@
 #
 class PetsController < ApplicationController
   # return a list of Pets
+  # @summary Index of Pets
   # @path [GET] /pets
   # @response_type [Array<Pet>]
   # @parameter client_name(required) [string] The name of the client using the API

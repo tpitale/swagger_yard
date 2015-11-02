@@ -46,7 +46,9 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "operationId"]) { is_expected.to eq("Pet-index") }
 
-    its(["get", "summary"]) { is_expected.to eq("return a list of Pets") }
+    its(["get", "summary"]) { is_expected.to eq("Index of Pets") }
+
+    its(["get", "description"]) { is_expected.to eq("return a list of Pets") }
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("client_name")) }
 

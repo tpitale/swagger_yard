@@ -23,10 +23,6 @@ module SwaggerYard
       @required
     end
 
-    def model_name
-      @type.model_name
-    end
-
     def to_h
       @type.to_h.tap do |h|
         h["description"] = description if description

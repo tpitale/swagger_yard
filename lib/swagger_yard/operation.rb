@@ -36,10 +36,6 @@ module SwaggerYard
       @error_messages = []
     end
 
-    def nickname
-      @path[1..-1].gsub(/[^a-zA-Z\d:]/, '-').squeeze("-") + http_method.downcase
-    end
-
     def summary
       @summary || description.split("\n\n").first
     end
@@ -118,10 +114,6 @@ module SwaggerYard
 
     def sort_parameters
       @parameters.sort_by! {|p| p.name}
-    end
-
-    def ref?(data_type)
-      @api.ref?(data_type)
     end
 
     private
