@@ -15,7 +15,7 @@ Install the gem with Bunder:
 
 ## Getting Started ##
 
-### Place your configuration in a your rails initializers ###
+### Place configuration in a rails initializer ###
 
     # config/initializers/swagger_yard.rb
     SwaggerYard.configure do |config|
@@ -26,11 +26,36 @@ Install the gem with Bunder:
       config.api_base_path = "http://localhost:3000/api"
     end
 
-## Example Documentation ##
+## SwaggerYard Usage ##
 
-### Here is an example of how to use SwaggerYard in your Controller ###
+### Types ###
 
-**Note:** Model references should be Capitalized or CamelCased, basic types (integer, boolean, string, etc) should be lowercased everywhere.
+Types of things (parameters or responses of an operation, properties of a model)
+are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
+
+- Model references should be Capitalized or CamelCased by convention.
+- Basic types (integer, boolean, string, etc) should be lowercased.
+- An array of models or basic types is specified with `[array<...>]`.
+- An enum of allowed string values is specified with `[enum<one,two,three>]`.
+
+### Options ###
+
+Parameter or property _options_ are expressed inside parenthesis immediately
+following the parameter or property name.
+
+Examples:
+
+	# @parameter name(required) [string]  Name of the package
+	# @parameter package(body)  [Package] Package object
+
+Possible parameters include:
+
+- `required`: indicates a required parameter or property.
+- `multiple`: indicates a parameter may appear multiple times (usually in a
+  query string, e.g., `param=a&param=b&param=c`)
+- `body`/`query`/`path`/`formData`: Indicates where the parameter is located.
+
+### Example of using SwaggerYard in a Controller ###
 
 ```ruby
 # @resource Account ownership
@@ -48,7 +73,7 @@ class Accounts::OwnershipsController < ActionController::Base
   # @path [GET] /accounts/ownerships
   #
   # @parameter offset   [integer]               Used for pagination of response data (default: 25 items per response). Specifies the offset of the next block of data to receive.
-  # @parameter status   [array<string>]                 Filter by status. (e.g. status[]=1&status[]=2&status[]=3).
+  # @parameter status   [array<string>]         Filter by status. (e.g. status[]=1&status[]=2&status[]=3).
   # @parameter sort_order [enum<id,begin_at,end_at,created_at>]  Orders response by fields. (e.g. sort_order=created_at).
   # @parameter sort_descending    [boolean]     Reverse order of sort_order sorting, make it descending.
   # @parameter begin_at_greater   [date]        Filters response to include only items with begin_at >= specified timestamp (e.g. begin_at_greater=2012-02-15T02:06:56Z).
@@ -74,7 +99,7 @@ class Accounts::OwnershipsController < ActionController::Base
 end
 ```
 
-### Here is an example of how to use SwaggerYard in your Model ###
+### Example of using SwaggerYard in a Model ###
 
 ```ruby
 #

@@ -11,10 +11,10 @@
   of the Parameter class `allowable_values` option, which was no longer used.
 * Remove implicit, undocumented `format_type` parameter. If you still need a
   format (or `format_type`) parameter, use the new `enum` type. Example:
-```
-# @path /hello.{format}
-# @parameter format [enum<json,xml>] Format of the response. One of JSON or XML.
-```
+
+    # @path /hello.{format}
+    # @parameter format [enum<json,xml>] Format of the response. One of JSON or XML.
+
 * Deprecate `config.swagger_spec_base_path` and `config.api_path`. Not used anywhere.
 
 ## SwaggerYard 0.2.0 -- 20-10-2015 ##
