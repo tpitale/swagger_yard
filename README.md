@@ -19,20 +19,12 @@ Install the gem with Bunder:
 
     # config/initializers/swagger_yard.rb
     SwaggerYard.configure do |config|
-      config.swagger_version = "1.2"
       config.api_version = "1.0"
       config.reload = Rails.env.development?
 
       # where your actual api is hosted from
       config.api_base_path = "http://localhost:3000/api"
-
-      # where your swagger spec json will show up
-      # configure this to match SwaggerYard::Rails mount point
-      config.swagger_spec_base_path = "http://localhost:3000/swagger/api"
     end
-
-    # register swagger tags with YARD
-    SwaggerYard.register_custom_yard_tags!
 
 ## Example Documentation ##
 

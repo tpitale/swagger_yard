@@ -1,7 +1,7 @@
 module SwaggerYard
   class Configuration
-    attr_accessor :swagger_spec_base_path, :api_base_path, :api_path
-    attr_accessor :swagger_version, :api_version
+    attr_accessor :api_version, :api_base_path
+    attr_accessor :swagger_version
     attr_accessor :title, :description
     attr_accessor :enable, :reload
     attr_accessor :controller_path, :model_path
@@ -14,6 +14,14 @@ module SwaggerYard
       self.reload = true
       self.title = "Configure title with SwaggerYard.config.title"
       self.description = "Configure description with SwaggerYard.config.description"
+    end
+
+    def swagger_spec_base_path=(ignored)
+      warn "DEPRECATED: swagger_spec_base_path is no longer necessary."
+    end
+
+    def api_path=(ignored)
+      warn "DEPRECATED: api_path is no longer necessary."
     end
   end
 end
