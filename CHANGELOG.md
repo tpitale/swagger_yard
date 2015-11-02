@@ -2,6 +2,11 @@
 
 * Add `config.path_discovery_function` to be able to hook in logic from
   swagger_yard-rails to compute paths from the router
+* Allow `@resource_path` to be omitted in a controller class docstring.
+  `@resource` is required in order to indicate that a controller is swaggered.
+* Remove implicit, undocumented `format_type` parameter.
+* Remove @notes tag. There is no convenient place for notes to be mapped to a
+  swagger spec other than to be part of the API's description.
 
 ## SwaggerYard 0.2.0 -- 20-10-2015 ##
 
