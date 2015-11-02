@@ -57,11 +57,7 @@ class Accounts::OwnershipsController < ActionController::Base
   #
   # @parameter offset   [integer]               Used for pagination of response data (default: 25 items per response). Specifies the offset of the next block of data to receive.
   # @parameter status   [array<string>]                 Filter by status. (e.g. status[]=1&status[]=2&status[]=3).
-  # @parameter_list     [String]    sort_order        Orders response by fields. (e.g. sort_order=created_at).
-  #                     [List]      id
-  #                     [List]      begin_at
-  #                     [List]      end_at
-  #                     [List]      created_at
+  # @parameter sort_order [enum<id,begin_at,end_at,created_at>]  Orders response by fields. (e.g. sort_order=created_at).
   # @parameter sort_descending    [boolean]     Reverse order of sort_order sorting, make it descending.
   # @parameter begin_at_greater   [date]        Filters response to include only items with begin_at >= specified timestamp (e.g. begin_at_greater=2012-02-15T02:06:56Z).
   # @parameter begin_at_less      [date]        Filters response to include only items with begin_at <= specified timestamp (e.g. begin_at_less=2012-02-15T02:06:56Z).

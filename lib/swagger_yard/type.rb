@@ -2,13 +2,20 @@ module SwaggerYard
   class Type
     def self.from_type_list(types)
       parts = types.first.split(/[<>]/)
-      new(parts.last, parts.grep(/array/i).any?)
+      args = [parts.last]
+      case parts.first
+      when /^array$/i
+        args << true
+      when /^enum$/i
+        args = [nil, false, parts.last.split(/[,|]/)]
+      end if parts.size > 1
+      new(*args)
     end
 
-    attr_reader :name, :array
+    attr_reader :name, :array, :enum
 
-    def initialize(name, array=false)
-      @name, @array = name, array
+    def initialize(name, array = false, enum = nil)
+      @name, @array, @enum = name, array, enum
     end
 
     # TODO: have this look at resource listing?
@@ -21,6 +28,7 @@ module SwaggerYard
     end
 
     alias :array? :array
+    alias :enum? :enum
 
     def json_type
       type, format = name, nil
@@ -41,6 +49,8 @@ module SwaggerYard
     def to_h
       type = if ref?
         { "$ref" => "#/definitions/#{name}"}
+      elsif enum?
+        { "type" => "string", "enum" => @enum }
       else
         json_type
       end

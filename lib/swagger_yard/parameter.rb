@@ -1,7 +1,7 @@
 module SwaggerYard
   class Parameter
     attr_accessor :name, :description
-    attr_reader :param_type, :required, :allow_multiple, :allowable_values
+    attr_reader :param_type, :required, :allow_multiple
 
     def self.from_yard_tag(tag, operation)
       description = tag.text
@@ -38,20 +38,10 @@ module SwaggerYard
       @required = options[:required] || false
       @param_type = options[:param_type] || 'query'
       @allow_multiple = options[:allow_multiple] || false
-      @allowable_values = options[:allowable_values] || []
     end
 
     def type
       @type.name
-    end
-
-    def allowable_values_hash
-      return nil if allowable_values.empty?
-
-      {
-        "valueType" => "LIST",
-        "values" => allowable_values
-      }
     end
 
     def to_h
@@ -60,9 +50,6 @@ module SwaggerYard
         "required"    => required,
         "in"          => param_type
       }.tap do |h|
-        if !Array(allowable_values).empty?
-          h["enum"] = allowable_values
-        end
         if h["in"] == "body"
           h["schema"] = @type.to_h
         else

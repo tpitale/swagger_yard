@@ -57,6 +57,19 @@ RSpec.describe SwaggerYard::Swagger do
     its(["post", "parameters"]) { are_expected.to include(a_parameter_named("pet")) }
   end
 
+  context "#/paths//transports" do
+    subject { swagger["paths"]["/transports"] }
+
+    its(["get", "parameters"]) { are_expected.to include(a_parameter_named("sort")) }
+
+    it 'has a sort query parameter containing an enum' do
+      param = subject["get"]["parameters"].detect {|p| p["name"] = "sort" }
+      expect(param["enum"]).to eq(["id", "wheels"])
+      expect(param["type"]).to eq("string")
+      expect(param["in"]).to eq("query")
+    end
+  end
+
   context "#/definitions" do
     subject(:definitions) { swagger["definitions"] }
 

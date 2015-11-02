@@ -8,6 +8,7 @@
 class TransportsController < ApplicationController
   # return a list of Transports
   # @path [GET] /transports
+  # @parameter sort [enum<id,wheels>]  Transports response sort order. (e.g. sort=id).
   # @response_type [Array<Transport>]
   def index
   end

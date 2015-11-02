@@ -4,8 +4,6 @@ module SwaggerYard
     attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
     attr_reader :parameters, :model_names
 
-    PARAMETER_LIST_REGEX = /\A\[(\w*)\]\s*(\w*)(\(required\))?\s*(.*)\n([.\s\S]*)\Z/
-
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, api)
       new(api).tap do |operation|
@@ -17,8 +15,6 @@ module SwaggerYard
             operation.add_path_params_and_method(tag)
           when "parameter"
             operation.add_parameter(tag)
-          when "parameter_list"
-            operation.add_parameter_list(tag)
           when "response_type"
             operation.add_response_type(Type.from_type_list(tag.types), tag.text)
           when "error_message"
@@ -104,26 +100,7 @@ module SwaggerYard
     end
 
     ##
-    # Example: [String]    sort_order  Orders ownerships by fields. (e.g. sort_order=created_at)
-    #          [List]      id              
-    #          [List]      begin_at        
-    #          [List]      end_at          
-    #          [List]      created_at      
-    def add_parameter_list(tag)
-      # TODO: switch to using Parameter.from_yard_tag
-      data_type, name, required, description, list_string = parse_parameter_list(tag)
-      allowable_values = parse_list_values(list_string)
-
-      @parameters << Parameter.new(name, Type.new(data_type.downcase), description, {
-        required: !!required,
-        param_type: "query",
-        allow_multiple: false,
-        allowable_values: allowable_values
-      })
-    end
-
-    ##
-    # Exaample:
+    # Example:
     # @response_type [Ownership] the requested ownership
     def add_response_type(type, desc)
       model_names << type.model_name
@@ -150,14 +127,6 @@ module SwaggerYard
     private
     def parse_path_params(path)
       path.scan(/\{([^\}]+)\}/).flatten
-    end
-
-    def parse_parameter_list(tag)
-      tag.text.match(PARAMETER_LIST_REGEX).captures
-    end
-
-    def parse_list_values(list_string)
-      list_string.split("[List]").map(&:strip).reject { |string| string.empty? }
     end
   end
 end
