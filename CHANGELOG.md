@@ -1,4 +1,4 @@
-## SwaggerYard 0.2.2
+## SwaggerYard 0.3.0
 
 * Add `config.path_discovery_function` to be able to hook in logic from
   swagger_yard-rails to compute paths from the router
