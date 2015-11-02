@@ -7,7 +7,7 @@
 # 
 class TransportsController < ApplicationController
   # return a list of Transports
-  # @path [GET] /transports.{format_type}
+  # @path [GET] /transports
   # @response_type [Array<Transport>]
   def index
   end

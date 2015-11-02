@@ -53,7 +53,7 @@ class Accounts::OwnershipsController < ActionController::Base
   #
   # Status can be -1(Deleted), 0(Inactive), 1(Active), 2(Expired) and 3(Cancelled).
   #
-  # @path [GET] /accounts/ownerships.{format_type}
+  # @path [GET] /accounts/ownerships
   #
   # @parameter offset   [integer]               Used for pagination of response data (default: 25 items per response). Specifies the offset of the next block of data to receive.
   # @parameter status   [array<string>]                 Filter by status. (e.g. status[]=1&status[]=2&status[]=3).
@@ -75,7 +75,7 @@ class Accounts::OwnershipsController < ActionController::Base
   ##
   # Returns an ownership for an account by id
   # 
-  # @path [GET] /accounts/ownerships/{id}.{format_type}
+  # @path [GET] /accounts/ownerships/{id}
   # @response_type [Ownership]
   # @error_message [EmptyOwnership] 404 Ownership not found
   # @error_message 400 Invalid ID supplied

@@ -8,13 +8,13 @@ describe SwaggerYard::Api do
     subject(:api) {SwaggerYard::Api.from_yard_object(yard_object, api_declaration)}
 
     context "from yard object" do
-      let(:tags) { [stub(tag_name: "path", types: ["GET"], text: "/accounts/ownerships.{format_type}")] }
+      let(:tags) { [stub(tag_name: "path", types: ["GET"], text: "/accounts/ownerships")] }
 
       before(:each) do
         yard_object.stubs(:tags).returns(tags)
       end
 
-      its(:path) { is_expected.to eq("/accounts/ownerships.{format_type}") }
+      its(:path) { is_expected.to eq("/accounts/ownerships") }
     end
 
     context "with dynamic path discovery" do

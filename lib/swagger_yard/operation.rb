@@ -29,7 +29,6 @@ module SwaggerYard
         end
 
         operation.sort_parameters
-        operation.append_format_parameter
       end
     end
 
@@ -84,8 +83,8 @@ module SwaggerYard
     end
 
     ##
-    # Example: [GET] /api/v2/ownerships.{format_type}
-    # Example: [PUT] /api/v1/accounts/{account_id}.{format_type}
+    # Example: [GET] /api/v2/ownerships
+    # Example: [PUT] /api/v1/accounts/{account_id}
     def add_path_params_and_method(tag)
       @path = tag.text
       @http_method = tag.types.first
@@ -144,17 +143,13 @@ module SwaggerYard
       @parameters.sort_by! {|p| p.name}
     end
 
-    def append_format_parameter
-      @parameters << format_parameter
-    end
-
     def ref?(data_type)
       @api.ref?(data_type)
     end
 
     private
     def parse_path_params(path)
-      path.scan(/\{([^\}]+)\}/).flatten.reject { |value| value == "format_type" }
+      path.scan(/\{([^\}]+)\}/).flatten
     end
 
     def parse_parameter_list(tag)
@@ -163,15 +158,6 @@ module SwaggerYard
 
     def parse_list_values(list_string)
       list_string.split("[List]").map(&:strip).reject { |string| string.empty? }
-    end
-
-    def format_parameter
-      Parameter.new("format_type", Type.new("string"), "Response format either JSON or XML", {
-        required: true,
-        param_type: "path",
-        allow_multiple: false,
-        allowable_values: ["json", "xml"]
-      })
     end
   end
 end
