@@ -117,7 +117,7 @@ end
 To then use your `Model` in your `Controller` documentation, add `@parameter`s:
 
 ```ruby
-# @parameter [Pet] pet The pet object
+# @parameter pet(body) [Pet] The pet object
 ```
 
 ## Authorization ##
