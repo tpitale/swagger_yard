@@ -157,6 +157,7 @@ To generate JSON from your code on request, checkout the [swagger_yard-rails](ht
 
 ## Current Parsing "Tree" Structure ##
 
+```
 ResourceListing
 |
 -> ApiDeclaration (controller)
@@ -172,6 +173,7 @@ ResourceListing
 -> Model (model)
   |
   -> Properties (model attributes)
+```
 
 ### Path Discovery Function ##
 
