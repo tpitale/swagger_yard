@@ -1,4 +1,4 @@
-# SwaggerYard #
+# SwaggerYard [![Build Status](https://travis-ci.org/tpitale/swagger_yard.svg?branch=master)](https://travis-ci.org/tpitale/swagger_yard) #
 
 SwaggerYard is a gem to convert extended YARD syntax comments into the swagger spec compliant json format.
 
