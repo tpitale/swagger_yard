@@ -4,9 +4,18 @@
   swagger_yard-rails to compute paths from the router
 * Allow `@resource_path` to be omitted in a controller class docstring.
   `@resource` is required in order to indicate that a controller is swaggered.
-* Remove implicit, undocumented `format_type` parameter.
-* Remove @notes tag. There is no convenient place for notes to be mapped to a
+* Remove `@notes` tag. There is no convenient place for notes to be mapped to a
   swagger spec other than to be part of the API's description.
+* Remove `@parameter_list` tag in favor of new `enum<val1,val2>` type. Parameter
+  list usage was cumbersome and not well documented. This also enabled removal
+  of the Parameter class `allowable_values` option, which was no longer used.
+* Remove implicit, undocumented `format_type` parameter. If you still need a
+  format (or `format_type`) parameter, use the new `enum` type. Example:
+```
+# @path /hello.{format}
+# @parameter format [enum<json,xml>] Format of the response. One of JSON or XML.
+```
+* Deprecate `config.swagger_spec_base_path` and `config.api_path`. Not used anywhere.
 
 ## SwaggerYard 0.2.0 -- 20-10-2015 ##
 
