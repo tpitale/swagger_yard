@@ -1,7 +1,7 @@
 module SilenceLogger
   def self.included(base)
     base.before do
-      @logger = YARD::Logger.send :instance_variable_get, :@logger
+      @logger = YARD::Logger.instance
       YARD::Logger.send :instance_variable_set, :@logger, stub_everything
     end
 

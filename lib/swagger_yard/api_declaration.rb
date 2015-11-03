@@ -5,9 +5,9 @@ module SwaggerYard
 
     def initialize(resource_listing)
       @resource_listing = resource_listing
-
-      @apis   = {}
-      @authorizations = {}
+      @resource         = nil
+      @apis             = {}
+      @authorizations   = {}
     end
 
     def valid?

@@ -29,10 +29,11 @@ module SwaggerYard
     end
 
     def initialize(api)
-      @api = api
-      @description = ""
-      @parameters = []
-      @model_names = []
+      @api            = api
+      @summary        = nil
+      @description    = ""
+      @parameters     = []
+      @model_names    = []
       @error_messages = []
     end
 
