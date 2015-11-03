@@ -1,6 +1,7 @@
 module SwaggerYard
   class Operation
-    attr_accessor :description, :summary, :ruby_method
+    attr_accessor :description, :ruby_method
+    attr_writer :summary
     attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
     attr_reader :parameters, :model_names
 
@@ -42,7 +43,6 @@ module SwaggerYard
     end
 
     def to_h
-      method      = http_method.downcase
       params      = parameters.map(&:to_h)
       responses   = { "default" => { "description" => response_desc || summary } }
 

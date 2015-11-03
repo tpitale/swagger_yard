@@ -7,7 +7,7 @@ RSpec.describe SwaggerYard::Swagger do
 
   it "is valid" do
     errors = Apivore::Swagger.new(swagger).validate
-    puts *errors unless errors.empty?
+    puts(*errors) unless errors.empty?
     expect(errors).to be_empty
   end
 
