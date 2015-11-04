@@ -1,5 +1,4 @@
 # @resource Pet
-# @resource_path /pets
 #
 # This document describes the API for interacting with Pet resources
 #

@@ -1,6 +1,6 @@
 module SwaggerYard
   class ApiDeclaration
-    attr_accessor :description, :resource, :resource_path
+    attr_accessor :description, :resource
     attr_reader :apis, :authorizations
 
     def self.from_yard_object(yard_object)
@@ -40,7 +40,7 @@ module SwaggerYard
       end
 
       if tag = yard_object.tags.detect {|t| t.tag_name == "resource_path"}
-        @resource_path = tag.text.downcase
+        log.warn "DEPRECATED: @resource_path tag is obsolete."
       end
 
       # we only have api_key auth, the value for now is always empty array
