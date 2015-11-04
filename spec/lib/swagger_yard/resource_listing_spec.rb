@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'tempfile'
 
 RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
-  let(:filename) { Tempfile.new(['test_resource', '.rb']).path }
+  let(:filename) { (t = Tempfile.new(['test_resource', '.rb'])).path.tap { t.close! } }
   after { File.unlink filename }
 
   def resource_listing
