@@ -62,7 +62,10 @@ module SwaggerYard
 
       Dir[@controller_path].map do |file_path|
         SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-          ApiDeclaration.from_yard_object(self, obj)
+          obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
+            @authorizations << Authorization.from_yard_object(t)
+          end
+          ApiDeclaration.from_yard_object(obj)
         end
       end.flatten.select(&:valid?)
     end

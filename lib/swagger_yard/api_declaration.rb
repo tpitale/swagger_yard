@@ -3,12 +3,11 @@ module SwaggerYard
     attr_accessor :description, :resource, :resource_path
     attr_reader :apis, :authorizations
 
-    def self.from_yard_object(resource_listing, yard_object)
-      new(resource_listing).add_yard_object(yard_object)
+    def self.from_yard_object(yard_object)
+      new.add_yard_object(yard_object)
     end
 
-    def initialize(resource_listing)
-      @resource_listing = resource_listing
+    def initialize
       @resource         = nil
       @apis             = {}
       @authorizations   = {}
@@ -49,11 +48,6 @@ module SwaggerYard
                              select {|t| t.tag_name == "authorize_with"}.
                              map(&:text).uniq.
                              map {|k| [k, []]}]
-
-      # HACK, requires knowledge of resource_listing
-      yard_object.tags.select {|t| t.tag_name == "authorization"}.each do |t|
-        @resource_listing.authorizations << Authorization.from_yard_object(t)
-      end
     end
 
     def add_api(yard_object)
