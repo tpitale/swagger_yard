@@ -10,7 +10,6 @@ require "swagger_yard/resource_listing"
 require "swagger_yard/api_declaration"
 require "swagger_yard/model"
 require "swagger_yard/api"
-require "swagger_yard/listing_info"
 require "swagger_yard/swagger"
 
 module SwaggerYard

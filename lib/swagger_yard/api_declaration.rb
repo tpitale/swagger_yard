@@ -21,8 +21,7 @@ module SwaggerYard
     def add_yard_object(yard_object)
       case yard_object.type
       when :class # controller
-        add_listing_info(ListingInfo.new(yard_object))
-        add_authorizations_to_resource_listing(yard_object)
+        add_info(yard_object)
         if valid?
           yard_object.children.each do |child_object|
             add_yard_object(child_object)
@@ -34,13 +33,27 @@ module SwaggerYard
       self
     end
 
-    def add_listing_info(listing_info)
-      @description   = listing_info.description
-      @resource      = listing_info.resource
-      @resource_path = listing_info.resource_path # required for valid? but nothing else
+    def add_info(yard_object)
+      @description = yard_object.docstring
+
+      if tag = yard_object.tags.detect {|t| t.tag_name == "resource"}
+        @resource = tag.text
+      end
+
+      if tag = yard_object.tags.detect {|t| t.tag_name == "resource_path"}
+        @resource_path = tag.text.downcase
+      end
 
       # we only have api_key auth, the value for now is always empty array
-      @authorizations = Hash[listing_info.authorizations.uniq.map {|k| [k, []]}]
+      @authorizations = Hash[yard_object.tags.
+                             select {|t| t.tag_name == "authorize_with"}.
+                             map(&:text).uniq.
+                             map {|k| [k, []]}]
+
+      # HACK, requires knowledge of resource_listing
+      yard_object.tags.select {|t| t.tag_name == "authorization"}.each do |t|
+        @resource_listing.authorizations << Authorization.from_yard_object(t)
+      end
     end
 
     def add_api(yard_object)
@@ -50,13 +63,6 @@ module SwaggerYard
 
       api = (apis[path] ||= Api.from_yard_object(yard_object, self))
       api.add_operation(yard_object)
-    end
-
-    # HACK, requires knowledge of resource_listing
-    def add_authorizations_to_resource_listing(yard_object)
-      yard_object.tags.select {|t| t.tag_name == "authorization"}.each do |t|
-        @resource_listing.authorizations << Authorization.from_yard_object(t)
-      end
     end
 
     def apis_hash
