@@ -35,14 +35,13 @@ module SwaggerYard
 
     #
     # Use YARD to parse object tags from a file
-    # 
+    #
     # @param file_path [string] The complete path to file
     # @return [YARD] objects representing class/methods and tags from the file
-    # 
+    #
     def yard_objects_from_file(file_path)
-      ::YARD::Registry.clear
       ::YARD.parse(file_path)
-      ::YARD::Registry.all
+      ::YARD::Registry.all.select {|co| co.file == file_path }
     end
 
     ##
