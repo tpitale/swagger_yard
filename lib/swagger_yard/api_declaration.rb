@@ -3,6 +3,10 @@ module SwaggerYard
     attr_accessor :description, :resource, :resource_path
     attr_reader :apis, :authorizations
 
+    def self.from_yard_object(resource_listing, yard_object)
+      new(resource_listing).add_yard_object(yard_object)
+    end
+
     def initialize(resource_listing)
       @resource_listing = resource_listing
       @resource         = nil
@@ -14,21 +18,20 @@ module SwaggerYard
       !@resource.nil?
     end
 
-    def add_yard_objects(yard_objects)
-      yard_objects.each do |yard_object|
-        add_yard_object(yard_object)
-      end
-      self
-    end
-
     def add_yard_object(yard_object)
       case yard_object.type
       when :class # controller
         add_listing_info(ListingInfo.new(yard_object))
         add_authorizations_to_resource_listing(yard_object)
+        if valid?
+          yard_object.children.each do |child_object|
+            add_yard_object(child_object)
+          end
+        end
       when :method # actions
         add_api(yard_object)
       end
+      self
     end
 
     def add_listing_info(listing_info)

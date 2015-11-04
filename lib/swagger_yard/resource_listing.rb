@@ -51,22 +51,20 @@ module SwaggerYard
       return [] unless @model_path
 
       Dir[@model_path].map do |file_path|
-        Model.from_yard_objects(SwaggerYard.yard_objects_from_file(file_path))
-      end.compact.select(&:valid?)
+        SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
+          Model.from_yard_object(obj)
+        end
+      end.flatten.compact.select(&:valid?)
     end
 
     def parse_controllers
       return [] unless @controller_path
 
       Dir[@controller_path].map do |file_path|
-        create_api_declaration(file_path)
-      end.select(&:valid?)
-    end
-
-    def create_api_declaration(file_path)
-      yard_objects = SwaggerYard.yard_objects_from_file(file_path)
-
-      ApiDeclaration.new(self).add_yard_objects(yard_objects)
+        SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
+          ApiDeclaration.from_yard_object(self, obj)
+        end
+      end.flatten.select(&:valid?)
     end
   end
 end
