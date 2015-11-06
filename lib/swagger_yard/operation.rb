@@ -39,7 +39,7 @@ module SwaggerYard
     end
 
     def summary
-      @summary || description.split("\n\n").first
+      @summary || description.split("\n\n").first || ""
     end
 
     def to_h

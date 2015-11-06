@@ -6,17 +6,9 @@ module SwaggerYard
   class Model
     attr_reader :id
 
-    def self.from_yard_objects(yard_objects)
-      from_yard_object(yard_objects.detect {|o| o.type == :class })
-    end
-
     def self.from_yard_object(yard_object)
-      from_tags(yard_object.tags) if yard_object
-    end
-
-    def self.from_tags(tags)
       new.tap do |model|
-        model.parse_tags(tags)
+        model.parse_tags(yard_object.tags)
       end
     end
 
