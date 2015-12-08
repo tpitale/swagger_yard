@@ -97,28 +97,6 @@ To then use your `Model` in your `Controller` documentation, add `@parameter`s:
 # @parameter [Pet] pet The pet object
 ```
 
-## Authorization ##
-
-Currently, SwaggerYard only supports API Key auth descriptions. Start by adding `@authorization` to your `ApplicationController`.
-
-```ruby
-#
-# @authorization [api_key] header X-APPLICATION-API-KEY
-#
-class ApplicationController < ActionController::Base
-end
-```
-
-Then you can use these authorizations from your controller or actions in a controller. The name comes from either header or query plus the name of the key downcased/underscored.
-
-```ruby
-#
-# @authorize_with header_x_application_api_key
-#
-class PetController < ApplicationController
-end
-```
-
 ![Web UI](https://raw.github.com/tpitale/swagger_yard/master/example/web-ui.png)
 
 ## Seeing the Swagger JSON ##
