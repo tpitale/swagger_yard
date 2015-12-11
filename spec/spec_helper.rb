@@ -25,4 +25,5 @@ RSpec.configure do |config|
   config.order = 'random'
 
   config.include SaveConfig
+  config.include YARDHelpers
 end
