@@ -8,14 +8,15 @@ module SwaggerYard
     def self.from_tag(tag)
       name, options_string = tag.name.split(/[\(\)]/)
 
-      required = options_string.to_s.split(',').map(&:strip).include?('required')
+      options = options_string.to_s.split(',').map(&:strip)
 
-      new(name, tag.types, tag.text, required)
+      new(name, tag.types, tag.text, options)
     end
 
-    def initialize(name, types, description, required)
-      @name, @description, @required = name, description, required
-
+    def initialize(name, types, description, options)
+      @name, @description = name, description
+      @required = options.include?('required')
+      @nullable = options.include?('nullable')
       @type = Type.from_type_list(types)
     end
 
@@ -26,6 +27,12 @@ module SwaggerYard
     def to_h
       @type.to_h.tap do |h|
         h["description"] = description if description
+        if @nullable
+          h["x-nullable"] = true
+          if h["type"]
+            h["type"] = [h["type"], "null"]
+          end
+        end
       end
     end
   end
