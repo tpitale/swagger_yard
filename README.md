@@ -34,9 +34,16 @@ Types of things (parameters or responses of an operation, properties of a model)
 are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
 
 - Model references should be Capitalized or CamelCased by convention.
-- Basic types (integer, boolean, string, etc) should be lowercased.
+- Basic types (integer, boolean, string, object, number, date, time, date-time,
+  uuid, etc.) should be lowercased.
 - An array of models or basic types is specified with `[array<...>]`.
 - An enum of allowed string values is specified with `[enum<one,two,three>]`.
+- JSON-Schema `format` attributes can be specified for basic types using
+  `<...>`. For example, `[integer<int64>]` produces JSON
+  `{ "type": "integer", "format": "int64" }`.
+- Regex pattern constraints can be specified for strings using
+  `[regex<PATTERN>]`. For example, `[regex<^.{3}$>]` produces JSON
+  `{ "type": "string", "pattern": "^.{3}$" }`.
 
 ### Options ###
 
@@ -46,11 +53,13 @@ following the parameter or property name.
 Examples:
 
 	# @parameter name(required) [string]  Name of the package
+	# @parameter age(nullable)  [integer] Age of package
 	# @parameter package(body)  [Package] Package object
 
 Possible parameters include:
 
 - `required`: indicates a required parameter or property.
+- `nullable`: indicates that JSON `null` is an allowed value for the property.
 - `multiple`: indicates a parameter may appear multiple times (usually in a
   query string, e.g., `param=a&param=b&param=c`)
 - `body`/`query`/`path`/`formData`: Indicates where the parameter is located.
