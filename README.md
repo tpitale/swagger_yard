@@ -203,4 +203,4 @@ end
 In [swagger_yard-rails][], this hook is used to set a function that inspects the
 Rails routing tables to reverse look up and compute paths.
 
-[swagger_yard-rails]: https://github.com/tpitale/swagger-yard_rails
+[swagger_yard-rails]: https://github.com/tpitale/swagger_yard-rails
