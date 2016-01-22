@@ -1,2 +1,0 @@
-* Chris Trinh
-* Tony Pitale

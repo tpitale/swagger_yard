@@ -1,4 +1,4 @@
-# SwaggerYard [![Build Status](https://travis-ci.org/tpitale/swagger_yard.svg?branch=master)](https://travis-ci.org/tpitale/swagger_yard) #
+# SwaggerYard [![Build Status](https://travis-ci.org/livingsocial/swagger_yard.svg?branch=master)](https://travis-ci.org/tpitale/swagger_yard) #
 
 SwaggerYard is a gem to convert extended YARD syntax comments into the swagger spec compliant json format.
 
@@ -155,12 +155,12 @@ end
 
 We suggest using something like [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3) for your UI needs inside of Rails.
 
-To generate JSON from your code on request, checkout the [swagger_yard-rails](https://github.com/tpitale/swagger_yard-rails) project. This provides an engine to parse and render the json required for use by swagger-ui_rails.
+To generate JSON from your code on request, checkout the [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails) project. This provides an engine to parse and render the json required for use by swagger-ui_rails.
 
 ## More Information ##
 
 * [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
-* [swagger_yard-rails](https://github.com/tpitale/swagger_yard-rails)
+* [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails)
 * [Swagger-spec version 2.0](https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md)
 * [Yard](https://github.com/lsegal/yard)
 
@@ -203,4 +203,4 @@ end
 In [swagger_yard-rails][], this hook is used to set a function that inspects the
 Rails routing tables to reverse look up and compute paths.
 
-[swagger_yard-rails]: https://github.com/tpitale/swagger_yard-rails
+[swagger_yard-rails]: https://github.com/livingsocial/swagger_yard-rails

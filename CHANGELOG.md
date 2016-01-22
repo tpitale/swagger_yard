@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.3.2 ##
+
+* Repository moved under `livingsocial` organization.
+
 ## 0.3.1 ##
 
 * Use hashing functionality of YARD registry to avoid re-parsing files that

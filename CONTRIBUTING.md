@@ -20,7 +20,7 @@ Make your change. Add tests for your change. Make the tests pass:
 
 Push to your fork and [submit a pull request][pr].
 
-[pr]: https://github.com/tpitale/swagger_yard/compare/
+[pr]: https://github.com/livingsocial/swagger_yard/compare/
 
 At this point you're waiting on us. We may suggest some changes or improvements or alternatives.
 
