@@ -1,7 +1,9 @@
 # SwaggerYard Changelog #
 
-## 0.3.2 ##
+## 0.3.2 -- 22-01-2016 ##
 
+* Ensure only one parameter object for each declared name
+* Mangle model names such that only alphanumeric and '_' are allowed
 * Repository moved under `livingsocial` organization.
 
 ## 0.3.1 ##
