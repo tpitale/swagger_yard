@@ -83,7 +83,7 @@ module SwaggerYard
       @http_method = tag.types.first
 
       parse_path_params(tag.text).each do |name|
-        @parameters << Parameter.from_path_param(name)
+        add_or_update_parameter Parameter.from_path_param(name)
       end
     end
 
@@ -93,7 +93,18 @@ module SwaggerYard
     # Example: [Array]     status(required, body)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Integer]   media[media_type_id]                          ID of the desired media type.
     def add_parameter(tag)
-      @parameters << Parameter.from_yard_tag(tag, self)
+      add_or_update_parameter Parameter.from_yard_tag(tag, self)
+    end
+
+    def add_or_update_parameter(parameter)
+      if existing = @parameters.detect {|param| param.name == parameter.name }
+        existing.description    = parameter.description unless parameter.from_path?
+        existing.param_type     = parameter.param_type if parameter.from_path?
+        existing.required     ||= parameter.required
+        existing.allow_multiple = parameter.allow_multiple
+      else
+        @parameters << parameter
+      end
     end
 
     ##

@@ -1,7 +1,6 @@
 module SwaggerYard
   class Parameter
-    attr_accessor :name, :description
-    attr_reader :param_type, :required, :allow_multiple
+    attr_accessor :name, :description, :param_type, :required, :allow_multiple
 
     def self.from_yard_tag(tag, operation)
       description = tag.text
@@ -28,7 +27,8 @@ module SwaggerYard
       new(name, Type.new("string"), "Scope response to #{name}", {
         required: true,
         allow_multiple: false,
-        param_type: "path"
+        param_type: "path",
+        from_path: true
       })
     end
 
@@ -38,6 +38,11 @@ module SwaggerYard
       @required = options[:required] || false
       @param_type = options[:param_type] || 'query'
       @allow_multiple = options[:allow_multiple] || false
+      @from_path      = options[:from_path] || false
+    end
+
+    def from_path?
+      @from_path
     end
 
     def to_h

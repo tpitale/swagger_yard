@@ -1,6 +1,6 @@
 hash_like_named = proc do |name|
   match do |actual|
-    actual['name'] == name
+    actual.to_h['name'] == name
   end
 
   diffable
