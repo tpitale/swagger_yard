@@ -24,7 +24,7 @@ module SwaggerYard
       tags.each do |tag|
         case tag.tag_name
         when "model"
-          @id = tag.text
+          @id = tag.text.gsub(/[^[:alnum:]_]+/, '_')
         when "property"
           @properties << Property.from_tag(tag)
         end
