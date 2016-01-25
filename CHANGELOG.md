@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.3.3 -- 25-01-2016 ##
+
+* Need to mangle type names for consistency
+
 ## 0.3.2 -- 22-01-2016 ##
 
 * Ensure only one parameter object for each declared name
