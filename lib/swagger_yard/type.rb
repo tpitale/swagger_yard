@@ -25,7 +25,7 @@ module SwaggerYard
     attr_reader :name, :array, :enum
 
     def initialize(name, options = {})
-      @name    = name
+      @name    = Model.mangle(name) if name
       @array   = options[:array]
       @enum    = options[:enum]
       @format  = options[:format]

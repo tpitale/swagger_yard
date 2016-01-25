@@ -12,6 +12,10 @@ module SwaggerYard
       end
     end
 
+    def self.mangle(name)
+      name.gsub(/[^[:alnum:]_]+/, '_')
+    end
+
     def initialize
       @properties = []
     end
@@ -24,7 +28,7 @@ module SwaggerYard
       tags.each do |tag|
         case tag.tag_name
         when "model"
-          @id = tag.text.gsub(/[^[:alnum:]_]+/, '_')
+          @id = Model.mangle(tag.text)
         when "property"
           @properties << Property.from_tag(tag)
         end
