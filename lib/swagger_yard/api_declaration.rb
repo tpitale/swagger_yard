@@ -1,7 +1,7 @@
 module SwaggerYard
   class ApiDeclaration
     attr_accessor :description, :resource
-    attr_reader :apis, :authorizations
+    attr_reader :apis, :authorizations, :class_name
 
     def self.from_yard_object(yard_object)
       new.add_yard_object(yard_object)
@@ -34,6 +34,7 @@ module SwaggerYard
 
     def add_info(yard_object)
       @description = yard_object.docstring
+      @class_name  = yard_object.path
 
       if tag = yard_object.tags.detect {|t| t.tag_name == "resource"}
         @resource = tag.text

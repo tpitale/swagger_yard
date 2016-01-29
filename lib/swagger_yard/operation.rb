@@ -59,18 +59,29 @@ module SwaggerYard
         end
       end
 
+      api_decl = @api.api_declaration
+
       {
-        "tags"        => [@api.api_declaration.resource].compact,
-        "operationId" => "#{@api.api_declaration.resource}-#{ruby_method}",
+        "tags"        => [api_decl.resource].compact,
+        "operationId" => "#{api_decl.resource}-#{ruby_method}",
         "parameters"  => params,
         "responses"   => responses,
       }.tap do |h|
         h["description"] = description unless description.empty?
         h["summary"]     = summary unless summary.empty?
 
-        authorizations = @api.api_declaration.authorizations
+        authorizations = api_decl.authorizations
         unless authorizations.empty?
           h["security"] = authorizations.map {|k,v| { k => v} }
+        end
+
+        # Rails controller/action: if constantize/controller_path methods are
+        # unavailable or constant is not defined, catch exception and skip these
+        # attributes.
+        begin
+          h["x-controller"] = api_decl.class_name.constantize.controller_path
+          h["x-action"]     = ruby_method
+        rescue NameError, NoMethodError
         end
       end
     end
