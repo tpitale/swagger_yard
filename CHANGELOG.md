@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.3.4 -- 29-01-2016 ##
+
+* Annotate operation with `x-controller` and `x-action` attributes
+
 ## 0.3.3 -- 25-01-2016 ##
 
 * Need to mangle type names for consistency
