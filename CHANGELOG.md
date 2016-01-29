@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.3.5 -- 29-01-2016 ##
+
+* Ensure controller and action attributes are strings
+
 ## 0.3.4 -- 29-01-2016 ##
 
 * Annotate operation with `x-controller` and `x-action` attributes
