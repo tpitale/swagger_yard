@@ -79,8 +79,8 @@ module SwaggerYard
         # unavailable or constant is not defined, catch exception and skip these
         # attributes.
         begin
-          h["x-controller"] = api_decl.class_name.constantize.controller_path
-          h["x-action"]     = ruby_method
+          h["x-controller"] = api_decl.class_name.constantize.controller_path.to_s
+          h["x-action"]     = ruby_method.to_s
         rescue NameError, NoMethodError
         end
       end
