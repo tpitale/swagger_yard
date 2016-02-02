@@ -11,6 +11,10 @@ RSpec.describe SwaggerYard::Swagger do
     expect(errors).to be_empty
   end
 
+  it "includes non-default ports in the host" do
+    expect(swagger["host"]).to eq("localhost:3000")
+  end
+
   context "#/paths" do
     subject { swagger["paths"] }
 
