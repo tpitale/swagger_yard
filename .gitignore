@@ -8,3 +8,4 @@ coverage
 Gemfile.lock
 pkg
 *.log
+*.swp
