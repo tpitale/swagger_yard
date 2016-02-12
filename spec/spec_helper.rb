@@ -5,6 +5,8 @@ end
 
 ENV["RAILS_ENV"] = "development"
 
+FIXTURE_PATH = Pathname.new(File.expand_path('../fixtures', __FILE__))
+
 require 'bundler/setup'
 Bundler.require
 

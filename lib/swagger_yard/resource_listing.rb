@@ -7,8 +7,8 @@ module SwaggerYard
     end
 
     def initialize(controller_path, model_path)
-      @model_path = model_path
-      @controller_path = controller_path
+      @model_paths = [*model_path].compact
+      @controller_paths = [*controller_path].compact
 
       @resource_to_file_path = {}
       @authorizations = []
@@ -47,25 +47,26 @@ module SwaggerYard
     end
 
     private
-    def parse_models
-      return [] unless @model_path
 
-      Dir[@model_path].map do |file_path|
-        SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-          Model.from_yard_object(obj)
+    def parse_models
+      @model_paths.map do |model_path|
+        Dir[model_path.to_s].map do |file_path|
+          SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
+            Model.from_yard_object(obj)
+          end
         end
       end.flatten.compact.select(&:valid?)
     end
 
     def parse_controllers
-      return [] unless @controller_path
-
-      Dir[@controller_path].map do |file_path|
-        SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-          obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
-            @authorizations << Authorization.from_yard_object(t)
+      @controller_paths.map do |controller_path|
+        Dir[controller_path.to_s].map do |file_path|
+          SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
+            obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
+              @authorizations << Authorization.from_yard_object(t)
+            end
+            ApiDeclaration.from_yard_object(obj)
           end
-          ApiDeclaration.from_yard_object(obj)
         end
       end.flatten.select(&:valid?)
     end
