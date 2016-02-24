@@ -96,7 +96,7 @@ class Accounts::OwnershipsController < ActionController::Base
 
   ##
   # Returns an ownership for an account by id
-  # 
+  #
   # @path [GET] /accounts/ownerships/{id}
   # @response_type [Ownership]
   # @error_message [EmptyOwnership] 404 Ownership not found
@@ -127,6 +127,32 @@ To then use your `Model` in your `Controller` documentation, add `@parameter`s:
 
 ```ruby
 # @parameter pet(body) [Pet] The pet object
+```
+
+To support Swagger Polymorphism, use `@discriminator` and `@inherits`:
+
+```ruby
+#
+# @model Pet
+#
+# @property id(required)    [integer]   the identifier for the pet
+# @property name  [Array<string>]    the names for the pet
+# @property age   [integer]   the age of the pet
+# @property relatives(required) [Array<Pet>] other Pets in its family
+# @discriminator petType(required) [string] the type of pet
+#
+class Pet
+end
+
+#
+# @model Dog
+#
+# @inherits Pet
+#
+# @property packSize(required) [integer] the size of the pack the dog is from
+#
+class Dog < Pet
+end
 ```
 
 ## Authorization ##
@@ -178,7 +204,7 @@ ResourceListing
 |   -> Operation(s) (controller action with HTTP method)
 |     |
 |     -> Parameter(s) (action param)
-| 
+|
 -> Model (model)
   |
   -> Properties (model attributes)
