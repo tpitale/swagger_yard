@@ -14,6 +14,8 @@ module SwaggerYard
         when /^regexp?$/i
           name = 'string'
           options[:pattern] = parts.last
+        when /^object$/i
+          options[:object] = parts[1..-1]
         else
           name = parts.first
           options[:format] = parts.last
@@ -22,7 +24,7 @@ module SwaggerYard
       new(name, options)
     end
 
-    attr_reader :name, :array, :enum
+    attr_reader :name, :array, :enum, :object
 
     def initialize(name, options = {})
       @name    = Model.mangle(name) if name
@@ -30,6 +32,7 @@ module SwaggerYard
       @enum    = options[:enum]
       @format  = options[:format]
       @pattern = options[:pattern]
+      @object  = options[:object]
     end
 
     # TODO: have this look at resource listing?
@@ -43,6 +46,7 @@ module SwaggerYard
 
     alias :array? :array
     alias :enum? :enum
+    alias :object? :object
 
     def json_type
       type, format = name, @format
@@ -54,11 +58,11 @@ module SwaggerYard
         type = "string"
         format = name
       end
-      {}.tap do |h|
-        h["type"]   = type
-        h["format"] = format if format
-        h["pattern"] = @pattern if @pattern
-      end
+
+      hsh = { "type" => type }
+      hsh["format"] = format if format
+      hsh["pattern"] = @pattern if @pattern
+      hsh
     end
 
     def to_h
@@ -69,8 +73,14 @@ module SwaggerYard
       else
         json_type
       end
+
       if array?
         { "type" => "array", "items" => type }
+      elsif object?
+        {
+          "type" => "object",
+          "additionalProperties" => Type.from_type_list([object.join("<")]).to_h
+        }
       else
         type
       end

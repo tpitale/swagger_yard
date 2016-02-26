@@ -1,7 +1,11 @@
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 ENV["RAILS_ENV"] = "development"
+
+FIXTURE_PATH = Pathname.new(File.expand_path('../fixtures', __FILE__))
 
 require 'bundler/setup'
 Bundler.require
