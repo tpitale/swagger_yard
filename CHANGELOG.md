@@ -1,5 +1,13 @@
 # SwaggerYard Changelog #
 
+## 0.3.6 -- 26-02-2016 ##
+
+* PR #38 (thanks OpenGov and Tim Rodriguez)
+  * Add polymorphism support in models
+  * Add nested object support (map/dictionary functionality)
+  * Proper port support in `api_base_path`
+  * Support Arrays and Pathnames in model & controller path configs
+
 ## 0.3.5 -- 29-01-2016 ##
 
 * Ensure controller and action attributes are strings
