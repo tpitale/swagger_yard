@@ -7,7 +7,7 @@ module SwaggerYard
       if parts.size > 1
         case parts.first
         when /^array$/i
-          options[:array] = true
+          options[:array] = parts[1..-1]
         when /^enum$/i
           name = nil
           options[:enum] = parts.last.split(/[,|]/)
@@ -75,7 +75,7 @@ module SwaggerYard
       end
 
       if array?
-        { "type" => "array", "items" => type }
+        { "type" => "array", "items" => Type.from_type_list([array.join("<")]).to_h }
       elsif object?
         {
           "type" => "object",
