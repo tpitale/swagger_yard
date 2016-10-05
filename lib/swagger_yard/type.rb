@@ -7,7 +7,7 @@ module SwaggerYard
       if parts.size > 1
         case parts.first
         when /^array$/i
-          options[:array] = true
+          options[:array] = parts[1..-1]
         when /^enum$/i
           name = nil
           options[:enum] = parts.last.split(/[,|]/)
@@ -75,15 +75,33 @@ module SwaggerYard
       end
 
       if array?
-        { "type" => "array", "items" => type }
+        { "type" => "array", "items" => Type.from_type_list([array.join("<")]).to_h }
       elsif object?
-        {
-          "type" => "object",
-          "additionalProperties" => Type.from_type_list([object.join("<")]).to_h
-        }
+        parse_object
       else
         type
       end
+    end
+
+    def parse_object
+      properties = {}
+      additional = nil
+      type_hash  = { "type" => "object" }
+
+      object.join("<").split(/,\s?/).each do |item|
+        key, *rest = item.split(": ")
+
+        # TODO: Should we raise an error if more than one additional type?
+        if rest.empty?
+          additional = Type.from_type_list([key]).to_h
+        else
+          properties[key] = Type.from_type_list([rest.join(": ")]).to_h
+        end
+      end
+
+      type_hash["properties"] = properties unless properties.empty?
+      type_hash["additionalProperties"] = additional unless additional.nil?
+      type_hash
     end
   end
 end
