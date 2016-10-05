@@ -71,5 +71,18 @@ RSpec.describe SwaggerYard::Type do
         }
       })
     end
+
+    it 'handles object definitions with both properties and additionalProperties' do
+      expect(type('object<foo: string,bar: integer<int32>,string>').to_h).to eq({
+        "type" => "object",
+        "properties" => {
+          "foo" => { "type" => "string" },
+          "bar" => { "type" => "integer", "format" => "int32" }
+        },
+        "additionalProperties" => {
+          "type" => "string"
+        }
+      })
+    end
   end
 end
