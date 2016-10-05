@@ -77,13 +77,31 @@ module SwaggerYard
       if array?
         { "type" => "array", "items" => Type.from_type_list([array.join("<")]).to_h }
       elsif object?
-        {
-          "type" => "object",
-          "additionalProperties" => Type.from_type_list([object.join("<")]).to_h
-        }
+        parse_object
       else
         type
       end
+    end
+
+    def parse_object
+      properties = {}
+      additional = nil
+      type_hash  = { "type" => "object" }
+
+      object.join("<").split(/,\s?/).each do |item|
+        key, *rest = item.split(": ")
+
+        # TODO: Should we raise an error if more than one additional type?
+        if rest.empty?
+          additional = Type.from_type_list([key]).to_h
+        else
+          properties[key] = Type.from_type_list([rest.join(": ")]).to_h
+        end
+      end
+
+      type_hash["properties"] = properties unless properties.empty?
+      type_hash["additionalProperties"] = additional unless additional.nil?
+      type_hash
     end
   end
 end
