@@ -59,5 +59,17 @@ RSpec.describe SwaggerYard::Type do
         }
       })
     end
+
+    it 'handles object definitions nested in an array' do
+      expect(type('array<object<string>>').to_h).to eq({
+        "type" => "array",
+        "items" => {
+          "type" => "object",
+          "additionalProperties" => {
+            "type" => "string"
+          }
+        }
+      })
+    end
   end
 end
