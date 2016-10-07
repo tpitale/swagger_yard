@@ -115,6 +115,12 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { expect_json_schema 'object' => { "type" => "object" } }
 
+    it { expect_json_schema 'Object' => { "type" => "object" } }
+
+    it { expect_json_schema 'array' => { "type" => "array", "items" => { "type" => "string" } } }
+
+    it { expect_json_schema 'Array' => { "type" => "array", "items" => { "type" => "string" } } }
+
     ["float", "double"].each do |t|
       it { expect_json_schema t => { "type" => "number", "format" => t } }
     end
@@ -141,9 +147,13 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { expect_json_schema 'array<string>' => { "type" => "array", "items" => { "type" => "string" } } }
 
+    it { expect_json_schema 'Array<string>' => { "type" => "array", "items" => { "type" => "string" } } }
+
     it { expect_json_schema 'array<Foo::Bar>' => { "type" => "array", "items" => { "$ref" => "#/definitions/Foo_Bar" } } }
 
     it { expect_json_schema 'enum<one>' => { "type" => "string", "enum" => %w(one) } }
+
+    it { expect_json_schema 'Enum<one>' => { "type" => "string", "enum" => %w(one) } }
 
     it { expect_json_schema 'enum<one,two,three>' => { "type" => "string", "enum" => %w(one two three) } }
 

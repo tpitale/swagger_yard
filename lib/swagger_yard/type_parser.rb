@@ -8,6 +8,12 @@ module SwaggerYard
         space >> str(arg) >> space
       end
 
+      def stri(str)
+        key_chars = str.split(//)
+        key_chars.collect! { |char| match["#{char.upcase}#{char.downcase}"] }.
+          reduce(:>>)
+      end
+
       rule(:space)      { match[" \n"].repeat }
 
       rule(:id_char)    { match['-a-zA-Z0-9_'].repeat }
@@ -18,20 +24,20 @@ module SwaggerYard
 
       rule(:identifier) { name >> (str('::') >> name).repeat }
 
-      rule(:regexp)     { str('regex') >> str('p').maybe >> space >>
+      rule(:regexp)     { stri('regex') >> match['Pp'].maybe >> space >>
                           str('<') >> (str('\\\\') | str('\\>') | match['[^>]']).repeat.as(:regexp) >> str('>') }
 
       rule(:enum_list)  { name.as(:value) >> (spaced(',') >> name.as(:value)).repeat }
 
-      rule(:enum)       { str('enum') >> spaced('<') >> enum_list >> spaced('>') }
+      rule(:enum)       { stri('enum') >> spaced('<') >> enum_list >> spaced('>') }
 
-      rule(:array)      { str('array') >> spaced('<') >> type >> spaced('>') }
+      rule(:array)      { stri('array') >> spaced('<') >> type >> spaced('>') }
 
       rule(:pair)       { (name.as(:property) >> spaced(':') >> type.as(:type)).as(:pair) }
 
       rule(:pairs)      { pair >> (spaced(',') >> pair).repeat >> (spaced(',') >> type.as(:additional)).maybe }
 
-      rule(:object)     { str('object') >> spaced('<') >> (pairs | type.as(:additional)) >> spaced('>') }
+      rule(:object)     { stri('object') >> spaced('<') >> (pairs | type.as(:additional)) >> spaced('>') }
 
       rule(:formatted)  { name.as(:name) >> spaced('<') >> name.as(:format) >> spaced('>') }
 
@@ -49,6 +55,10 @@ module SwaggerYard
       rule(identifier: simple(:id)) do
         v = id.to_s
         case v
+        when /array/i
+          { 'type' => 'array', 'items' => { 'type' => 'string' } }
+        when /object/i
+          { 'type' => 'object' }
         when "float", "double"
           { 'type' => 'number', 'format' => v }
         when "date-time", "date", "time", "uuid"
@@ -91,7 +101,8 @@ module SwaggerYard
 
       rule(object: subtree(:properties)) do
         { 'type' => 'object' }.tap do |result|
-          props, additional = Array(properties).partition {|pr| pr['properties'] }
+          all_props = Array === properties ? properties : [properties]
+          props, additional = all_props.partition {|pr| pr['properties'] }
           props.each do |pr|
             result['properties'] = (result['properties'] || {}).merge(pr['properties'])
           end
