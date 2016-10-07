@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_runtime_dependency 'yard'
+  s.add_runtime_dependency 'parslet'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
