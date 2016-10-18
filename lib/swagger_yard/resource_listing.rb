@@ -43,7 +43,9 @@ module SwaggerYard
     end
 
     def security_objects
-      Hash[authorizations.map {|auth| [auth.name, auth.to_h]}]
+      SwaggerYard.config.security_definitions.merge(
+        Hash[authorizations.map {|auth| [auth.name, auth.to_h]}]
+      )
     end
 
     private
