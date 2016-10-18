@@ -6,6 +6,7 @@ module SwaggerYard
     attr_accessor :enable, :reload
     attr_accessor :controller_path, :model_path
     attr_accessor :path_discovery_function
+    attr_accessor :security_definitions
 
     def initialize
       self.swagger_version = "2.0"
@@ -14,6 +15,7 @@ module SwaggerYard
       self.reload = true
       self.title = "Configure title with SwaggerYard.config.title"
       self.description = "Configure description with SwaggerYard.config.description"
+      self.security_definitions = {}
     end
 
     def swagger_spec_base_path=(ignored)
