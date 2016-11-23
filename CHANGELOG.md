@@ -6,7 +6,7 @@
   * Add the `parslet` gem for type parsing inline definitions of arrays, enums, objects, etc.
   * making it possible to nest object definitions, defining their properties and additional properties at the same time / inline
   * updating README with descriptions of the `object` definition and nesting syntax.
-  * also, bumping Ruby version to 2.3.0
+* Also, bumping Ruby version to 2.3.3
 * PR #43 (thanks Ole Michaelis)
   * Add support for configuring OAuth security definitions
 
