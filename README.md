@@ -156,8 +156,9 @@ end
 ```
 
 ## Authorization ##
+### API Key auth ###
 
-Currently, SwaggerYard only supports API Key auth descriptions. Start by adding `@authorization` to your `ApplicationController`.
+SwaggerYard supports API Key auth descriptions. Start by adding `@authorization` to your `ApplicationController`.
 
 ```ruby
 #
@@ -173,6 +174,28 @@ Then you can use these authorizations from your controller or actions in a contr
 #
 # @authorize_with header_x_application_api_key
 #
+class PetController < ApplicationController
+end
+```
+
+### Custom security definitions (OAuth2) ###
+
+Additionally SwaggerYard also supports custom [security definitions](http://swagger.io/specification/#securityDefinitionsObject). You can define these in your configuration like:
+
+```ruby
+SwaggerYard.configure do |config|
+  config.security_definitions['petstore_oauth'] = {
+    type: "oauth2",
+    authorizationUrl: "http://swagger.io/api/oauth/dialog",
+    flow: :implicit
+  }
+end
+```
+
+Then you can also use these authorizations from your controller or actions in a controller.
+
+```ruby
+# @authorize_with petstore_oauth
 class PetController < ApplicationController
 end
 ```
