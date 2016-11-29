@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'apivore'
+  # TODO: Drop this dependency when we drop 1.9 support
+  s.add_development_dependency 'addressable', "<= 2.4.0"
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'bourne'
