@@ -38,6 +38,8 @@ are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
   uuid, etc.) should be lowercased.
 - An array of models or basic types is specified with `[array<...>]`.
 - An enum of allowed string values is specified with `[enum<one,two,three>]`.
+- An object definition can include the property definitions of its fields, and / or of an additional property for any remaining allowed fields. E.g., `[object<name: string, age: integer,  string >]`
+- Structured data like objects, arrays, pairs, etc., definitions can also be nested; E.g., `[object<pairs:array<object<right:integer,left:integer>>>]`
 - JSON-Schema `format` attributes can be specified for basic types using
   `<...>`. For example, `[integer<int64>]` produces JSON
   `{ "type": "integer", "format": "int64" }`.

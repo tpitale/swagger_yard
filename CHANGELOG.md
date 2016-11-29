@@ -1,5 +1,15 @@
 # SwaggerYard Changelog #
 
+## 0.3.7 -- 23-11-2016 ##
+
+* PR #40 (thanks Nick Sieger and Brad Lindsay)
+  * Add the `parslet` gem for type parsing inline definitions of arrays, enums, objects, etc.
+  * making it possible to nest object definitions, defining their properties and additional properties at the same time / inline
+  * updating README with descriptions of the `object` definition and nesting syntax.
+* Also, bumping Ruby version to 2.3.3
+* PR #43 (thanks Ole Michaelis)
+  * Add support for configuring OAuth security definitions
+
 ## 0.3.6 -- 26-02-2016 ##
 
 * PR #38 (thanks OpenGov and Tim Rodriguez)
