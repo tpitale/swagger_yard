@@ -6,6 +6,6 @@ rvm:
   - 2.2.5
   - 2.3.3
 before_install:
-- rvm @global gem uninstall -aIx bundler
-- gem install bundler -v 1.10.6
+- rvm @global do gem uninstall -aIx bundler
+- rvm @global do gem install bundler -v 1.10.6
 script: bundle exec rake
