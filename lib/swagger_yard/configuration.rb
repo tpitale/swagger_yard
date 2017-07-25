@@ -7,6 +7,7 @@ module SwaggerYard
     attr_accessor :controller_path, :model_path
     attr_accessor :path_discovery_function
     attr_accessor :security_definitions
+    attr_accessor :include_private
 
     def initialize
       self.swagger_version = "2.0"
@@ -16,6 +17,7 @@ module SwaggerYard
       self.title = "Configure title with SwaggerYard.config.title"
       self.description = "Configure description with SwaggerYard.config.description"
       self.security_definitions = {}
+      self.include_private = false
     end
 
     def swagger_spec_base_path=(ignored)
