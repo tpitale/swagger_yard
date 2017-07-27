@@ -44,10 +44,10 @@ module SwaggerYard
 
     def to_h
       params      = parameters.map(&:to_h)
-      responses   = { "default" => { "description" => response_desc || summary } }
+      responses   = { SwaggerYard.config.response_type_default_code => { "description" => response_desc || summary } }
 
       if response_type
-        responses["default"]["schema"] = response_type.to_h
+        responses[SwaggerYard.config.response_type_default_code]["schema"] = response_type.to_h
       end
 
       unless error_messages.empty?

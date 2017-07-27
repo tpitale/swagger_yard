@@ -8,6 +8,7 @@ module SwaggerYard
     attr_accessor :path_discovery_function
     attr_accessor :security_definitions
     attr_accessor :include_private
+    attr_accessor :response_type_default_code
 
     def initialize
       self.swagger_version = "2.0"
@@ -18,6 +19,7 @@ module SwaggerYard
       self.description = "Configure description with SwaggerYard.config.description"
       self.security_definitions = {}
       self.include_private = false
+      self.response_type_default_code = "default"
     end
 
     def swagger_spec_base_path=(ignored)
