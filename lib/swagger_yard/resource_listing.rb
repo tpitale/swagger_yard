@@ -35,7 +35,7 @@ module SwaggerYard
 
     # Resources
     def tag_objects
-      controllers.map(&:to_tag)
+      controllers.sort {|a,b| a.resource.upcase <=> b.resource.upcase}.map(&:to_tag)
     end
 
     def model_objects
