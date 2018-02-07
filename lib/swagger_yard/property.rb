@@ -27,12 +27,7 @@ module SwaggerYard
     def to_h
       @type.to_h.tap do |h|
         h["description"] = description if description
-        if @nullable
-          h["x-nullable"] = true
-          if h["type"]
-            h["type"] = [h["type"], "null"]
-          end
-        end
+        h["nullable"] = true if @nullable
       end
     end
   end
