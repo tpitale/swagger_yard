@@ -59,4 +59,12 @@ RSpec.describe SwaggerYard::Operation do
     its(['x-controller']) { is_expected.to eq('my/hello') }
     its(['x-action'])     { is_expected.to eq('hello') }
   end
+
+  context "with a declared parameter that has no description" do
+    let(:tags) { [yard_tag("@path [GET] /hello/{message}"),
+                  yard_tag("@parameter name [string]")] }
+
+    its("parameters.last.name") { is_expected.to eq("name") }
+    its("parameters.last.description") { is_expected.to eq("name") }
+  end
 end
