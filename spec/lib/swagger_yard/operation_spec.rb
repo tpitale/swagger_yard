@@ -80,4 +80,12 @@ RSpec.describe SwaggerYard::Operation do
     its("parameters.last.name") { is_expected.to eq("body") }
     its("parameters.last.type.name") { is_expected.to eq("object") }
   end
+
+  context "with multiple path tags, ignores all but the first path" do
+    include SilenceLogger
+    let(:tags) { [yard_tag("@path [GET] /hello"),
+                  yard_tag("@path [POST] /hello2")] }
+    its("path") { is_expected.to eq('/hello') }
+    its("http_method") { is_expected.to eq('GET') }
+  end
 end

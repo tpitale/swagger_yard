@@ -90,6 +90,12 @@ module SwaggerYard
     # Example: [GET] /api/v2/ownerships
     # Example: [PUT] /api/v1/accounts/{account_id}
     def add_path_params_and_method(tag)
+      if @path && @http_method
+        YARD::Logger.instance.warn 'multiple path tags not supported: ' \
+          "ignored [#{tag.types.first}] #{tag.text}"
+        return
+      end
+
       @path = tag.text
       @http_method = tag.types.first
 
