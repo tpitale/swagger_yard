@@ -113,6 +113,9 @@ module SwaggerYard
         existing.param_type     = parameter.param_type if parameter.from_path?
         existing.required     ||= parameter.required
         existing.allow_multiple = parameter.allow_multiple
+      elsif parameter.param_type == 'body' && @parameters.detect {|param| param.param_type == 'body'}
+        YARD::Logger.instance.warn 'multiple body parameters invalid: ' \
+          "ignored #{parameter.name} for #{@api.api_declaration.class_name}##{ruby_method}"
       else
         @parameters << parameter
       end

@@ -61,10 +61,23 @@ RSpec.describe SwaggerYard::Operation do
   end
 
   context "with a declared parameter that has no description" do
-    let(:tags) { [yard_tag("@path [GET] /hello/{message}"),
+    let(:tags) { [yard_tag("@path [GET] /hello"),
                   yard_tag("@parameter name [string]")] }
 
+    its("parameters.count") { is_expected.to eq(1) }
     its("parameters.last.name") { is_expected.to eq("name") }
     its("parameters.last.description") { is_expected.to eq("name") }
+  end
+
+  context "with multiple body parameters, ignores all but the first one" do
+    include SilenceLogger
+
+    let(:tags) { [yard_tag("@path [GET] /hello"),
+                  yard_tag("@parameter body(body) [object]"),
+                  yard_tag("@parameter name(body) [string]")] }
+
+    its("parameters.count") { is_expected.to eq(1) }
+    its("parameters.last.name") { is_expected.to eq("body") }
+    its("parameters.last.type.name") { is_expected.to eq("object") }
   end
 end
