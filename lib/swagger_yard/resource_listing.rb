@@ -30,7 +30,9 @@ module SwaggerYard
     end
 
     def path_objects
-      controllers.map(&:apis_hash).reduce({}, :merge)
+      controllers.map(&:apis_hash).reduce({}, :merge).tap do |paths|
+        warn_duplicate_operations(paths)
+      end
     end
 
     # Resources
@@ -72,6 +74,19 @@ module SwaggerYard
           end
         end
       end.flatten.select(&:valid?)
+    end
+
+    def warn_duplicate_operations(paths)
+      operation_ids = []
+      paths.each do |path,ops|
+        ops.each do |method,op|
+          if operation_ids.include?(op['operationId'])
+            log.warn("duplicate operation #{op['operationId']}")
+            next
+          end
+          operation_ids << op['operationId']
+        end
+      end
     end
   end
 end
