@@ -79,6 +79,11 @@ RSpec.describe SwaggerYard::Operation do
     its("parameters.count") { is_expected.to eq(1) }
     its("parameters.last.name") { is_expected.to eq("body") }
     its("parameters.last.type.name") { is_expected.to eq("object") }
+
+    it "warns about multiple body parameters" do
+      stub_logger.expects(:warn).at_least_once
+      subject
+    end
   end
 
   context "with multiple path tags, ignores all but the first path" do
@@ -87,5 +92,10 @@ RSpec.describe SwaggerYard::Operation do
                   yard_tag("@path [POST] /hello2")] }
     its("path") { is_expected.to eq('/hello') }
     its("http_method") { is_expected.to eq('GET') }
+
+    it "warns about multiple path tags" do
+      stub_logger.expects(:warn).at_least_once
+      subject
+    end
   end
 end
