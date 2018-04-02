@@ -81,7 +81,7 @@ module SwaggerYard
       paths.each do |path,ops|
         ops.each do |method,op|
           if operation_ids.include?(op['operationId'])
-            log.warn("duplicate operation #{op['operationId']}")
+            SwaggerYard.log.warn("duplicate operation #{op['operationId']}")
             next
           end
           operation_ids << op['operationId']
