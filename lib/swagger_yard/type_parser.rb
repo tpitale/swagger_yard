@@ -24,6 +24,8 @@ module SwaggerYard
 
       rule(:identifier) { name >> (str('::') >> name).repeat }
 
+      rule(:external_identifier) { name.as(:namespace) >> str('#') >> identifier.as(:identifier) }
+
       rule(:regexp)     { stri('regex') >> match['Pp'].maybe >> space >>
                           str('<') >> (str('\\\\') | str('\\>') | match['[^>]']).repeat.as(:regexp) >> str('>') }
 
@@ -45,6 +47,7 @@ module SwaggerYard
                           array.as(:array) |
                           object.as(:object) |
                           formatted.as(:formatted) |
+                          external_identifier.as(:external_identifier) |
                           identifier.as(:identifier) |
                           regexp }
 
@@ -71,6 +74,14 @@ module SwaggerYard
             { 'type' => name }
           end
         end
+      end
+
+      rule(external_identifier: { namespace: simple(:namespace), identifier: simple(:identifier) }) do
+        prefix, name = namespace.to_s, identifier.to_s
+        unless url = SwaggerYard.config.external_schema[prefix]
+          raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
+        end
+        { '$ref' => "#{url}#/definitions/#{Model.mangle(name)}"}
       end
 
       rule(formatted: { name: simple(:name), format: simple(:format) }) do
@@ -123,7 +134,7 @@ module SwaggerYard
     def json_schema(str)
       @xform.apply(parse(str))
     rescue Parslet::ParseFailed => e
-      raise ArgumentError, "invalid type: #{e.message}"
+      raise InvalidTypeError, "'#{str}': #{e.message}"
     end
   end
 end

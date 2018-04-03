@@ -47,6 +47,31 @@ are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
   `[regex<PATTERN>]`. For example, `[regex<^.{3}$>]` produces JSON
   `{ "type": "string", "pattern": "^.{3}$" }`.
 
+### External Schema ###
+
+Types can be specified that refer to external JSON schema documents for their definition. External schema documents are expected to also define their models under a `definitions` top-level key like so:
+```
+{
+  "definitions": {
+    "MyStandardModel": {
+	}
+  }
+}
+```
+
+To register an external schema so that it can be referenced in places where you specify a type, configure SwaggerYard as follows:
+```ruby
+SwaggerYard.configure do |config|
+  config.external_schema mymodels: 'https://example.com/mymodels/v1.0'
+end
+```
+
+Then refer to models in the schema using the syntax `[mymodels#MyStandardModel]` where types are specified. This causes SwaggerYard to emit the following schema for the type:
+
+```
+{ "$ref": "https://example.com/mymodels/v1.0#/definitions/MyStandardModel" }
+```
+
 ### Options ###
 
 Parameter or property _options_ are expressed inside parenthesis immediately

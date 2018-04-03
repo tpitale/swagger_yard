@@ -14,6 +14,10 @@ require "swagger_yard/api"
 require "swagger_yard/swagger"
 
 module SwaggerYard
+  class Error < StandardError; end
+  class InvalidTypeError < Error; end
+  class UndefinedSchemaError < Error; end
+
   class << self
     ##
     # Configuration for Swagger Yard, use like:

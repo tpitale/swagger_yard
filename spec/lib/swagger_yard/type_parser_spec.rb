@@ -11,13 +11,21 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { parses 'Foo::Bar' }
 
+    it { parses 'prefix#Length' }
+
+    it { parses 'prefix#Foo::Bar' }
+
     it { parses 'array<string>' }
 
     it { parses 'array< string >' }
 
     it { parses 'array<Foo::Bar>' }
 
+    it { parses 'array<prefix#Foo::Bar>' }
+
     it { parses 'object<name:string,email:Foo::Bar>' }
+
+    it { parses 'object<name:string,email:prefix#Foo::Bar>' }
 
     it { parses 'object< name : string  ,  email :   string  >' }
 
@@ -57,6 +65,8 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { expect_parse_to 'Foo::Bar' => { identifier: 'Foo::Bar' } }
 
+    it { expect_parse_to 'prefix#Foo::Bar' => { external_identifier: { namespace: 'prefix', identifier: 'Foo::Bar' } } }
+
     it { expect_parse_to 'object' => { identifier: 'object' } }
 
     it { expect_parse_to 'array<string>' => { array: { identifier: 'string' } } }
@@ -79,6 +89,10 @@ RSpec.describe SwaggerYard::TypeParser do
                                                                      { pair: { property: 'b', type: { identifier: 'boolean' } } }] } }
 
     it { expect_parse_to 'object<integer>' => { object: { additional: { identifier: 'integer' } } } }
+
+    it {
+      expect_parse_to 'array<prefix#Length>' => { array: { external_identifier: { namespace: 'prefix', identifier: 'Length' } } }
+    }
 
     it {
       expect_parse_to 'object<pairs:array<object<right:integer,left:integer>>>' => {
@@ -187,5 +201,28 @@ RSpec.describe SwaggerYard::TypeParser do
         }
       }
     }
+
+    it 'raises an error when the type cannot be parsed' do
+      expect do
+        subject.json_schema('Length; array<object>')
+      end.to raise_error(SwaggerYard::InvalidTypeError)
+    end
+
+    it 'raises an error when a prefix is not configured' do
+      expect do
+        subject.json_schema('prefix#Length')
+      end.to raise_error(SwaggerYard::UndefinedSchemaError)
+    end
+
+    context 'with external schema' do
+      let(:url) { 'http://example.com/schemas/v1.0' }
+      before do
+        SwaggerYard.configure do |config|
+          config.external_schema prefix: url
+        end
+      end
+
+      it { expect_json_schema 'prefix#Length' => { "$ref" => "#{url}#/definitions/Length" } }
+    end
   end
 end

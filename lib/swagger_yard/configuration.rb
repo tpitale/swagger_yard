@@ -9,13 +9,21 @@ module SwaggerYard
     attr_accessor :security_definitions
 
     def initialize
-      self.swagger_version = "2.0"
-      self.api_version = "0.1"
-      self.enable = false
-      self.reload = true
-      self.title = "Configure title with SwaggerYard.config.title"
-      self.description = "Configure description with SwaggerYard.config.description"
-      self.security_definitions = {}
+      @swagger_version = "2.0"
+      @api_version = "0.1"
+      @enable = false
+      @reload = true
+      @title = "Configure title with SwaggerYard.config.title"
+      @description = "Configure description with SwaggerYard.config.description"
+      @security_definitions = {}
+      @external_schema = {}
+    end
+
+    def external_schema(mappings = nil)
+      mappings.each do |prefix, url|
+        @external_schema[prefix.to_s] = url
+      end if mappings
+      @external_schema
     end
 
     def swagger_spec_base_path=(ignored)
