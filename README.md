@@ -54,7 +54,7 @@ Types can be specified that refer to external JSON schema documents for their de
 {
   "definitions": {
     "MyStandardModel": {
-	}
+    }
   }
 }
 ```
