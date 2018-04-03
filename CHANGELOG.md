@@ -1,5 +1,12 @@
 # SwaggerYard Changelog #
 
+## .next
+
+* PR #48 (thanks Brad Lindsay)
+  * Sort the tag list in the tags section of the swagger document
+* PR #49
+  * Fixes to make swagger yard output more swagger-validation-friendly
+
 ## 0.3.7 -- 23-11-2016 ##
 
 * PR #40 (thanks Nick Sieger and Brad Lindsay)
