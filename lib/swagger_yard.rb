@@ -33,6 +33,10 @@ module SwaggerYard
       @configuration ||= Configuration.new
     end
 
+    def log
+      YARD::Logger.instance
+    end
+
     #
     # Use YARD to parse object tags from a file
     #

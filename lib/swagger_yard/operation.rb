@@ -90,6 +90,12 @@ module SwaggerYard
     # Example: [GET] /api/v2/ownerships
     # Example: [PUT] /api/v1/accounts/{account_id}
     def add_path_params_and_method(tag)
+      if @path && @http_method
+        SwaggerYard.log.warn 'multiple path tags not supported: ' \
+          "ignored [#{tag.types.first}] #{tag.text}"
+        return
+      end
+
       @path = tag.text
       @http_method = tag.types.first
 
@@ -113,6 +119,9 @@ module SwaggerYard
         existing.param_type     = parameter.param_type if parameter.from_path?
         existing.required     ||= parameter.required
         existing.allow_multiple = parameter.allow_multiple
+      elsif parameter.param_type == 'body' && @parameters.detect {|param| param.param_type == 'body'}
+        SwaggerYard.log.warn 'multiple body parameters invalid: ' \
+          "ignored #{parameter.name} for #{@api.api_declaration.class_name}##{ruby_method}"
       else
         @parameters << parameter
       end

@@ -20,10 +20,14 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'yard'
   s.add_runtime_dependency 'parslet'
 
-  s.add_development_dependency 'rake'
+  # TODO: drop the constraint when we drop 1.9 support
+  s.add_development_dependency 'rake', '< 12'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-its'
-  s.add_development_dependency 'apivore'
+  # TODO: drop the constraint when we drop 1.9 support
+  s.add_development_dependency 'apivore', '< 1.6'
+  # TODO: drop explicit nokogiri dependency when we drop 1.9 support
+  s.add_development_dependency 'nokogiri', '< 1.8'
   # TODO: Drop this dependency when we drop 1.9 support
   s.add_development_dependency 'addressable', "<= 2.4.0"
   s.add_development_dependency 'simplecov'

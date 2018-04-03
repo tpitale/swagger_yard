@@ -49,7 +49,7 @@ describe SwaggerYard::Property do
   context "with a model type" do
     let(:tag) { yard_tag '@property name [Name]   Name' }
 
-    its(['$ref'])   { is_expected.to eq('#/definitions/Name') }
+    it { is_expected.to eq('$ref' => '#/definitions/Name') }
   end
 
   context "with an array of models" do
@@ -83,8 +83,7 @@ describe SwaggerYard::Property do
   context "with a nullable model" do
     let(:tag) { yard_tag '@property name(nullable) [Name]  Name' }
 
-    its(['$ref'])           { is_expected.to eq('#/definitions/Name') }
-    its(['x-nullable'])     { is_expected.to eq(true) }
+    it { is_expected.to eq('$ref' => '#/definitions/Name') }
   end
 
 end

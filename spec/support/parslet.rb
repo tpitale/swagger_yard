@@ -1,6 +1,6 @@
 # Patch ParseFailed to be better behaved for RSpec
 class Parslet::ParseFailed
-  remove_method :cause
+  remove_method :cause if instance_methods(false).include?(:cause)
 end
 
 RSpec::Matchers.define :parse do |str,*rest|

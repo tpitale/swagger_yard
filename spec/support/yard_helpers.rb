@@ -4,4 +4,10 @@ module YARDHelpers
     parser.parse content
     parser.tags.first
   end
+
+  def yard_method(name, content)
+    method = YARD::CodeObjects::MethodObject.new(nil, name)
+    method.docstring = YARD::Docstring.new(content, method)
+    method
+  end
 end

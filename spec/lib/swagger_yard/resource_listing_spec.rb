@@ -78,4 +78,21 @@ RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
       expect(multi_resource_listing.security_objects).to include(security_definitions)
     end
   end
+
+  context '#path_objects' do
+    include SilenceLogger
+
+    it 'warns about duplicate operations' do
+      stub_logger.expects(:warn).once
+
+      api_decl = SwaggerYard::ApiDeclaration.new
+      api_decl.resource = 'system'
+      api_decl.add_yard_object(yard_method(:index, '@path [GET] /accounts'))
+      api_decl.add_yard_object(yard_method(:index, '@path [GET] /people'))
+
+      listing = resource_listing
+      listing.instance_variable_set(:@controllers, [api_decl])
+      listing.path_objects
+    end
+  end
 end

@@ -1,10 +1,11 @@
 module SwaggerYard
   class Parameter
-    attr_accessor :name, :description, :param_type, :required, :allow_multiple
+    attr_accessor :name, :type, :description, :param_type, :required, :allow_multiple
 
     def self.from_yard_tag(tag, operation)
-      description = tag.text
       name, options_string = tag.name.split(/[\(\)]/)
+      description = tag.text
+      description = name if description.strip.empty?
       type = Type.from_type_list(tag.types)
 
       options = {}
