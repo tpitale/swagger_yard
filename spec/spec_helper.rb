@@ -12,6 +12,8 @@ Bundler.require
 
 require 'rspec/its'
 require 'apivore'
+# we don't care about these hashie warnings in our test suite
+Apivore::Swagger.disable_warnings
 
 require File.expand_path('../../lib/swagger_yard', __FILE__)
 require File.expand_path('../fixtures/dummy/config/initializers/swagger_yard.rb', __FILE__)
