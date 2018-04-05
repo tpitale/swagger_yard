@@ -1,11 +1,13 @@
 # SwaggerYard Changelog #
 
-## .next
+## 0.4.0 -- 05-04-2018 ##
 
 * PR #48 (thanks Brad Lindsay)
   * Sort the tag list in the tags section of the swagger document
 * PR #49
   * Fixes to make swagger yard output more swagger-validation-friendly
+* PR #50
+  * Enable references to external schema documents. See README for details.
 
 ## 0.3.7 -- 23-11-2016 ##
 
