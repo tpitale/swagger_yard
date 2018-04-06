@@ -28,6 +28,17 @@ RSpec.describe SwaggerYard::Model do
     its(:discriminator) { is_expected.to eq("myType") }
   end
 
+  context "with a description" do
+    let(:desc) {"This is my class. Not your class."}
+    let(:content) do
+      [desc, "", "@model MyModel"].join("\n")
+    end
+    its(:description) { is_expected.to eq(desc) }
+    its(:to_h) do
+      is_expected.to eq({ "type" => "object", "properties" => {}, "description" => desc })
+    end
+  end
+
   context "inherited class with polymorphism" do
     let(:content) do
       [
@@ -58,7 +69,9 @@ RSpec.describe SwaggerYard::Model do
 
     context 'and an external schema' do
       let(:content) do
-        ["@model MyModel",
+        ["The description.",
+         "",
+         "@model MyModel",
          "@inherits schema#OtherModel"].join("\n")
       end
       let(:url)  { 'http://example.com/schemas/v1.0' }
@@ -71,7 +84,8 @@ RSpec.describe SwaggerYard::Model do
       its(:to_h) do
         schema = {
           "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" },
-                      { "type" => "object", "properties" => {} }]
+                      { "type" => "object", "properties" => {} }],
+          "description" => "The description."
         }
         is_expected.to eq(schema)
       end

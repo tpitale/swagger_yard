@@ -4,10 +4,11 @@ module SwaggerYard
   #   complex model object as defined by swagger schema
   #
   class Model
-    attr_reader :id, :discriminator, :inherits
+    attr_reader :id, :discriminator, :inherits, :description
 
     def self.from_yard_object(yard_object)
       new.tap do |model|
+        model.add_info(yard_object)
         model.parse_tags(yard_object.tags)
       end
     end
@@ -23,6 +24,10 @@ module SwaggerYard
 
     def valid?
       !id.nil?
+    end
+
+    def add_info(yard_object)
+      @description = yard_object.docstring
     end
 
     def parse_tags(tags)
@@ -61,7 +66,7 @@ module SwaggerYard
       h = { "allOf" => inherits_references + [h] } unless @inherits.empty?
 
       # Description
-      h["description"] = @description if @description
+      h["description"] = @description unless @description.empty?
 
       h
     end
