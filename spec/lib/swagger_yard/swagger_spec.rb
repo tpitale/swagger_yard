@@ -83,7 +83,7 @@ RSpec.describe SwaggerYard::Swagger do
   context "#/definitions" do
     subject(:definitions) { swagger["definitions"] }
 
-    its(:keys) { are_expected.to eq(["AnimalThing", "Pet", "Pets_Dog", "Possession", "Transport"]) }
+    its(:keys) { are_expected.to include("AnimalThing", "Pet", "Pets_Dog", "Possession", "Transport") }
 
     its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
 
