@@ -10,4 +10,10 @@ module YARDHelpers
     method.docstring = YARD::Docstring.new(content, method)
     method
   end
+
+  def yard_class(name, content)
+    klass = YARD::CodeObjects::ClassObject.new(nil, name)
+    klass.docstring = YARD::Docstring.new(content, klass)
+    klass
+  end
 end

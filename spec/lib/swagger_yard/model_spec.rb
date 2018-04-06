@@ -1,26 +1,25 @@
 require 'spec_helper'
 
 RSpec.describe SwaggerYard::Model do
-  let(:tags) do
-    [
-      yard_tag("@model MyModel"),
-      yard_tag("@discriminator myType(required) [string]")
-    ]
+  let(:content) do
+    [ "@model MyModel",
+      "@discriminator myType(required) [string]" ].join("\n")
   end
 
-  let(:object)    { stub(tags: tags) }
+  let(:object)    { yard_class('MyModel', content) }
+
   subject(:model) { described_class.from_yard_object(object) }
 
   its(:id) { is_expected.to eq("MyModel") }
 
   context "with characters that are not components of a word" do
-    let(:tags) { [yard_tag("@model MyApp::Models::Foo")] }
+    let(:content) { "@model MyApp::Models::Foo" }
 
     its(:id) { is_expected.to eq("MyApp_Models_Foo") }
   end
 
   context "with numeric or _ characters" do
-    let(:tags) { [yard_tag("@model My__Model01")] }
+    let(:content) { "@model My__Model01" }
 
     its(:id) { is_expected.to eq("My__Model01") }
   end
@@ -30,12 +29,12 @@ RSpec.describe SwaggerYard::Model do
   end
 
   context "inherited class with polymorphism" do
-    let(:tags) do
+    let(:content) do
       [
-        yard_tag("@model MyBiggerModel"),
-        yard_tag("@inherits MyModel"),
-        yard_tag("@property myOtherProperty [string]")
-      ]
+        "@model MyBiggerModel",
+        "@inherits MyModel",
+        "@property myOtherProperty [string]"
+      ].join("\n")
     end
 
     its(:to_h) do
@@ -58,8 +57,10 @@ RSpec.describe SwaggerYard::Model do
     end
 
     context 'and an external schema' do
-      let(:tags) { [yard_tag("@model MyModel"),
-                    yard_tag("@inherits schema#OtherModel")] }
+      let(:content) do
+        ["@model MyModel",
+         "@inherits schema#OtherModel"].join("\n")
+      end
       let(:url)  { 'http://example.com/schemas/v1.0' }
       before do
         SwaggerYard.configure do |config|
