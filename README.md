@@ -139,7 +139,7 @@ end
 
 ```ruby
 #
-# @model Pet
+# @model
 #
 # @property id(required)    [integer]   the identifier for the pet
 # @property name  [Array<string>]    the names for the pet
@@ -160,7 +160,7 @@ To support Swagger Polymorphism, use `@discriminator` and `@inherits`:
 
 ```ruby
 #
-# @model Pet
+# @model
 #
 # @property id(required)    [integer]   the identifier for the pet
 # @property name  [Array<string>]    the names for the pet
@@ -172,13 +172,23 @@ class Pet
 end
 
 #
-# @model Dog
+# @model
 #
 # @inherits Pet
 #
 # @property packSize(required) [integer] the size of the pack the dog is from
 #
 class Dog < Pet
+end
+```
+
+If you wish to name your model differently from the underlying ruby class, add the name as text to the `@model` tag. In the example here, if we did not specify `Dog` as the model name, it would have been named `Models_Dog`.
+
+```ruby
+# @model Dog
+module Models
+  class Dog
+  end
 end
 ```
 
