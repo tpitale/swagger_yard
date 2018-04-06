@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.4.2 -- 06-04-2018 ##
+
+* PR #52 -- Bugfix: don't document models without a @model tag
+
 ## 0.4.1 -- 06-04-2018 ##
 
 * PR #51 -- model doc improvements
