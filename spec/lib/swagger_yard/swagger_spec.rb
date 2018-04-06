@@ -83,7 +83,7 @@ RSpec.describe SwaggerYard::Swagger do
   context "#/definitions" do
     subject(:definitions) { swagger["definitions"] }
 
-    its(:keys) { are_expected.to eq(["AnimalThing", "Pet", "Possession", "Transport"]) }
+    its(:keys) { are_expected.to eq(["AnimalThing", "Pet", "Pets_Dog", "Possession", "Transport"]) }
 
     its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
 
@@ -103,6 +103,14 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["description"]) { is_expected.to eq("This is the Pet model.")}
   end
+
+  context "#/definitions/Pets_Dog" do
+    subject { swagger["definitions"]["Pets_Dog"] }
+
+    its(["allOf"]) { is_expected.to_not be_empty }
+    its(["description"]) { is_expected.to eq("A dog model.")}
+  end
+
 
   context "#/tags" do
     subject { swagger["tags"] }

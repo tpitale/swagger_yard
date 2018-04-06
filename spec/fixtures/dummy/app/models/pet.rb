@@ -11,3 +11,12 @@
 #
 class Pet
 end
+
+
+module Pets
+  # A dog model.
+  # @model
+  # @inherits Pet
+  class Dog
+  end
+end
