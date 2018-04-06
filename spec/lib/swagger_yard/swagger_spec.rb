@@ -100,6 +100,8 @@ RSpec.describe SwaggerYard::Swagger do
     it { is_expected.to_not be_empty }
 
     its(["required"]) { is_expected.to eq(["id", "relatives"])}
+
+    its(["description"]) { is_expected.to eq("This is the Pet model.")}
   end
 
   context "#/tags" do

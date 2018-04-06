@@ -1,5 +1,7 @@
 #
-# @model Pet
+# This is the Pet model.
+#
+# @model
 #
 # @property id(required)        [integer]             the identifier for the pet
 # @property names               [Array<string>]       the names for the pet
