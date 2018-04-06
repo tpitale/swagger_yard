@@ -28,6 +28,18 @@ RSpec.describe SwaggerYard::Model do
     its(:discriminator) { is_expected.to eq("myType") }
   end
 
+  context "with only @model" do
+    let(:content) { "@model" }
+
+    its(:id) { is_expected.to eq("MyModel") }
+
+    context "and a namespaced class name" do
+      let(:object) { yard_class('MyApp::MyModel', content) }
+
+      its(:id) { is_expected.to eq('MyApp_MyModel') }
+    end
+  end
+
   context "with a description" do
     let(:desc) {"This is my class. Not your class."}
     let(:content) do

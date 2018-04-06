@@ -28,13 +28,14 @@ module SwaggerYard
 
     def add_info(yard_object)
       @description = yard_object.docstring
+      @id = Model.mangle(yard_object.path)
     end
 
     def parse_tags(tags)
       tags.each do |tag|
         case tag.tag_name
         when "model"
-          @id = Model.mangle(tag.text)
+          @id = Model.mangle(tag.text) unless tag.text.empty?
         when "property"
           @properties << Property.from_tag(tag)
         when "discriminator"
