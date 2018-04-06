@@ -19,4 +19,8 @@ module Pets
   # @inherits Pet
   class Dog
   end
+
+  # Not a swagger documented model.
+  class Domo
+  end
 end

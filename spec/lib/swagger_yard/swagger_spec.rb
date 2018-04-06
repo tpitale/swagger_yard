@@ -85,6 +85,8 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(:keys) { are_expected.to include("AnimalThing", "Pet", "Pets_Dog", "Possession", "Transport") }
 
+    its(:keys) { are_expected.to_not include("Pets_Domo") }
+
     its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
 
     its(["Pet", "properties"]) { are_expected.to include("id", "names", "age", "relatives") }

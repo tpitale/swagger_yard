@@ -23,7 +23,7 @@ module SwaggerYard
     end
 
     def valid?
-      !id.nil?
+      !id.nil? && @has_model_tag
     end
 
     def add_info(yard_object)
@@ -35,6 +35,7 @@ module SwaggerYard
       tags.each do |tag|
         case tag.tag_name
         when "model"
+          @has_model_tag = true
           @id = Model.mangle(tag.text) unless tag.text.empty?
         when "property"
           @properties << Property.from_tag(tag)

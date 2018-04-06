@@ -51,6 +51,12 @@ RSpec.describe SwaggerYard::Model do
     end
   end
 
+  context "with no @model tag" do
+    let(:content) { "Some description without a SwaggerYard model tag" }
+
+    it { is_expected.to_not be_valid }
+  end
+
   context "inherited class with polymorphism" do
     let(:content) do
       [
