@@ -37,7 +37,7 @@ module SwaggerYard
           @properties << prop
           @discriminator ||= prop.name
         when "inherits"
-          @inherits << Model.mangle(tag.text)
+          @inherits << tag.text
         end
       end
 
@@ -45,11 +45,7 @@ module SwaggerYard
     end
 
     def inherits_references
-      @inherits.map do |name|
-        {
-          "$ref" => "#/definitions/#{name}"
-        }
-      end
+      @inherits.map { |name| Type.new(name).to_h }
     end
 
     def to_h

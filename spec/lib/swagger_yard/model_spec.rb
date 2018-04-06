@@ -56,5 +56,24 @@ RSpec.describe SwaggerYard::Model do
         ]
       )
     end
+
+    context 'and an external schema' do
+      let(:tags) { [yard_tag("@model MyModel"),
+                    yard_tag("@inherits schema#OtherModel")] }
+      let(:url)  { 'http://example.com/schemas/v1.0' }
+      before do
+        SwaggerYard.configure do |config|
+          config.external_schema schema: url
+        end
+      end
+
+      its(:to_h) do
+        schema = {
+          "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" },
+                      { "type" => "object", "properties" => {} }]
+        }
+        is_expected.to eq(schema)
+      end
+    end
   end
 end
