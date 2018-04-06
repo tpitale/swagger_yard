@@ -1,5 +1,13 @@
 # SwaggerYard Changelog #
 
+## 0.4.1 -- 06-04-2018 ##
+
+* PR #51 -- model doc improvements
+  * Populate the model description from the class docstring
+  * Allow model name to be omitted, using the class name as the model name
+  * Allow inherits to use an arbitrary type (thus allowing inheriting from external schema)
+
+
 ## 0.4.0 -- 05-04-2018 ##
 
 * PR #48 (thanks Brad Lindsay)
