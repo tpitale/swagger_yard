@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.4.3 -- 20-05-2018 ##
+
+* PR #53 -- Bugfix: Handle both orders of parameter/property tags
+
 ## 0.4.2 -- 06-04-2018 ##
 
 * PR #52 -- Bugfix: don't document models without a @model tag
