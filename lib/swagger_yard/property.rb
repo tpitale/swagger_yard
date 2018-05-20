@@ -27,7 +27,7 @@ module SwaggerYard
     def to_h
       @type.to_h.tap do |h|
         unless h['$ref']
-          h["description"] = description if description
+          h["description"] = description if description && !description.strip.empty?
           if @nullable
             h["x-nullable"] = true
             if h["type"]

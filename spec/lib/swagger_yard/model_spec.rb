@@ -76,8 +76,7 @@ RSpec.describe SwaggerYard::Model do
             "type" => "object",
             "properties" => {
               "myOtherProperty" => {
-                "type"=>"string",
-                "description"=>""
+                "type"=>"string"
               }
             }
           }

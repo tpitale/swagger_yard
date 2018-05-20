@@ -86,4 +86,16 @@ describe SwaggerYard::Property do
     it { is_expected.to eq('$ref' => '#/definitions/Name') }
   end
 
+  context "with no description" do
+    let(:tag) { yard_tag '@property myProperty [string]' }
+
+    it { is_expected.to eq({'type' => 'string' }) }
+  end
+
+  context "with no description (reversed name/type)" do
+    let(:tag) { yard_tag '@property [string] myProperty' }
+
+    it { is_expected.to eq({'type' => 'string' }) }
+  end
+
 end

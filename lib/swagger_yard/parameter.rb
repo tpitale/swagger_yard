@@ -5,7 +5,7 @@ module SwaggerYard
     def self.from_yard_tag(tag, operation)
       name, options_string = tag.name.split(/[\(\)]/)
       description = tag.text
-      description = name if description.strip.empty?
+      description = name if description.nil? || description.strip.empty?
       type = Type.from_type_list(tag.types)
 
       options = {}
