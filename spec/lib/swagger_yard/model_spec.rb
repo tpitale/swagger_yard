@@ -120,4 +120,32 @@ RSpec.describe SwaggerYard::Model do
       is_expected.to eq('type' => 'string', 'enum' => ['one', 'two', 'three'])
     end
   end
+
+  context 'with an empty property' do
+    include SilenceLogger
+    let(:content) do
+      [
+        "@model MyModel",
+        "@property [string]"
+      ].join("\n")
+    end
+
+    its(:to_h) do
+      is_expected.to eq('type' => 'object', 'properties' => {})
+    end
+  end
+
+  context 'with a typeless property' do
+    include SilenceLogger
+    let(:content) do
+      [
+        "@model MyModel",
+        "@property myProperty"
+      ].join("\n")
+    end
+
+    its(:to_h) do
+      is_expected.to eq('type' => 'object', 'properties' => {})
+    end
+  end
 end

@@ -98,4 +98,15 @@ describe SwaggerYard::Property do
     it { is_expected.to eq({'type' => 'string' }) }
   end
 
+  context 'with no property name' do
+    include SilenceLogger
+    let(:tag) { yard_tag '@property [string]' }
+    it { is_expected.to be_empty }
+  end
+
+  context 'with no type' do
+    include SilenceLogger
+    let(:tag) { yard_tag '@property myProperty' }
+    it { is_expected.to be_empty }
+  end
 end

@@ -38,11 +38,14 @@ module SwaggerYard
           @has_model_tag = true
           @id = Model.mangle(tag.text) unless tag.text.empty?
         when "property"
-          @properties << Property.from_tag(tag)
+          prop = Property.from_tag(tag)
+          @properties << prop if prop
         when "discriminator"
           prop = Property.from_tag(tag)
-          @properties << prop
-          @discriminator ||= prop.name
+          if prop
+            @properties << prop
+            @discriminator ||= prop.name
+          end
         when "inherits"
           @inherits << tag.text
         end

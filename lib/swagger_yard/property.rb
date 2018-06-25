@@ -6,6 +6,15 @@ module SwaggerYard
     attr_reader :name, :description
 
     def self.from_tag(tag)
+      unless tag.name && tag.types
+        if tag.object
+          object   = " in #{tag.object.to_s}"
+          location = " near #{tag.object.files.first.join(':')}" if tag.object.files.first
+        end
+        SwaggerYard.log.warn "invalid @property tag#{object}#{location}"
+        return nil
+      end
+
       name, options_string = tag.name.split(/[\(\)]/)
 
       options = options_string.to_s.split(',').map(&:strip)
