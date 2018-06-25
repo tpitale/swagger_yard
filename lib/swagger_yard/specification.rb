@@ -1,12 +1,9 @@
 module SwaggerYard
-  class ResourceListing
+  class Specification
     attr_accessor :authorizations
 
-    def self.all
-      new(SwaggerYard.config.controller_path, SwaggerYard.config.model_path)
-    end
-
-    def initialize(controller_path, model_path)
+    def initialize(controller_path = SwaggerYard.config.controller_path,
+                   model_path = SwaggerYard.config.model_path)
       @model_paths = [*model_path].compact
       @controller_paths = [*controller_path].compact
 

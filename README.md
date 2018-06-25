@@ -1,4 +1,4 @@
-# SwaggerYard [![Build Status](https://travis-ci.org/livingsocial/swagger_yard.svg?branch=master)](https://travis-ci.org/tpitale/swagger_yard) #
+# SwaggerYard [![Build Status](https://travis-ci.org/livingsocial/swagger_yard.svg?branch=master)](https://travis-ci.org/livingsocial/swagger_yard) #
 
 SwaggerYard is a gem to convert extended YARD syntax comments into the swagger spec compliant json format.
 
@@ -248,27 +248,9 @@ To generate JSON from your code on request, checkout the [swagger_yard-rails](ht
 * [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
 * [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails)
 * [Swagger-spec version 2.0](https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md)
+* [OpenAPI version 3.0.0](https://swagger.io/docs/specification/about/)
 * [Yard](https://github.com/lsegal/yard)
 
-## Current Parsing "Tree" Structure ##
-
-```
-ResourceListing
-|
--> ApiDeclaration (controller)
-| |
-| -> ListingInfo (controller class)
-| -> Authorization (header/param for auth, also added to ResourceListing?)
-| -> Api(s) (controller action, by path)
-|   |
-|   -> Operation(s) (controller action with HTTP method)
-|     |
-|     -> Parameter(s) (action param)
-|
--> Model (model)
-  |
-  -> Properties (model attributes)
-```
 
 ### Path Discovery Function ##
 

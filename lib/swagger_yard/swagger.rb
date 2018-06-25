@@ -14,7 +14,7 @@ module SwaggerYard
       {
         "swagger"  => "2.0",
         "info"     => Info.new.to_h
-      }.merge(uri_info).merge(ResourceListing.all.to_h)
+      }.merge(uri_info).merge(Specification.new.to_h)
     end
 
     private

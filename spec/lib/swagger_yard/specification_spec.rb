@@ -1,19 +1,19 @@
 require 'spec_helper'
 require 'tempfile'
 
-RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
+RSpec.describe SwaggerYard::Specification, "reparsing" do
   let(:fixture_files) do
-    fixtures = FIXTURE_PATH + 'resource_listing'
+    fixtures = FIXTURE_PATH + 'specification'
     [
       fixtures + 'hello_controller.rb',
       fixtures + 'goodbye_controller.rb'
     ]
   end
 
-  let(:multi_resource_listing) { described_class.new(fixture_files, nil) }
+  let(:multi_specification) { described_class.new(fixture_files, nil) }
   let(:filename) { (t = Tempfile.new(['test_resource', '.rb'])).path.tap { t.close! } }
 
-  def resource_listing
+  def specification
     described_class.new filename, nil
   end
 
@@ -46,22 +46,18 @@ RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
 
   it "reparses after changes to a file" do
     File.open(filename, "w") { |f| f.write first_pass }
-    hash1 = resource_listing.to_h
 
-    expect(hash1['paths'].keys).to contain_exactly('/hello')
+    expect(specification.path_objects.keys).to contain_exactly('/hello')
 
     File.open(filename, "w") { |f| f.write second_pass }
-    hash2 = resource_listing.to_h
 
-    expect(hash2['paths'].keys).to contain_exactly('/hello', '/hello/{msg}')
+    expect(specification.path_objects.keys).to contain_exactly('/hello', '/hello/{msg}')
 
     File.unlink filename
   end
 
   it "supports array arguments for paths" do
-    hash = multi_resource_listing.to_h
-
-    expect(hash['paths'].keys).to contain_exactly('/bonjour', '/goodbye')
+    expect(multi_specification.path_objects.keys).to contain_exactly('/bonjour', '/goodbye')
   end
 
   context '#security_objects' do
@@ -70,12 +66,12 @@ RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
     let (:security_definitions) { {key: "value"} }
 
     it 'contains constructors authorizations' do
-      actual_security_object = multi_resource_listing.security_objects
+      actual_security_object = multi_specification.security_objects
       expected_security_object = {"type" => "apiKey", "name" => "X-APPLICATION-API-KEY", "in" => "header"}
       expect(actual_security_object).to include("header_x_application_api_key" => expected_security_object)
     end
     it 'merges config authorizations' do
-      expect(multi_resource_listing.security_objects).to include(security_definitions)
+      expect(multi_specification.security_objects).to include(security_definitions)
     end
   end
 
@@ -90,9 +86,9 @@ RSpec.describe SwaggerYard::ResourceListing, "reparsing" do
       api_decl.add_yard_object(yard_method(:index, '@path [GET] /accounts'))
       api_decl.add_yard_object(yard_method(:index, '@path [GET] /people'))
 
-      listing = resource_listing
-      listing.instance_variable_set(:@controllers, [api_decl])
-      listing.path_objects
+      spec = specification
+      spec.instance_variable_set(:@controllers, [api_decl])
+      spec.path_objects
     end
   end
 end
