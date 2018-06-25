@@ -8,20 +8,18 @@ module SwaggerYard
 
     def initialize(api_group = nil)
       @api_group = api_group
-      @operations = []
+      @operations = {}
     end
 
     def add_operation(yard_object)
-      @operations << Operation.from_yard_object(yard_object, self)
-    end
-
-    def operations_hash
-      Hash[@operations.map {|op| [op.http_method.downcase, op.to_h]}]
+      operation = Operation.from_yard_object(yard_object, self)
+      byebug unless operation.http_method
+      @operations[operation.http_method.downcase] = operation
     end
 
     def +(other)
       PathItem.new(api_group).tap do |pi|
-        pi.operations = operations + other.operations
+        pi.operations = operations.merge(other.operations)
       end
     end
   end

@@ -68,7 +68,7 @@ module SwaggerYard
     def warn_duplicate_operations(paths)
       operation_ids = []
       paths.path_items.each do |path,pi|
-        pi.operations.each do |op|
+        pi.operations.each do |_, op|
           if operation_ids.include?(op.operation_id)
             SwaggerYard.log.warn("duplicate operation #{op.operation_id}")
             next

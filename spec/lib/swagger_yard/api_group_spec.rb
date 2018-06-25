@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe SwaggerYard::ApiGroup do
   context "with a parsed yard object" do
-    let(:yard_object) { stub(name: :index, docstring: 'A Description', tags: tags) }
+    let(:yard_object) { yard_method(:index, ['A Description', *tags].join("\n")) }
     let(:api_group) { SwaggerYard::ApiGroup.new }
     subject(:path) { api_group.add_path_item(yard_object) }
 
     context "from yard object" do
-      let(:tags) { [yard_tag("@path [GET] /accounts/ownerships")] }
+      let(:tags) { ["@path [GET] /accounts/ownerships"] }
 
       it { is_expected.to eq("/accounts/ownerships") }
     end
@@ -16,7 +16,6 @@ describe SwaggerYard::ApiGroup do
       let(:tags) { [] }
 
       before(:each) do
-        yard_object.stubs(:add_tag)
         SwaggerYard.config.path_discovery_function = -> obj do
           expect(obj).to respond_to(:tags)
           ['GET', '/blah']
