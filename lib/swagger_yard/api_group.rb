@@ -7,7 +7,7 @@ module SwaggerYard
 
   class ApiGroup
     attr_accessor :description, :resource
-    attr_reader :apis, :authorizations, :class_name
+    attr_reader :path_items, :authorizations, :class_name
 
     def self.from_yard_object(yard_object)
       new.add_yard_object(yard_object)
@@ -15,7 +15,7 @@ module SwaggerYard
 
     def initialize
       @resource         = nil
-      @apis             = {}
+      @path_items             = {}
       @authorizations   = {}
     end
 
@@ -37,7 +37,7 @@ module SwaggerYard
           end
         end
       when :method # actions
-        add_api(yard_object)
+        add_path_item(yard_object)
       end
       self
     end
@@ -57,13 +57,13 @@ module SwaggerYard
                              map {|k| [k, []]}]
     end
 
-    def add_api(yard_object)
+    def add_path_item(yard_object)
       path = path_from_yard_object(yard_object)
 
       return if path.nil?
 
-      api = (apis[path] ||= Api.from_yard_object(yard_object, self))
-      api.add_operation(yard_object)
+      path_item = (path_items[path] ||= PathItem.from_yard_object(yard_object, self))
+      path_item.add_operation(yard_object)
       path
     end
 
@@ -83,7 +83,7 @@ module SwaggerYard
     end
 
     def apis_hash
-      Hash[apis.map {|path, api| [path, api.operations_hash]}]
+      Hash[path_items.map {|path, api| [path, api.operations_hash]}]
     end
   end
 end

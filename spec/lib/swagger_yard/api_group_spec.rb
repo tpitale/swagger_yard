@@ -4,7 +4,7 @@ describe SwaggerYard::ApiGroup do
   context "with a parsed yard object" do
     let(:yard_object) { stub(name: :index, docstring: 'A Description', tags: tags) }
     let(:api_group) { SwaggerYard::ApiGroup.new }
-    subject(:path) { api_group.add_api(yard_object) }
+    subject(:path) { api_group.add_path_item(yard_object) }
 
     context "from yard object" do
       let(:tags) { [yard_tag("@path [GET] /accounts/ownerships")] }
