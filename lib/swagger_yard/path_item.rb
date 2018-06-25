@@ -13,7 +13,6 @@ module SwaggerYard
 
     def add_operation(yard_object)
       operation = Operation.from_yard_object(yard_object, self)
-      byebug unless operation.http_method
       @operations[operation.http_method.downcase] = operation
     end
 

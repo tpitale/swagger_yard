@@ -38,7 +38,7 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "tags"]) { are_expected.to include("Pet") }
 
-    its(["get", "responses"]) { are_expected.to include("default", "404", "400") }
+    its(["get", "responses"]) { are_expected.to include("default", 404, 400) }
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("id")) }
 

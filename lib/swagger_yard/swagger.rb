@@ -52,7 +52,35 @@ module SwaggerYard
     end
 
     def operations(ops)
-      Hash[ops.map { |meth, op| [meth, op.to_h] }]
+      expanded_ops = ops.map do |meth, op|
+        responses = Hash[op.responses_by_status.map do |status, resp|
+                           resp_hash = {}.tap do |h|
+                             h['description'] = resp && resp.description || op.summary || ''
+                             h['schema'] = resp.type.to_h if resp
+                           end
+                           [status, resp_hash]
+                         end]
+
+        op_hash = {
+          "tags"        => op.tags,
+          "operationId" => op.operation_id,
+          "parameters"  => op.parameters.map(&:to_h),
+          "responses"   => responses,
+        }
+
+        op_hash["description"] = op.description unless op.description.empty?
+        op_hash["summary"]     = op.summary unless op.summary.empty?
+
+        authorizations = op.api_group.authorizations
+        unless authorizations.empty?
+          op_hash["security"] = authorizations.map {|k,v| { k => v} }
+        end
+
+        op_hash.update(op.extended_attributes)
+
+        [meth, op_hash]
+      end
+      Hash[expanded_ops]
     end
 
     def models(model_objects)

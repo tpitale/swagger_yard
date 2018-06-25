@@ -54,7 +54,7 @@ RSpec.describe SwaggerYard::Operation do
   context "with a Rails-like controller class that responds to #controller_path" do
     let(:class_name) { stub('Hello', constantize: stub(controller_path: 'my/hello')) }
 
-    subject(:hash) { operation.to_h }
+    subject(:hash) { operation.extended_attributes }
 
     its(['x-controller']) { is_expected.to eq('my/hello') }
     its(['x-action'])     { is_expected.to eq('hello') }

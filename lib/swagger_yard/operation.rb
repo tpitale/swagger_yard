@@ -1,10 +1,14 @@
 module SwaggerYard
+  class Response
+    attr_accessor :status, :description, :type
+  end
+
   class Operation
     attr_accessor :description, :ruby_method
     attr_writer :summary
-    attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
-    attr_reader :path_item
+    attr_reader :path, :http_method
     attr_reader :parameters
+    attr_reader :path_item, :responses, :default_response
 
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, path_item)
@@ -22,7 +26,7 @@ module SwaggerYard
             tag = SwaggerYard.requires_type(tag)
             operation.add_response_type(Type.from_type_list(tag.types), tag.text) if tag
           when "error_message"
-            operation.add_error_message(tag)
+            operation.add_response(tag)
           when "summary"
             operation.summary = tag.text
           end
@@ -37,7 +41,8 @@ module SwaggerYard
       @summary        = nil
       @description    = ""
       @parameters     = []
-      @error_messages = []
+      @default_response = nil
+      @responses = []
     end
 
     def summary
@@ -45,42 +50,28 @@ module SwaggerYard
     end
 
     def operation_id
-      "#{path_item.api_group.resource}-#{ruby_method}"
+      "#{api_group.resource}-#{ruby_method}"
     end
 
-    def to_h
-      params      = parameters.map(&:to_h)
-      responses   = { "default" => { "description" => response_desc || summary } }
+    def api_group
+      path_item.api_group
+    end
 
-      if response_type
-        responses["default"]["schema"] = response_type.to_h
-      end
+    def tags
+      [api_group.resource].compact
+    end
 
-      unless error_messages.empty?
-        error_messages.each do |err|
-          responses[err["code"].to_s] = {}.tap do |h|
-            h["description"] = err["message"]
-            h["schema"] = Type.from_type_list(Array(err["responseModel"])).to_h if err["responseModel"]
-          end
+    def responses_by_status
+      {}.tap do |hash|
+        hash['default'] = default_response
+        responses.each do |response|
+          hash[response.status] = response
         end
       end
+    end
 
-      api_group = @path_item.api_group
-
-      {
-        "tags"        => [api_group.resource].compact,
-        "operationId" => operation_id,
-        "parameters"  => params,
-        "responses"   => responses,
-      }.tap do |h|
-        h["description"] = description unless description.empty?
-        h["summary"]     = summary unless summary.empty?
-
-        authorizations = api_group.authorizations
-        unless authorizations.empty?
-          h["security"] = authorizations.map {|k,v| { k => v} }
-        end
-
+    def extended_attributes
+      {}.tap do |h|
         # Rails controller/action: if constantize/controller_path methods are
         # unavailable or constant is not defined, catch exception and skip these
         # attributes.
@@ -138,18 +129,21 @@ module SwaggerYard
     # Example:
     # @response_type [Ownership] the requested ownership
     def add_response_type(type, desc)
-      @response_type = type
-      @response_desc = desc
+      @default_response = Response.new.tap do |r|
+        r.status = 'default'
+        r.type = type
+        r.description = desc
+      end
     end
 
-    def add_error_message(tag)
+    def add_response(tag)
       tag = SwaggerYard.requires_name(tag)
       return unless tag
-      @error_messages << {
-        "code" => Integer(tag.name),
-        "message" => tag.text,
-        "responseModel" => Array(tag.types).first
-      }.reject {|_,v| v.nil?}
+      @responses << Response.new.tap do |r|
+        r.status = Integer(tag.name)
+        r.description = tag.text if tag.text
+        r.type = Type.from_type_list(Array(tag.types)) if tag.types
+      end
     end
 
     def sort_parameters
