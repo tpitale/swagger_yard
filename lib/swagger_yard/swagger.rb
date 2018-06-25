@@ -22,10 +22,10 @@ module SwaggerYard
 
     private
     def definitions
-      { "paths"               => specification.path_objects,
-        "definitions"         => specification.model_objects,
-        "tags"                => specification.tag_objects,
-        "securityDefinitions" => specification.security_objects }
+      { "paths"               => paths(specification.path_objects),
+        "definitions"         => models(specification.model_objects),
+        "tags"                => tags(specification.tag_objects),
+        "securityDefinitions" => security_defs(specification.security_objects) }
     end
 
     def metadata
@@ -45,6 +45,22 @@ module SwaggerYard
         'basePath' => uri.request_uri,
         'schemes' => [uri.scheme]
       }
+    end
+
+    def paths(path_objects)
+      path_objects
+    end
+
+    def models(model_objects)
+      model_objects
+    end
+
+    def tags(tag_objects)
+      tag_objects
+    end
+
+    def security_defs(security_objects)
+      security_objects
     end
   end
 end
