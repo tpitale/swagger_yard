@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 0.4.4 -- 25-06-2018 ##
+
+* PR #54 -- Inherits improvement + Validation fixes
+
 ## 0.4.3 -- 20-05-2018 ##
 
 * PR #53 -- Bugfix: Handle both orders of parameter/property tags
