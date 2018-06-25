@@ -19,7 +19,7 @@ module SwaggerYard
 
     # Resources
     def tag_objects
-      api_groups.sort {|a,b| a.resource.upcase <=> b.resource.upcase}.map(&:to_tag)
+      api_groups.map(&:tag)
     end
 
     def model_objects

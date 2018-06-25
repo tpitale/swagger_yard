@@ -1,4 +1,7 @@
 module SwaggerYard
+  class Tag < Struct.new(:name, :description)
+  end
+
   class ApiGroup
     attr_accessor :description, :resource
     attr_reader :apis, :authorizations, :class_name
@@ -15,6 +18,10 @@ module SwaggerYard
 
     def valid?
       !@resource.nil?
+    end
+
+    def tag
+      @tag ||= Tag.new(resource, description)
     end
 
     def add_yard_object(yard_object)
@@ -58,11 +65,6 @@ module SwaggerYard
 
     def apis_hash
       Hash[apis.map {|path, api| [path, api.operations_hash]}]
-    end
-
-    def to_tag
-      { "name"        => resource,
-        "description" => description }
     end
   end
 end
