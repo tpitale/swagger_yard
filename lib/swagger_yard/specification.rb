@@ -12,7 +12,7 @@ module SwaggerYard
     end
 
     def path_objects
-      api_groups.map(&:apis_hash).reduce({}, :merge).tap do |paths|
+      api_groups.map(&:paths).reduce(Paths.new({}), :merge).tap do |paths|
         warn_duplicate_operations(paths)
       end
     end
@@ -67,13 +67,13 @@ module SwaggerYard
 
     def warn_duplicate_operations(paths)
       operation_ids = []
-      paths.each do |path,ops|
-        ops.each do |method,op|
-          if operation_ids.include?(op['operationId'])
-            SwaggerYard.log.warn("duplicate operation #{op['operationId']}")
+      paths.path_items.each do |path,pi|
+        pi.operations.each do |op|
+          if operation_ids.include?(op.operation_id)
+            SwaggerYard.log.warn("duplicate operation #{op.operation_id}")
             next
           end
-          operation_ids << op['operationId']
+          operation_ids << op.operation_id
         end
       end
     end

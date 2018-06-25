@@ -3,6 +3,23 @@ module SwaggerYard
   end
 
   class Paths
+    attr_reader :path_items
+
+    def initialize(path_items)
+      @path_items = path_items
+    end
+
+    def paths
+      path_items.keys
+    end
+
+    def merge(other)
+      merged_items = {}
+      (paths + other.paths).uniq.each do |path|
+        merged_items[path] = (path_items[path] || PathItem.new) + (other.path_items[path] || PathItem.new)
+      end
+      Paths.new(merged_items)
+    end
   end
 
   class ApiGroup
@@ -14,13 +31,17 @@ module SwaggerYard
     end
 
     def initialize
-      @resource         = nil
-      @path_items             = {}
-      @authorizations   = {}
+      @resource       = nil
+      @path_items     = {}
+      @authorizations = {}
     end
 
     def valid?
       !@resource.nil?
+    end
+
+    def paths
+      Paths.new(path_items)
     end
 
     def tag
@@ -80,10 +101,6 @@ module SwaggerYard
           nil
         end
       end
-    end
-
-    def apis_hash
-      Hash[path_items.map {|path, api| [path, api.operations_hash]}]
     end
   end
 end

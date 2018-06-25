@@ -47,17 +47,17 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
   it "reparses after changes to a file" do
     File.open(filename, "w") { |f| f.write first_pass }
 
-    expect(specification.path_objects.keys).to contain_exactly('/hello')
+    expect(specification.path_objects.paths).to contain_exactly('/hello')
 
     File.open(filename, "w") { |f| f.write second_pass }
 
-    expect(specification.path_objects.keys).to contain_exactly('/hello', '/hello/{msg}')
+    expect(specification.path_objects.paths).to contain_exactly('/hello', '/hello/{msg}')
 
     File.unlink filename
   end
 
   it "supports array arguments for paths" do
-    expect(multi_specification.path_objects.keys).to contain_exactly('/bonjour', '/goodbye')
+    expect(multi_specification.path_objects.paths).to contain_exactly('/bonjour', '/goodbye')
   end
 
   context '#security_objects' do

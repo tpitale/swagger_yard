@@ -47,8 +47,8 @@ module SwaggerYard
       }
     end
 
-    def paths(path_objects)
-      path_objects
+    def paths(paths)
+      Hash[paths.path_items.map {|path,pi| [path, pi.operations_hash] }]
     end
 
     def models(model_objects)

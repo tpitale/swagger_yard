@@ -4,10 +4,11 @@ module SwaggerYard
     attr_writer :summary
     attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
     attr_reader :parameters, :model_names
+    attr_reader :path_item
 
     # TODO: extract to operation builder?
-    def self.from_yard_object(yard_object, api)
-      new(api).tap do |operation|
+    def self.from_yard_object(yard_object, path_item)
+      new(path_item).tap do |operation|
         operation.ruby_method = yard_object.name(false)
         operation.description = yard_object.docstring
         yard_object.tags.each do |tag|
@@ -31,8 +32,8 @@ module SwaggerYard
       end
     end
 
-    def initialize(api)
-      @api            = api
+    def initialize(path_item)
+      @path_item      = path_item
       @summary        = nil
       @description    = ""
       @parameters     = []
@@ -42,6 +43,10 @@ module SwaggerYard
 
     def summary
       @summary || description.split("\n\n").first || ""
+    end
+
+    def operation_id
+      "#{path_item.api_group.resource}-#{ruby_method}"
     end
 
     def to_h
@@ -61,11 +66,11 @@ module SwaggerYard
         end
       end
 
-      api_group = @api.api_group
+      api_group = @path_item.api_group
 
       {
         "tags"        => [api_group.resource].compact,
-        "operationId" => "#{api_group.resource}-#{ruby_method}",
+        "operationId" => operation_id,
         "parameters"  => params,
         "responses"   => responses,
       }.tap do |h|
@@ -124,7 +129,7 @@ module SwaggerYard
         existing.allow_multiple = parameter.allow_multiple
       elsif parameter.param_type == 'body' && @parameters.detect {|param| param.param_type == 'body'}
         SwaggerYard.log.warn 'multiple body parameters invalid: ' \
-          "ignored #{parameter.name} for #{@api.api_group.class_name}##{ruby_method}"
+          "ignored #{parameter.name} for #{@path_item.api_group.class_name}##{ruby_method}"
       else
         @parameters << parameter
       end

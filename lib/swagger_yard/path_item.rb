@@ -6,7 +6,7 @@ module SwaggerYard
       new(api_group)
     end
 
-    def initialize(api_group)
+    def initialize(api_group = nil)
       @api_group = api_group
       @operations = []
     end
@@ -17,6 +17,12 @@ module SwaggerYard
 
     def operations_hash
       Hash[@operations.map {|op| [op.http_method.downcase, op.to_h]}]
+    end
+
+    def +(other)
+      PathItem.new(api_group).tap do |pi|
+        pi.operations = operations + other.operations
+      end
     end
   end
 end
