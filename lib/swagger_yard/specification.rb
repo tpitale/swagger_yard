@@ -19,13 +19,6 @@ module SwaggerYard
       @controllers ||= parse_controllers
     end
 
-    def to_h
-      { "paths"               => path_objects,
-        "definitions"         => model_objects,
-        "tags"                => tag_objects,
-        "securityDefinitions" => security_objects }
-    end
-
     def path_objects
       controllers.map(&:apis_hash).reduce({}, :merge).tap do |paths|
         warn_duplicate_operations(paths)

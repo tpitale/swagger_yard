@@ -10,14 +10,30 @@ module SwaggerYard
   end
 
   class Swagger
+    attr_reader :specification
+
+    def initialize
+      @specification = Specification.new
+    end
+
     def to_h
-      {
-        "swagger"  => "2.0",
-        "info"     => Info.new.to_h
-      }.merge(uri_info).merge(Specification.new.to_h)
+      metadata.merge(definitions)
     end
 
     private
+    def definitions
+      { "paths"               => specification.path_objects,
+        "definitions"         => specification.model_objects,
+        "tags"                => specification.tag_objects,
+        "securityDefinitions" => specification.security_objects }
+    end
+
+    def metadata
+      {
+        "swagger"  => "2.0",
+        "info"     => Info.new.to_h
+      }.merge(uri_info)
+    end
 
     def uri_info
       uri = URI(SwaggerYard.config.api_base_path)
@@ -26,7 +42,8 @@ module SwaggerYard
 
       {
         'host' => host,
-        'basePath' => uri.request_uri
+        'basePath' => uri.request_uri,
+        'schemes' => [uri.scheme]
       }
     end
   end
