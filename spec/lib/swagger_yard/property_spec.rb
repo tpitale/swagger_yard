@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SwaggerYard::Property do
   let(:property_obj) { described_class.from_tag(tag) }
-  subject(:property) { property_obj.to_h }
+  subject(:property) { property_obj && property_obj.to_h }
 
   context "with a string type" do
     let(:tag) { yard_tag '@property name [string] Name'  }
@@ -101,12 +101,12 @@ describe SwaggerYard::Property do
   context 'with no property name' do
     include SilenceLogger
     let(:tag) { yard_tag '@property [string]' }
-    it { is_expected.to be_empty }
+    it { is_expected.to be_nil }
   end
 
   context 'with no type' do
     include SilenceLogger
     let(:tag) { yard_tag '@property myProperty' }
-    it { is_expected.to be_empty }
+    it { is_expected.to be_nil }
   end
 end
