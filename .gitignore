@@ -9,3 +9,4 @@ Gemfile.lock
 pkg
 *.log
 *.swp
+/.byebug_history
