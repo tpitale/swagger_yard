@@ -6,3 +6,4 @@ rvm:
   - 2.2.5
   - 2.3.5
 script: bundle exec rake
+cache: bundler
