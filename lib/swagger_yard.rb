@@ -41,8 +41,15 @@ module SwaggerYard
       YARD::Logger.instance
     end
 
-    def requires_name_and_type(tag)
-      unless tag.name && tag.types
+    # Validates that the tag has non-nil values for the given attribute methods.
+    # Logs a warning message and returns nil if the tag is not valid.
+    def requires_attrs(tag, *attrs)
+      valid = true
+      attrs.each do |a|
+        valid &&= tag.send(a)
+        break unless valid
+      end
+      unless valid
         if tag.object
           object   = " in #{tag.object.to_s}"
           location = " near #{tag.object.files.first.join(':')}" if tag.object.files.first
@@ -51,6 +58,18 @@ module SwaggerYard
         return nil
       end
       tag
+    end
+
+    def requires_name(tag)
+      requires_attrs(tag, :name)
+    end
+
+    def requires_name_and_type(tag)
+      requires_attrs(tag, :name, :types)
+    end
+
+    def requires_type(tag)
+      requires_attrs(tag, :types)
     end
 
     #

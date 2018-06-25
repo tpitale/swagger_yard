@@ -13,11 +13,13 @@ module SwaggerYard
         yard_object.tags.each do |tag|
           case tag.tag_name
           when "path"
-            operation.add_path_params_and_method(tag)
+            tag = SwaggerYard.requires_type(tag)
+            operation.add_path_params_and_method(tag) if tag
           when "parameter"
             operation.add_parameter(tag)
           when "response_type"
-            operation.add_response_type(Type.from_type_list(tag.types), tag.text)
+            tag = SwaggerYard.requires_type(tag)
+            operation.add_response_type(Type.from_type_list(tag.types), tag.text) if tag
           when "error_message"
             operation.add_error_message(tag)
           when "summary"
@@ -138,6 +140,8 @@ module SwaggerYard
     end
 
     def add_error_message(tag)
+      tag = SwaggerYard.requires_name(tag)
+      return unless tag
       @error_messages << {
         "code" => Integer(tag.name),
         "message" => tag.text,
