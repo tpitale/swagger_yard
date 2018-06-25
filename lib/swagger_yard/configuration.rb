@@ -25,13 +25,5 @@ module SwaggerYard
       end if mappings
       @external_schema
     end
-
-    def swagger_spec_base_path=(ignored)
-      warn "DEPRECATED: swagger_spec_base_path is no longer necessary."
-    end
-
-    def api_path=(ignored)
-      warn "DEPRECATED: api_path is no longer necessary."
-    end
   end
 end

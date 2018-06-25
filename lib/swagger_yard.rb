@@ -98,7 +98,6 @@ module SwaggerYard
     # Register some custom yard tags used by swagger-ui
     def register_custom_yard_tags!
       ::YARD::Tags::Library.define_tag("Api resource", :resource)
-      ::YARD::Tags::Library.define_tag("Resource path", :resource_path) # TODO: remove deprecated tag
       ::YARD::Tags::Library.define_tag("Api path", :path, :with_types)
       ::YARD::Tags::Library.define_tag("Parameter", :parameter, :with_types_name_and_default)
       ::YARD::Tags::Library.define_tag("Response type", :response_type, :with_types)

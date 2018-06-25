@@ -40,10 +40,6 @@ module SwaggerYard
         @resource = tag.text
       end
 
-      if tag = yard_object.tags.detect {|t| t.tag_name == "resource_path"}
-        SwaggerYard.log.warn "DEPRECATED: @resource_path tag is obsolete."
-      end
-
       # we only have api_key auth, the value for now is always empty array
       @authorizations = Hash[yard_object.tags.
                              select {|t| t.tag_name == "authorize_with"}.
