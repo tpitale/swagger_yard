@@ -56,16 +56,27 @@ module SwaggerYard
     end
 
     def to_h
-      h = {
-        "type" => "object",
-        "properties" => Hash[@properties.map {|p| [p.name, p.to_h]}]
-      }
+      h = {}
 
-      h["required"] = @properties.select(&:required?).map(&:name) if @properties.detect(&:required?)
+      if !@properties.empty? || @inherits.empty?
+        h["type"] = "object"
+        h["properties"] = Hash[@properties.map {|p| [p.name, p.to_h]}]
+        h["required"] = @properties.select(&:required?).map(&:name) if @properties.detect(&:required?)
+      end
+
       h["discriminator"] = @discriminator if @discriminator
 
       # Polymorphism
-      h = { "allOf" => inherits_references + [h] } unless @inherits.empty?
+      unless @inherits.empty?
+        all_of = inherits_references
+        all_of << h unless h.empty?
+
+        if all_of.length == 1 && @description.empty?
+          h.update(all_of.first)
+        else
+          h = { "allOf" => all_of }
+        end
+      end
 
       # Description
       h["description"] = @description unless @description.empty?

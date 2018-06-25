@@ -100,12 +100,24 @@ RSpec.describe SwaggerYard::Model do
 
       its(:to_h) do
         schema = {
-          "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" },
-                      { "type" => "object", "properties" => {} }],
+          "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" }],
           "description" => "The description."
         }
         is_expected.to eq(schema)
       end
+    end
+  end
+
+  context 'inherited type with no properties' do
+    let(:content) do
+      [
+       "@model MyEnum",
+       "@inherits enum<one,two,three>"
+      ].join("\n")
+    end
+
+    its(:to_h) do
+      is_expected.to eq('type' => 'string', 'enum' => ['one', 'two', 'three'])
     end
   end
 end
