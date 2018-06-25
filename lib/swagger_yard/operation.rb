@@ -61,18 +61,18 @@ module SwaggerYard
         end
       end
 
-      api_decl = @api.api_declaration
+      api_group = @api.api_group
 
       {
-        "tags"        => [api_decl.resource].compact,
-        "operationId" => "#{api_decl.resource}-#{ruby_method}",
+        "tags"        => [api_group.resource].compact,
+        "operationId" => "#{api_group.resource}-#{ruby_method}",
         "parameters"  => params,
         "responses"   => responses,
       }.tap do |h|
         h["description"] = description unless description.empty?
         h["summary"]     = summary unless summary.empty?
 
-        authorizations = api_decl.authorizations
+        authorizations = api_group.authorizations
         unless authorizations.empty?
           h["security"] = authorizations.map {|k,v| { k => v} }
         end
@@ -81,7 +81,7 @@ module SwaggerYard
         # unavailable or constant is not defined, catch exception and skip these
         # attributes.
         begin
-          h["x-controller"] = api_decl.class_name.constantize.controller_path.to_s
+          h["x-controller"] = api_group.class_name.constantize.controller_path.to_s
           h["x-action"]     = ruby_method.to_s
         rescue NameError, NoMethodError
         end
@@ -124,7 +124,7 @@ module SwaggerYard
         existing.allow_multiple = parameter.allow_multiple
       elsif parameter.param_type == 'body' && @parameters.detect {|param| param.param_type == 'body'}
         SwaggerYard.log.warn 'multiple body parameters invalid: ' \
-          "ignored #{parameter.name} for #{@api.api_declaration.class_name}##{ruby_method}"
+          "ignored #{parameter.name} for #{@api.api_group.class_name}##{ruby_method}"
       else
         @parameters << parameter
       end

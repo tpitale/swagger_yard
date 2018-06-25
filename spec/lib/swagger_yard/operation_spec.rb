@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe SwaggerYard::Operation do
   let(:class_name) { 'Hello' }
-  let(:api) { stub(api_declaration: stub(resource: 'hello', authorizations: [], class_name: class_name)) }
+  let(:api) { stub(api_group: stub(resource: 'hello', authorizations: [], class_name: class_name)) }
   let(:tags) { [yard_tag("@path [GET] /hello"), yard_tag("@summary   An summary  ")] }
   let(:yard_object) { stub(docstring: "Hello World", name: :hello, tags: tags) }
 

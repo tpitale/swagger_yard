@@ -1,6 +1,6 @@
 module SwaggerYard
   class Api
-    attr_accessor :path, :operations, :api_declaration
+    attr_accessor :path, :operations, :api_group
 
     def self.path_from_yard_object(yard_object)
       if tag = yard_object.tags.detect {|t| t.tag_name == "path"}
@@ -17,13 +17,13 @@ module SwaggerYard
       end
     end
 
-    def self.from_yard_object(yard_object, api_declaration)
+    def self.from_yard_object(yard_object, api_group)
       path = path_from_yard_object(yard_object)
-      new(path, api_declaration)
+      new(path, api_group)
     end
 
-    def initialize(path, api_declaration)
-      @api_declaration = api_declaration
+    def initialize(path, api_group)
+      @api_group = api_group
       @path = path
       @operations = []
     end

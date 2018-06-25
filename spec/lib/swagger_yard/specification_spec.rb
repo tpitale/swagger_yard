@@ -81,13 +81,13 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
     it 'warns about duplicate operations' do
       stub_logger.expects(:warn).once
 
-      api_decl = SwaggerYard::ApiDeclaration.new
-      api_decl.resource = 'system'
-      api_decl.add_yard_object(yard_method(:index, '@path [GET] /accounts'))
-      api_decl.add_yard_object(yard_method(:index, '@path [GET] /people'))
+      api_group = SwaggerYard::ApiGroup.new
+      api_group.resource = 'system'
+      api_group.add_yard_object(yard_method(:index, '@path [GET] /accounts'))
+      api_group.add_yard_object(yard_method(:index, '@path [GET] /people'))
 
       spec = specification
-      spec.instance_variable_set(:@api_decls, [api_decl])
+      spec.instance_variable_set(:@api_groups, [api_group])
       spec.path_objects
     end
   end

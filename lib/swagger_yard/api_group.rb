@@ -1,5 +1,5 @@
 module SwaggerYard
-  class ApiDeclaration
+  class ApiGroup
     attr_accessor :description, :resource
     attr_reader :apis, :authorizations, :class_name
 

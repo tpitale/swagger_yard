@@ -12,14 +12,14 @@ module SwaggerYard
     end
 
     def path_objects
-      api_decls.map(&:apis_hash).reduce({}, :merge).tap do |paths|
+      api_groups.map(&:apis_hash).reduce({}, :merge).tap do |paths|
         warn_duplicate_operations(paths)
       end
     end
 
     # Resources
     def tag_objects
-      api_decls.sort {|a,b| a.resource.upcase <=> b.resource.upcase}.map(&:to_tag)
+      api_groups.sort {|a,b| a.resource.upcase <=> b.resource.upcase}.map(&:to_tag)
     end
 
     def model_objects
@@ -27,7 +27,7 @@ module SwaggerYard
     end
 
     def security_objects
-      api_decls # triggers controller parsing in case it did not happen before
+      api_groups # triggers controller parsing in case it did not happen before
       SwaggerYard.config.security_definitions.merge(
         Hash[authorizations.map {|auth| [auth.name, auth.to_h]}]
       )
@@ -38,8 +38,8 @@ module SwaggerYard
       @models ||= parse_models
     end
 
-    def api_decls
-      @api_decls ||= parse_controllers
+    def api_groups
+      @api_groups ||= parse_controllers
     end
 
     def parse_models
@@ -59,7 +59,7 @@ module SwaggerYard
             obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
               @authorizations << Authorization.from_yard_object(t)
             end
-            ApiDeclaration.from_yard_object(obj)
+            ApiGroup.from_yard_object(obj)
           end
         end
       end.flatten.select(&:valid?)
