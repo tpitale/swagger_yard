@@ -87,7 +87,7 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
       api_decl.add_yard_object(yard_method(:index, '@path [GET] /people'))
 
       spec = specification
-      spec.instance_variable_set(:@controllers, [api_decl])
+      spec.instance_variable_set(:@api_decls, [api_decl])
       spec.path_objects
     end
   end
