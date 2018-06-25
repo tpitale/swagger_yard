@@ -3,6 +3,9 @@ module SwaggerYard
     attr_accessor :name, :type, :description, :param_type, :required, :allow_multiple
 
     def self.from_yard_tag(tag, operation)
+      tag = SwaggerYard.requires_name_and_type(tag)
+      return nil unless tag
+
       name, options_string = tag.name.split(/[\(\)]/)
       description = tag.text
       description = name if description.nil? || description.strip.empty?

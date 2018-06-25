@@ -107,4 +107,18 @@ RSpec.describe SwaggerYard::Operation do
       subject
     end
   end
+
+  context "with a typeless parameter" do
+    include SilenceLogger
+    let(:tags) { [yard_tag("@parameter name")] }
+
+    its(:parameters) { are_expected.to be_empty }
+  end
+
+  context "with a nameless parameter" do
+    include SilenceLogger
+    let(:tags) { [yard_tag("@parameter [string]")] }
+
+    its(:parameters) { are_expected.to be_empty }
+  end
 end

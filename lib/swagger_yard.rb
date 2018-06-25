@@ -41,6 +41,18 @@ module SwaggerYard
       YARD::Logger.instance
     end
 
+    def requires_name_and_type(tag)
+      unless tag.name && tag.types
+        if tag.object
+          object   = " in #{tag.object.to_s}"
+          location = " near #{tag.object.files.first.join(':')}" if tag.object.files.first
+        end
+        log.warn "invalid @#{tag.tag_name} tag#{object}#{location}"
+        return nil
+      end
+      tag
+    end
+
     #
     # Use YARD to parse object tags from a file
     #

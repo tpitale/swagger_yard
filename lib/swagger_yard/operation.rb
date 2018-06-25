@@ -110,7 +110,8 @@ module SwaggerYard
     # Example: [Array]     status(required, body)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Integer]   media[media_type_id]                          ID of the desired media type.
     def add_parameter(tag)
-      add_or_update_parameter Parameter.from_yard_tag(tag, self)
+      param = Parameter.from_yard_tag(tag, self)
+      add_or_update_parameter param if param
     end
 
     def add_or_update_parameter(parameter)
