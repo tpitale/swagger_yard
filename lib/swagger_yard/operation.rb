@@ -3,8 +3,8 @@ module SwaggerYard
     attr_accessor :description, :ruby_method
     attr_writer :summary
     attr_reader :path, :http_method, :error_messages, :response_type, :response_desc
-    attr_reader :parameters, :model_names
     attr_reader :path_item
+    attr_reader :parameters
 
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, path_item)
@@ -37,7 +37,6 @@ module SwaggerYard
       @summary        = nil
       @description    = ""
       @parameters     = []
-      @model_names    = []
       @error_messages = []
     end
 
@@ -117,7 +116,7 @@ module SwaggerYard
     # Example: [Array]     status(required, body)  Filter by status. (e.g. status[]=1&status[]=2&status[]=3)
     # Example: [Integer]   media[media_type_id]                          ID of the desired media type.
     def add_parameter(tag)
-      param = Parameter.from_yard_tag(tag, self)
+      param = Parameter.from_yard_tag(tag)
       add_or_update_parameter param if param
     end
 
@@ -139,7 +138,6 @@ module SwaggerYard
     # Example:
     # @response_type [Ownership] the requested ownership
     def add_response_type(type, desc)
-      model_names << type.model_name
       @response_type = type
       @response_desc = desc
     end

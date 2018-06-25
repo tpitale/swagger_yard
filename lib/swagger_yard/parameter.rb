@@ -2,7 +2,7 @@ module SwaggerYard
   class Parameter
     attr_accessor :name, :type, :description, :param_type, :required, :allow_multiple
 
-    def self.from_yard_tag(tag, operation)
+    def self.from_yard_tag(tag)
       tag = SwaggerYard.requires_name_and_type(tag)
       return nil unless tag
 
@@ -12,8 +12,6 @@ module SwaggerYard
       type = Type.from_type_list(tag.types)
 
       options = {}
-
-      operation.model_names << type.name if type.ref?
 
       unless options_string.nil?
         options_string.split(',').map(&:strip).tap do |arr|
