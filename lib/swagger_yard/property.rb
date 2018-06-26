@@ -26,19 +26,5 @@ module SwaggerYard
      def required?
       @required
     end
-
-    def to_h
-      @type.schema_with.tap do |h|
-        unless h['$ref']
-          h["description"] = description if description && !description.strip.empty?
-          if @nullable
-            h["x-nullable"] = true
-            if h["type"]
-              h["type"] = [h["type"], "null"]
-            end
-          end
-        end
-      end
-    end
   end
 end

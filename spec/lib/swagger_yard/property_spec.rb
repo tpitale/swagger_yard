@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe SwaggerYard::Property do
-  let(:property_obj) { described_class.from_tag(tag) }
-  subject(:property) { property_obj && property_obj.to_h }
+  subject(:property) { described_class.from_tag(tag) }
+  subject { property.type.schema }
 
   context "with a string type" do
     let(:tag) { yard_tag '@property name [string] Name'  }
 
     its(['type'])        { is_expected.to eq('string') }
-    its(['description']) { is_expected.to eq('Name') }
+    it { expect(property.description).to eq('Name') }
   end
 
   context "with a uuid type" do
@@ -36,7 +36,7 @@ describe SwaggerYard::Property do
     let(:tag) { yard_tag '@property name [object]  Name' }
 
     its(['type'])        { is_expected.to eq('object') }
-    its(['description']) { is_expected.to eq('Name') }
+    it { expect(property.description).to eq('Name') }
   end
 
   context "with an array type" do
@@ -67,23 +67,10 @@ describe SwaggerYard::Property do
   end
 
   context "with a required flag" do
-    subject { property_obj }
+    subject { property }
     let(:tag) { yard_tag '@property name(required) [string]  Name' }
 
     it { is_expected.to be_required }
-  end
-
-  context "with a nullable flag" do
-    let(:tag) { yard_tag '@property name(nullable) [string]  Name' }
-
-    its(['type'])           { is_expected.to eq(['string', 'null']) }
-    its(['x-nullable'])     { is_expected.to eq(true) }
-  end
-
-  context "with a nullable model" do
-    let(:tag) { yard_tag '@property name(nullable) [Name]  Name' }
-
-    it { is_expected.to eq('$ref' => '#/definitions/Name') }
   end
 
   context "with no description" do
@@ -99,12 +86,14 @@ describe SwaggerYard::Property do
   end
 
   context 'with no property name' do
+    subject { property }
     include SilenceLogger
     let(:tag) { yard_tag '@property [string]' }
     it { is_expected.to be_nil }
   end
 
   context 'with no type' do
+    subject { property }
     include SilenceLogger
     let(:tag) { yard_tag '@property myProperty' }
     it { is_expected.to be_nil }

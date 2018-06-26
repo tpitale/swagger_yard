@@ -119,7 +119,7 @@ module SwaggerYard
 
       if !mod.properties.empty? || mod.inherits.empty?
         h["type"] = "object"
-        h["properties"] = Hash[mod.properties.map {|p| [p.name, p.to_h]}]
+        h["properties"] = Hash[mod.properties.map {|p| [p.name, property(p)]}]
         h["required"] = mod.properties.select(&:required?).map(&:name) if mod.properties.detect(&:required?)
       end
 
@@ -141,6 +141,20 @@ module SwaggerYard
       h["description"] = mod.description unless mod.description.empty?
 
       h
+    end
+
+    def property(prop)
+      prop.type.schema_with(model_path: model_path).tap do |h|
+        unless h['$ref']
+          h["description"] = prop.description if prop.description && !prop.description.strip.empty?
+          if prop.nullable
+            h["x-nullable"] = true
+            if h["type"]
+              h["type"] = [h["type"], "null"]
+            end
+          end
+        end
+      end
     end
 
     def tags(tag_objects)
