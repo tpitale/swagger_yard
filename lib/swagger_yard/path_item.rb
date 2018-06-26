@@ -2,10 +2,6 @@ module SwaggerYard
   class PathItem
     attr_accessor :operations, :api_group
 
-    def self.from_yard_object(yard_object, api_group)
-      new(api_group)
-    end
-
     def initialize(api_group = nil)
       @api_group = api_group
       @operations = {}

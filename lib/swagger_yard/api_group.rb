@@ -83,7 +83,7 @@ module SwaggerYard
 
       return if path.nil?
 
-      path_item = (path_items[path] ||= PathItem.from_yard_object(yard_object, self))
+      path_item = (path_items[path] ||= PathItem.new(self))
       path_item.add_operation(yard_object)
       path
     end
