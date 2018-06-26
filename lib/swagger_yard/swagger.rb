@@ -12,8 +12,8 @@ module SwaggerYard
   class Swagger
     attr_reader :specification
 
-    def initialize
-      @specification = Specification.new
+    def initialize(spec = Specification.new)
+      @specification = spec
     end
 
     def to_h
@@ -111,7 +111,36 @@ module SwaggerYard
     end
 
     def models(model_objects)
-      model_objects
+      Hash[model_objects.map { |name, mod| [name, model(mod)] }]
+    end
+
+    def model(mod)
+      h = {}
+
+      if !mod.properties.empty? || mod.inherits.empty?
+        h["type"] = "object"
+        h["properties"] = Hash[mod.properties.map {|p| [p.name, p.to_h]}]
+        h["required"] = mod.properties.select(&:required?).map(&:name) if mod.properties.detect(&:required?)
+      end
+
+      h["discriminator"] = mod.discriminator if mod.discriminator
+
+      # Polymorphism
+      unless mod.inherits.empty?
+        all_of = mod.inherits.map { |name| Type.new(name).schema_with(model_path: model_path) }
+        all_of << h unless h.empty?
+
+        if all_of.length == 1 && mod.description.empty?
+          h.update(all_of.first)
+        else
+          h = { "allOf" => all_of }
+        end
+      end
+
+      # Description
+      h["description"] = mod.description unless mod.description.empty?
+
+      h
     end
 
     def tags(tag_objects)

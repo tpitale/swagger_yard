@@ -128,4 +128,105 @@ RSpec.describe SwaggerYard::Swagger do
                              "name" => "X-APPLICATION-API-KEY",
                              "in" => "header"}) }
   end
+
+  context "models" do
+    let(:model) { SwaggerYard::Model.from_yard_object(yard_class('MyModel', content)) }
+    let(:spec) { stub(path_objects: SwaggerYard::Paths.new({}), tag_objects: [],
+                      security_objects: [], model_objects: { model.id => model }) }
+
+    subject { described_class.new(spec).to_h['definitions'] }
+
+    context "inherited class with polymorphism" do
+      let(:content) do
+        [
+          "@model MyBiggerModel",
+          "@inherits MyModel",
+          "@property myOtherProperty [string]"
+        ].join("\n")
+      end
+
+      its(['MyBiggerModel']) do
+        is_expected.to eq(
+          "allOf" => [
+            {
+              "$ref" => "#/definitions/MyModel"
+            },
+            {
+              "type" => "object",
+              "properties" => {
+                "myOtherProperty" => {
+                  "type"=>"string"
+                }
+              }
+            }
+          ]
+        )
+      end
+
+      context 'and an external schema' do
+        let(:content) do
+          ["The description.",
+           "",
+           "@model MyModel",
+           "@inherits schema#OtherModel"].join("\n")
+        end
+        let(:url)  { 'http://example.com/schemas/v1.0' }
+        before do
+          SwaggerYard.configure do |config|
+            config.external_schema schema: url
+          end
+        end
+
+        its(['MyModel']) do
+          schema = {
+            "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" }],
+            "description" => "The description."
+          }
+          is_expected.to eq(schema)
+        end
+      end
+    end
+
+    context 'inherited type with no properties' do
+      let(:content) do
+        [
+         "@model MyEnum",
+         "@inherits enum<one,two,three>"
+        ].join("\n")
+      end
+
+      its(['MyEnum']) do
+        is_expected.to eq('type' => 'string', 'enum' => ['one', 'two', 'three'])
+      end
+    end
+
+    context 'with an empty property' do
+      include SilenceLogger
+      let(:content) do
+        [
+          "@model MyModel",
+          "@property [string]"
+        ].join("\n")
+      end
+
+      its(['MyModel']) do
+        is_expected.to eq('type' => 'object', 'properties' => {})
+      end
+    end
+
+    context 'with a typeless property' do
+      include SilenceLogger
+      let(:content) do
+        [
+          "@model MyModel",
+          "@property myProperty"
+        ].join("\n")
+      end
+
+      its(['MyModel']) do
+        is_expected.to eq('type' => 'object', 'properties' => {})
+      end
+    end
+
+  end
 end

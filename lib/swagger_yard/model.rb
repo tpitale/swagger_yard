@@ -4,7 +4,7 @@ module SwaggerYard
   #   complex model object as defined by swagger schema
   #
   class Model
-    attr_reader :id, :discriminator, :inherits, :description
+    attr_reader :id, :discriminator, :inherits, :description, :properties
 
     def self.from_yard_object(yard_object)
       new.tap do |model|
@@ -52,39 +52,6 @@ module SwaggerYard
       end
 
       self
-    end
-
-    def inherits_references
-      @inherits.map { |name| Type.new(name).schema_with }
-    end
-
-    def to_h
-      h = {}
-
-      if !@properties.empty? || @inherits.empty?
-        h["type"] = "object"
-        h["properties"] = Hash[@properties.map {|p| [p.name, p.to_h]}]
-        h["required"] = @properties.select(&:required?).map(&:name) if @properties.detect(&:required?)
-      end
-
-      h["discriminator"] = @discriminator if @discriminator
-
-      # Polymorphism
-      unless @inherits.empty?
-        all_of = inherits_references
-        all_of << h unless h.empty?
-
-        if all_of.length == 1 && @description.empty?
-          h.update(all_of.first)
-        else
-          h = { "allOf" => all_of }
-        end
-      end
-
-      # Description
-      h["description"] = @description unless @description.empty?
-
-      h
     end
   end
 end

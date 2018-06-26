@@ -23,7 +23,7 @@ module SwaggerYard
     end
 
     def model_objects
-      Hash[models.map {|m| [m.id, m.to_h]}]
+      Hash[models.map {|m| [m.id, m]}]
     end
 
     def security_objects
