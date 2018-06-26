@@ -76,7 +76,20 @@ module SwaggerYard
     end
 
     def parameters(params)
-      params.map(&:to_h)
+      params.map do |param|
+        { "name"        => param.name,
+          "description" => param.description,
+          "required"    => param.required,
+          "in"          => param.param_type
+        }.tap do |h|
+          if h["in"] == "body"
+            h["schema"] = param.type.to_h
+          else
+            h.update(param.type.to_h)
+          end
+          h["collectionFormat"] = 'multi' if !Array(param.allow_multiple).empty? && h["items"]
+        end
+      end
     end
 
     def responses(responses_by_status, op)

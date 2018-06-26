@@ -46,20 +46,5 @@ module SwaggerYard
     def from_path?
       @from_path
     end
-
-    def to_h
-      { "name"        => name,
-        "description" => description,
-        "required"    => required,
-        "in"          => param_type
-      }.tap do |h|
-        if h["in"] == "body"
-          h["schema"] = @type.to_h
-        else
-          h.update(@type.to_h)
-        end
-        h["collectionFormat"] = 'multi' if !Array(allow_multiple).empty? && h["items"]
-      end
-    end
   end
 end
