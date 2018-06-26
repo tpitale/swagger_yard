@@ -4,6 +4,8 @@ module SwaggerYard
       new(types.first)
     end
 
+    MODEL_PATH = '#/definitions/'.freeze
+
     attr_reader :name, :source, :schema
 
     def initialize(string)
@@ -13,7 +15,6 @@ module SwaggerYard
       @name    = name_for(@schema['items']) if @name == 'array'
     end
 
-    # TODO: have this look at resource listing?
     def ref?
       schema["$ref"]
     end
@@ -22,13 +23,17 @@ module SwaggerYard
       ref? ? name : nil
     end
 
-    def to_h
-      schema
+    def schema_with(model_path: MODEL_PATH)
+      if ref? && model_path != MODEL_PATH
+        { '$ref' => schema[$ref].sub(MODEL_PATH, model_path) }
+      else
+        schema
+      end
     end
 
     private
     def name_for(schema)
-      schema["type"] || schema["$ref"][%r'#/definitions/(.*)', 1]
+      schema["type"] || schema["$ref"][%r'.*/([^/]*)$', 1]
     end
   end
 end

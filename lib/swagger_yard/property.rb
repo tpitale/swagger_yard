@@ -3,7 +3,7 @@ module SwaggerYard
   # Holds the name and type for a single model property
   #
   class Property
-    attr_reader :name, :description
+    attr_reader :name, :description, :required, :type, :nullable
 
     def self.from_tag(tag)
       tag = SwaggerYard.requires_name_and_type(tag)
@@ -23,12 +23,12 @@ module SwaggerYard
       @type = Type.from_type_list(types)
     end
 
-    def required?
+     def required?
       @required
     end
 
     def to_h
-      @type.to_h.tap do |h|
+      @type.schema_with.tap do |h|
         unless h['$ref']
           h["description"] = description if description && !description.strip.empty?
           if @nullable

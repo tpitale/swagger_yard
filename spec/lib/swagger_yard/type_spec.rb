@@ -19,7 +19,7 @@ RSpec.describe SwaggerYard::Type do
 
   describe '#to_h' do
     it 'handles additionalProperties with uniform simple key-values' do
-      expect(type('object<string>').to_h).to eq({
+      expect(type('object<string>').schema).to eq({
         "type" => "object",
         "additionalProperties" => {
           "type" => "string"
@@ -28,7 +28,7 @@ RSpec.describe SwaggerYard::Type do
     end
 
     it 'handles additionalProperties with uniform model key-values' do
-      expect(type('object<MyApp::Greeting>').to_h).to eq({
+      expect(type('object<MyApp::Greeting>').schema).to eq({
         "type" => "object",
         "additionalProperties" => {
           "$ref" => "#/definitions/MyApp_Greeting"
@@ -37,7 +37,7 @@ RSpec.describe SwaggerYard::Type do
     end
 
     it 'handles additionalProperties with uniform key-values of arrays of models' do
-      expect(type('object<array<MyApp::Greeting>>').to_h).to eq({
+      expect(type('object<array<MyApp::Greeting>>').schema).to eq({
         "type" => "object",
         "additionalProperties" => {
           "type" => "array",
@@ -49,7 +49,7 @@ RSpec.describe SwaggerYard::Type do
     end
 
     it 'handles nested object definitions' do
-      expect(type('object<object<string>>').to_h).to eq({
+      expect(type('object<object<string>>').schema).to eq({
         "type" => "object",
         "additionalProperties" => {
           "type" => "object",
@@ -61,7 +61,7 @@ RSpec.describe SwaggerYard::Type do
     end
 
     it 'handles object definitions nested in an array' do
-      expect(type('array<object<string>>').to_h).to eq({
+      expect(type('array<object<string>>').schema).to eq({
         "type" => "array",
         "items" => {
           "type" => "object",
@@ -73,7 +73,7 @@ RSpec.describe SwaggerYard::Type do
     end
 
     it 'handles object definitions with both properties and additionalProperties' do
-      expect(type('object<foo: string,bar: integer<int32>,string>').to_h).to eq({
+      expect(type('object<foo: string,bar: integer<int32>,string>').schema).to eq({
         "type" => "object",
         "properties" => {
           "foo" => { "type" => "string" },

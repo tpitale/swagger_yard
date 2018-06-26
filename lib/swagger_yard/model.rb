@@ -55,7 +55,7 @@ module SwaggerYard
     end
 
     def inherits_references
-      @inherits.map { |name| Type.new(name).to_h }
+      @inherits.map { |name| Type.new(name).schema_with }
     end
 
     def to_h

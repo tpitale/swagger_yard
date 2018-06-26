@@ -69,7 +69,7 @@ module SwaggerYard
         else
           name = Model.mangle(v)
           if /[[:upper:]]/.match(name)
-            { '$ref' => "#/definitions/#{name}" }
+            { '$ref' => "#{Type::MODEL_PATH}#{name}" }
           else
             { 'type' => name }
           end
@@ -81,7 +81,7 @@ module SwaggerYard
         unless url = SwaggerYard.config.external_schema[prefix]
           raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
         end
-        { '$ref' => "#{url}#/definitions/#{Model.mangle(name)}"}
+        { '$ref' => "#{url}#{Type::MODEL_PATH}#{Model.mangle(name)}"}
       end
 
       rule(formatted: { name: simple(:name), format: simple(:format) }) do

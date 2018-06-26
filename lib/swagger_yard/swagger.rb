@@ -17,15 +17,22 @@ module SwaggerYard
     end
 
     def to_h
-      metadata.merge(definitions)
+      metadata.merge(definitions).merge(model_definitions)
     end
 
     private
+    def model_path
+      Type::MODEL_PATH
+    end
+
     def definitions
       { "paths"               => paths(specification.path_objects),
-        "definitions"         => models(specification.model_objects),
         "tags"                => tags(specification.tag_objects),
         "securityDefinitions" => security_defs(specification.security_objects) }
+    end
+
+    def model_definitions
+      { "definitions" => models(specification.model_objects) }
     end
 
     def metadata
@@ -82,10 +89,11 @@ module SwaggerYard
           "required"    => param.required,
           "in"          => param.param_type
         }.tap do |h|
+          schema = param.type.schema_with(model_path: model_path)
           if h["in"] == "body"
-            h["schema"] = param.type.to_h
+            h["schema"] = schema
           else
-            h.update(param.type.to_h)
+            h.update(schema)
           end
           h["collectionFormat"] = 'multi' if !Array(param.allow_multiple).empty? && h["items"]
         end
@@ -96,7 +104,7 @@ module SwaggerYard
       Hash[responses_by_status.map do |status, resp|
              resp_hash = {}.tap do |h|
                h['description'] = resp && resp.description || op.summary || ''
-               h['schema'] = resp.type.to_h if resp
+               h['schema'] = resp.type.schema_with(model_path: model_path) if resp && resp.type
              end
              [status, resp_hash]
            end]
