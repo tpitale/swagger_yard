@@ -267,5 +267,40 @@ RSpec.describe SwaggerYard::Swagger do
         its(['name']) { is_expected.to eq('$ref' => '#/definitions/Name') }
       end
     end
+
+    context 'securityDefinitions' do
+      let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
+      let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+                        security_objects: { auth.name => auth }, model_objects: {}) }
+      let (:security_definitions) { {'key' => {'type' => 'basic'} } }
+
+      subject { described_class.new(spec).to_h['securityDefinitions'] }
+
+      before { SwaggerYard.config.security_definitions = security_definitions }
+
+      context 'api key' do
+        let(:content) { '@authorization [api_key] header X-My-Header' }
+
+        its(['header_x_my_header']) {
+          is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header')
+        }
+
+        it 'merges config authorizations' do
+          expect(subject).to include(security_definitions)
+        end
+      end
+
+      context 'api key with name' do
+        let(:content) { '@authorization [api_key] header X-My-Header header_auth' }
+
+        its(['header_auth']) { is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header') }
+      end
+
+      context 'basic' do
+        let(:content) { '@authorization [basic] mybasic' }
+
+        its(['mybasic']) { is_expected.to eq('type' => 'basic') }
+      end
+    end
   end
 end

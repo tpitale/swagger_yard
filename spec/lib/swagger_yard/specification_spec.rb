@@ -61,17 +61,8 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
   end
 
   context '#security_objects' do
-    before { SwaggerYard.config.security_definitions = security_definitions }
-
-    let (:security_definitions) { {key: "value"} }
-
-    it 'contains constructors authorizations' do
-      actual_security_object = multi_specification.security_objects
-      expected_security_object = {"type" => "apiKey", "name" => "X-APPLICATION-API-KEY", "in" => "header"}
-      expect(actual_security_object).to include("header_x_application_api_key" => expected_security_object)
-    end
-    it 'merges config authorizations' do
-      expect(multi_specification.security_objects).to include(security_definitions)
+    it 'contains  authorizations' do
+      expect(multi_specification.security_objects).to_not be_empty
     end
   end
 

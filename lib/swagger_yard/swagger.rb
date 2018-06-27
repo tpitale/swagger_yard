@@ -168,7 +168,17 @@ module SwaggerYard
     end
 
     def security_defs(security_objects)
-      security_objects
+      config_defs = SwaggerYard.config.security_definitions
+      config_defs.merge(Hash[security_objects.map { |name, obj| [name, security(obj)] }])
+    end
+
+    def security(obj)
+      case obj.type
+      when /api_?key/i
+        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.pass_as }
+      else
+        { 'type' => 'basic' }
+      end
     end
   end
 end
