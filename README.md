@@ -1,6 +1,6 @@
 # SwaggerYard [![Build Status](https://travis-ci.org/livingsocial/swagger_yard.svg?branch=master)](https://travis-ci.org/livingsocial/swagger_yard) #
 
-SwaggerYard is a gem to convert extended YARD syntax comments into the swagger spec compliant json format.
+SwaggerYard is a gem to convert custom YARD tags in comments into Swagger 2.0 or OpenAPI 3.0.0 specs.
 
 ## Installation ##
 
@@ -15,88 +15,51 @@ Install the gem with Bunder:
 
 ## Getting Started ##
 
-### Place configuration in a rails initializer ###
+Place configuration in a Rails initializer or suitable configuration file:
 
     # config/initializers/swagger_yard.rb
     SwaggerYard.configure do |config|
       config.api_version = "1.0"
-      config.reload = Rails.env.development?
+
+      config.title = 'Your API'
+      config.description = 'Your API does this'
 
       # where your actual api is hosted from
       config.api_base_path = "http://localhost:3000/api"
+
+      # Where to find controllers (can be an array of paths/globs)
+      config.controller_path = ::Rails.root + 'app/controllers/**/*'
+
+      # Where to find models (can be an array)
+      config.model_path = ::Rails.root + 'app/decorators/**/*'
     end
 
-## SwaggerYard Usage ##
+Then start to annotate controllers and models as described below.
 
-### Types ###
+### Generate Specification ###
 
-Types of things (parameters or responses of an operation, properties of a model)
-are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
-
-- Model references should be Capitalized or CamelCased by convention.
-- Basic types (integer, boolean, string, object, number, date, time, date-time,
-  uuid, etc.) should be lowercased.
-- An array of models or basic types is specified with `[array<...>]`.
-- An enum of allowed string values is specified with `[enum<one,two,three>]`.
-- An object definition can include the property definitions of its fields, and / or of an additional property for any remaining allowed fields. E.g., `[object<name: string, age: integer,  string >]`
-- Structured data like objects, arrays, pairs, etc., definitions can also be nested; E.g., `[object<pairs:array<object<right:integer,left:integer>>>]`
-- JSON-Schema `format` attributes can be specified for basic types using
-  `<...>`. For example, `[integer<int64>]` produces JSON
-  `{ "type": "integer", "format": "int64" }`.
-- Regex pattern constraints can be specified for strings using
-  `[regex<PATTERN>]`. For example, `[regex<^.{3}$>]` produces JSON
-  `{ "type": "string", "pattern": "^.{3}$" }`.
-
-### External Schema ###
-
-Types can be specified that refer to external JSON schema documents for their definition. External schema documents are expected to also define their models under a `definitions` top-level key like so:
-```
-{
-  "definitions": {
-    "MyStandardModel": {
-    }
-  }
-}
-```
-
-To register an external schema so that it can be referenced in places where you specify a type, configure SwaggerYard as follows:
-```ruby
-SwaggerYard.configure do |config|
-  config.external_schema mymodels: 'https://example.com/mymodels/v1.0'
-end
-```
-
-Then refer to models in the schema using the syntax `[mymodels#MyStandardModel]` where types are specified. This causes SwaggerYard to emit the following schema for the type:
+To generate a Swagger or OpenAPI specification, use one of the `SwaggerYard::Swagger` or `SwaggerYard::OpenAPI` classes as follows in a script or Rake task (or use [swagger_yard-rails](/livingsocial/swagger_yard-rails)):
 
 ```
-{ "$ref": "https://example.com/mymodels/v1.0#/definitions/MyStandardModel" }
+spec = SwaggerYard::OpenAPI.new
+# Generate YAML
+File.open("openapi.yml", "w") { |f| f << YAML.dump(spec.to_h) }
+# Generate JSON
+File.open("openapi.json, "w") { |f| f << JSON.pretty_generate(spec.to_h) }
 ```
 
-### Options ###
+## Documenting APIs
 
-Parameter or property _options_ are expressed inside parenthesis immediately
-following the parameter or property name.
+Documenting controllers and models is best illustrated by example.
 
-Examples:
+### Controller ###
 
-	# @parameter name(required) [string]  Name of the package
-	# @parameter age(nullable)  [integer] Age of package
-	# @parameter package(body)  [Package] Package object
+Each Swagger-ized controller must have a `@resource` tag naming the API to be documented. Without this tag, no endpoints will be generated.
 
-Possible parameters include:
-
-- `required`: indicates a required parameter or property.
-- `nullable`: indicates that JSON `null` is an allowed value for the property.
-- `multiple`: indicates a parameter may appear multiple times (usually in a
-  query string, e.g., `param=a&param=b&param=c`)
-- `body`/`query`/`path`/`formData`: Indicates where the parameter is located.
-
-### Example of using SwaggerYard in a Controller ###
+Then, document each controller action method that is an endpoint of the API. Each endpoint needs to have a `@path` tag at a minimum. `@parameter` tags and `@response_type`/`@response` tags specify the inputs and outputs to the endpoint. A request body is specified with the use of a single `@parameter` tag with a `(body)` option.
 
 ```ruby
 # @resource Account ownership
-#
-# @resource_path /accounts/ownerships
 #
 # This document describes the API for creating, reading, and deleting account ownerships.
 #
@@ -118,7 +81,6 @@ class Accounts::OwnershipsController < ActionController::Base
   # @parameter end_at_less        [date]        Filters response to include only items with end_at <= specified timestamp (e.g. end_at_less=2012-02-15T02:06:56Z).
   #
   def index
-    ...
   end
 
   ##
@@ -130,12 +92,22 @@ class Accounts::OwnershipsController < ActionController::Base
   # @error_message 400 Invalid ID supplied
   #
   def show
-    ...
+  end
+
+  ##
+  # Creates an ownership for an account
+  #
+  # @path [POST] /accounts/ownerships
+  # @parameter ownership(body) [Ownership] The ownership to be created
+  # @response_type [Ownership]
+  def create
   end
 end
 ```
 
-### Example of using SwaggerYard in a Model ###
+### Model ###
+
+Each model to be exposed in the specification must have a `@model` tag. Model properties are specified with `@property` tags.
 
 ```ruby
 #
@@ -192,7 +164,66 @@ module Models
 end
 ```
 
+### Types ###
+
+Types of things (parameters or responses of an operation, properties of a model) are indicated inside square-brackets (e.g., `[string]`) as part of a YARD tag.
+
+- Model references should be Capitalized or CamelCased by convention.
+- Basic types (integer, boolean, string, object, number, date, time, date-time, uuid, etc.) should be lowercased.
+- An array of models or basic types is specified with `[array<...>]`.
+- An enum of allowed string values is specified with `[enum<one,two,three>]`.
+- An object definition can include the property definitions of its fields, and / or of an additional property for any remaining allowed fields. E.g., `[object<name: string, age: integer,  string >]`
+- Structured data like objects, arrays, pairs, etc., definitions can also be nested; E.g., `[object<pairs:array<object<right:integer,left:integer>>>]`
+- JSON-Schema `format` attributes can be specified for basic types using `<...>`. For example, `[integer<int64>]` produces JSON `{ "type": "integer", "format": "int64" }`.
+- Regex pattern constraints can be specified for strings using `[regex<PATTERN>]`. For example, `[regex<^.{3}$>]` produces JSON `{ "type": "string", "pattern": "^.{3}$" }`.
+
+### Options ###
+
+Parameter or property _options_ are expressed inside parenthesis immediately
+following the parameter or property name.
+
+Examples:
+
+    # @parameter name(required) [string]  Name of the package
+    # @parameter age(nullable)  [integer] Age of package
+    # @parameter package(body)  [Package] Package object
+
+Possible parameters include:
+
+- `required`: indicates a required parameter or property.
+- `nullable`: indicates that JSON `null` is an allowed value for the property.
+- `multiple`: indicates a parameter may appear multiple times (usually in a
+  query string, e.g., `param=a&param=b&param=c`)
+- `body`/`query`/`path`/`formData`: Indicates where the parameter is located.
+
+### External Schema ###
+
+Types can be specified that refer to external JSON schema documents for their definition. External schema documents are expected to also define their models under a `definitions` top-level key like so:
+```
+{
+  "definitions": {
+    "MyStandardModel": {
+    }
+  }
+}
+```
+
+To register an external schema so that it can be referenced in places where you specify a type, configure SwaggerYard as follows:
+```ruby
+SwaggerYard.configure do |config|
+  config.external_schema mymodels: 'https://example.com/mymodels/v1.0'
+end
+```
+
+Then refer to models in the schema using the syntax `[mymodels#MyStandardModel]` where types are specified. This causes SwaggerYard to emit the following schema for the type:
+
+```
+{ "$ref": "https://example.com/mymodels/v1.0#/definitions/MyStandardModel" }
+```
+
+
 ## Authorization ##
+
 ### API Key auth ###
 
 SwaggerYard supports API Key auth descriptions. Start by adding `@authorization` to your `ApplicationController`.
@@ -215,16 +246,23 @@ class PetController < ApplicationController
 end
 ```
 
-### Custom security definitions (OAuth2) ###
+### Other security schemes (OAuth2) ###
 
-Additionally SwaggerYard also supports custom [security definitions](http://swagger.io/specification/#securityDefinitionsObject). You can define these in your configuration like:
+Additionally SwaggerYard also supports custom [security schemes](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-scheme-object). You can define these in your configuration like:
 
 ```ruby
 SwaggerYard.configure do |config|
   config.security_definitions['petstore_oauth'] = {
     type: "oauth2",
-    authorizationUrl: "http://swagger.io/api/oauth/dialog",
-    flow: :implicit
+    flows: {
+      implicit: {
+        authorizationUrl: "http://swagger.io/api/oauth/dialog",
+        scopes: {
+          "write:pets": "modify pets in your account",
+          "read:pets": "read your pets"		
+        }
+      }
+    }
   }
 end
 ```
@@ -247,7 +285,7 @@ To generate JSON from your code on request, checkout the [swagger_yard-rails](ht
 
 * [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
 * [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails)
-* [Swagger-spec version 2.0](https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md)
+* [Swagger-spec version 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md)
 * [OpenAPI version 3.0.0](https://swagger.io/docs/specification/about/)
 * [Yard](https://github.com/lsegal/yard)
 
@@ -263,7 +301,7 @@ any can be determined.
 SwaggerYard.configure do |config|
   config.path_discovery_function = ->(yard_obj) do
     # code here to inspect the yard doc object
-	# and return a [method, path] for the api
+    # and return a [method, path] for the api
   end
 end
 ```
