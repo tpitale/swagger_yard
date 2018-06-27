@@ -123,4 +123,92 @@ RSpec.describe SwaggerYard::OpenAPI do
                              "name" => "X-APPLICATION-API-KEY",
                              "in" => "header"}) }
   end
+
+  context 'securityDefinitions' do
+    let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
+    let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+                      security_objects: { auth.name => auth }, model_objects: {}) }
+    let (:security_schemes) { {'key' => {'type' => 'basic'} } }
+    let(:content) { '@authorization [api_key] header X-My-Header header_auth' }
+
+    subject { described_class.new(spec).to_h['components']['securitySchemes'] }
+
+    before { SwaggerYard.config.security_schemes = security_schemes }
+
+    context 'api key' do
+      its(['header_auth']) {
+        is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header')
+      }
+
+      it 'merges config authorizations' do
+        expect(subject).to include('key' => { 'type' => 'http', 'scheme' => 'basic' })
+      end
+    end
+
+    context 'basic' do
+      let(:content) { '@authorization [basic] mybasic' }
+
+      its(['mybasic']) { is_expected.to eq('type' => 'http', 'scheme' => 'basic') }
+    end
+
+    context 'bearer' do
+      let(:content) { '@authorization [bearer] mybearer JWT' }
+
+      its(['mybearer_jwt']) { is_expected.to eq('type' => 'http', 'scheme' => 'bearer', 'bearerFormat' => 'JWT') }
+    end
+
+    context 'http' do
+      let(:security_schemes) { {'key' => {'type' => 'http', 'scheme' => 'basic' } } }
+
+      its(['key']) { is_expected.to eq(security_schemes['key']) }
+    end
+
+    context 'with swagger2-style oauth2 config' do
+      let(:security_schemes) do
+        { 'oauth' => {
+            type: "oauth2",
+            authorizationUrl: 'http://api.example.com/oauth/authorize',
+            tokenUrl: 'http://api.example.com/oauth/token',
+            flow: 'implicit'
+          }
+        }
+      end
+
+      its(['oauth']) {
+        is_expected.to eq('type' => 'oauth2', 'flows' => {
+                            'implicit' => {
+                              'authorizationUrl' => 'http://api.example.com/oauth/authorize',
+                              'tokenUrl' => 'http://api.example.com/oauth/token',
+                              'scopes' => {}
+                            }
+                          })
+      }
+    end
+
+    context 'with openapi-style oauth2 config' do
+      let(:security_schemes) do
+        { 'oauth' => {
+            'type' => 'oauth2', 'flows' => {
+              'implicit' => {
+                'authorizationUrl' => 'http://api.example.com/oauth/authorize',
+                'tokenUrl' => 'http://api.example.com/oauth/token',
+                'scopes' => {}
+              }
+            }
+          }
+        }
+      end
+
+      its(['oauth']) {
+        is_expected.to eq('type' => 'oauth2', 'flows' => {
+                            'implicit' => {
+                              'authorizationUrl' => "http://api.example.com/oauth/authorize",
+                              'tokenUrl' => 'http://api.example.com/oauth/token',
+                              'scopes' => {}
+                            }
+                          })
+      }
+    end
+
+  end
 end

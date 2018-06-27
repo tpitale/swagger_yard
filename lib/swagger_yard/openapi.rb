@@ -68,5 +68,46 @@ module SwaggerYard
         end
       end
     end
+
+    def security_defs(security_objects)
+      defs = super
+      Hash[defs.map do |name, d|
+             [name, map_security(d)]
+           end]
+    end
+
+    def security(obj)
+      case obj.type
+      when /api_?key/i
+        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.pass_as }
+      else
+        { 'type' => obj.type, 'name' => obj.key }
+      end
+    end
+
+    def map_security(h)
+      h = Hash[h.map { |k, v| [k.to_s, v] }] # quick-n-dirty stringify keys
+      case type = h['type'].to_s
+      when 'apiKey', 'http'
+        h
+      when 'oauth2'
+        # convert from swagger2-style oauth2
+        if (authUrl = h.delete('authorizationUrl')) && (flow = h.delete('flow'))
+          { 'type' => 'oauth2', 'flows' => {
+              flow => { 'authorizationUrl' => authUrl } } }.tap do |result|
+            (h.keys - ['type']).each do |t|
+              result['flows'][flow][t] = h[t]
+            end
+            result['flows'][flow]['scopes'] = {} unless result['flows'][flow]['scopes']
+          end
+        else
+          h
+        end
+      else
+        { 'type' => 'http', 'scheme' => type }.tap do |result|
+          result['bearerFormat'] = h['name'] if h['name'] && type.downcase == 'bearer'
+        end
+      end
+    end
   end
 end
