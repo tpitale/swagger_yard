@@ -60,26 +60,29 @@ module SwaggerYard
 
     def operations(ops)
       expanded_ops = ops.map do |meth, op|
-        op_hash = {
-          "tags"        => op.tags,
-          "operationId" => op.operation_id,
-          "parameters"  => parameters(op.parameters),
-          "responses"   => responses(op.responses_by_status, op),
-        }
 
-        op_hash["description"] = op.description unless op.description.empty?
-        op_hash["summary"]     = op.summary unless op.summary.empty?
-
-        authorizations = op.api_group.authorizations
-        unless authorizations.empty?
-          op_hash["security"] = authorizations.map {|k,v| { k => v} }
-        end
-
-        op_hash.update(op.extended_attributes)
-
-        [meth, op_hash]
+        [meth, operation(op)]
       end
       Hash[expanded_ops]
+    end
+
+    def operation(op)
+      op_hash = {
+        "tags"        => op.tags,
+        "operationId" => op.operation_id,
+        "parameters"  => parameters(op.parameters),
+        "responses"   => responses(op.responses_by_status, op),
+      }
+
+      op_hash["description"] = op.description unless op.description.empty?
+      op_hash["summary"]     = op.summary unless op.summary.empty?
+
+      authorizations = op.api_group.authorizations
+      unless authorizations.empty?
+        op_hash["security"] = authorizations.map {|k,v| { k => v} }
+      end
+
+      op_hash.update(op.extended_attributes)
     end
 
     def parameters(params)
@@ -101,13 +104,14 @@ module SwaggerYard
     end
 
     def responses(responses_by_status, op)
-      Hash[responses_by_status.map do |status, resp|
-             resp_hash = {}.tap do |h|
-               h['description'] = resp && resp.description || op.summary || ''
-               h['schema'] = resp.type.schema_with(model_path: model_path) if resp && resp.type
-             end
-             [status, resp_hash]
-           end]
+      Hash[responses_by_status.map { |status, resp| [status, response(resp, op)] }]
+    end
+
+    def response(resp, op)
+      {}.tap do |h|
+        h['description'] = resp && resp.description || op.summary || ''
+        h['schema'] = resp.type.schema_with(model_path: model_path) if resp && resp.type
+      end
     end
 
     def models(model_objects)
