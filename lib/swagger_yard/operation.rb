@@ -1,5 +1,6 @@
 module SwaggerYard
   class Response
+    include Example
     attr_accessor :status, :description, :type
   end
 
@@ -8,7 +9,7 @@ module SwaggerYard
     attr_writer :summary
     attr_reader :path, :http_method
     attr_reader :parameters
-    attr_reader :path_item, :responses, :default_response
+    attr_reader :path_item, :responses
 
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, path_item)
@@ -29,6 +30,12 @@ module SwaggerYard
             operation.add_response(tag)
           when "summary"
             operation.summary = tag.text
+          when "example"
+            if tag.name && !tag.name.empty?
+              operation.response(tag.name).example = tag.text
+            else
+              operation.default_response.example = tag.text
+            end
           end
         end
 
@@ -68,6 +75,23 @@ module SwaggerYard
           hash[response.status] = response
         end
       end
+    end
+
+    def default_response
+      @default_response ||= Response.new.tap do |r|
+        r.status = 'default'
+      end
+    end
+
+    def response(name)
+      status = Integer(name)
+      resp = responses.detect { |r| r.status == status }
+      unless resp
+        resp = Response.new
+        resp.status = status
+        responses << resp
+      end
+      resp
     end
 
     def extended_attributes
@@ -129,11 +153,8 @@ module SwaggerYard
     # Example:
     # @response_type [Ownership] the requested ownership
     def add_response_type(type, desc)
-      @default_response = Response.new.tap do |r|
-        r.status = 'default'
-        r.type = type
-        r.description = desc
-      end
+      default_response.type = type
+      default_response.description = desc
     end
 
     def add_response(tag)

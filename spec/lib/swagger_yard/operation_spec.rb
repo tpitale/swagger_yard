@@ -128,4 +128,28 @@ RSpec.describe SwaggerYard::Operation do
     its("responses.first.status") { is_expected.to eq(400) }
     its("responses.first.type.source") { is_expected.to eq('ClientError') }
   end
+
+  context "examples" do
+    let(:yard_object) { yard_method('index', content) }
+
+    context "with an example" do
+      let(:content) do
+        ['@example',
+         ' {"message": "Hello", "timestamp": "2018/06/27T15:17:00.000Z"}'
+        ].join("\n")
+      end
+
+      its('default_response.example') { is_expected.to eq("message"=>"Hello", "timestamp"=>"2018/06/27T15:17:00.000Z") }
+    end
+
+    context "with a named example" do
+      let(:content) do
+        ['@example 400',
+         ' {"error": "Bad Request", "timestamp": "2018/06/27T15:17:00.000Z"}'
+        ].join("\n")
+      end
+
+      its('responses.first.example') { is_expected.to eq("error"=>"Bad Request", "timestamp"=>"2018/06/27T15:17:00.000Z") }
+    end
+  end
 end
