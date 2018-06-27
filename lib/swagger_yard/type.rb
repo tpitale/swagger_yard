@@ -4,28 +4,34 @@ module SwaggerYard
       new(types.first)
     end
 
+    # Default model location path
     MODEL_PATH = '#/definitions/'.freeze
 
-    attr_reader :name, :source, :schema
+    attr_reader :source
 
     def initialize(string)
       @source  = string
-      @schema  = TypeParser.new.json_schema(string)
-      @name    = name_for(@schema)
-      @name    = name_for(@schema['items']) if @name == 'array'
+      @name    = nil
+    end
+
+    def name
+      return @name if @name
+      @name = name_for(schema)
+      @name = name_for(schema['items']) if @name == 'array'
+      @name
     end
 
     def ref?
       schema["$ref"]
     end
 
-    def model_name
-      ref? ? name : nil
+    def schema
+      @schema ||= TypeParser.new.json_schema(source)
     end
 
     def schema_with(model_path: MODEL_PATH)
-      if ref? && model_path != MODEL_PATH
-        { '$ref' => schema[$ref].sub(MODEL_PATH, model_path) }
+      if model_path != MODEL_PATH
+        TypeParser.new(model_path).json_schema(source)
       else
         schema
       end
