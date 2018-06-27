@@ -5,9 +5,15 @@
 #
 # @property id(required)        [integer]             the identifier for the pet
 # @property names               [Array<string>]       the names for the pet
+# @example names
+#   ["Bob", "Bobo", "Bobby"]
 # @property age                 [integer]             the age of the pet
+# @example age
+#   8
 # @property relatives(required) [Array<AnimalThing>]  other Pets in its family
 # @property birthday            [date]                the pet's birthday
+# @example birthday
+#   "2018/10/31T00:00:00.000Z"
 #
 class Pet
 end

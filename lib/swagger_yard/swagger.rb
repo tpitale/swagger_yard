@@ -118,6 +118,11 @@ module SwaggerYard
       {}.tap do |h|
         h['description'] = resp && resp.description || op.summary || ''
         h['schema'] = resp.type.schema_with(model_path: model_path) if resp && resp.type
+        if resp && resp.example
+          h['examples'] = {
+            'application/json' => resp.example
+          }
+        end
       end
     end
 
@@ -151,6 +156,8 @@ module SwaggerYard
       # Description
       h["description"] = mod.description unless mod.description.empty?
 
+      h["example"] = mod.example if mod.example
+
       h
     end
 
@@ -164,6 +171,7 @@ module SwaggerYard
               h["type"] = [h["type"], "null"]
             end
           end
+          h["example"] = prop.example if prop.example
         end
       end
     end

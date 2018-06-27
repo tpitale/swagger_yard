@@ -10,6 +10,8 @@ class PetsController < ApplicationController
   # @path [GET] /pets
   # @response_type [Array<Pet>]
   # @parameter client_name(required) [string] The name of the client using the API
+  # @example
+  #   [{"id": 1, "names": ["Fido"], "age": 12}]
   def index
   end
 

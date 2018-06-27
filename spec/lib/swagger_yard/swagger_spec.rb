@@ -60,6 +60,8 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("client_name")) }
 
+    its(["get", "responses", "default", "examples", "application/json"]) { is_expected.to eq([{"id"=>1, "names"=>["Fido"], "age"=>12}]) }
+
     its(["post", "operationId"]) { is_expected.to eq("Pet-create") }
 
     its(["post", "summary"]) { is_expected.to eq("create a Pet") }
@@ -90,10 +92,14 @@ RSpec.describe SwaggerYard::Swagger do
     its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
 
     its(["Pet", "properties"]) { are_expected.to include("id", "names", "age", "relatives") }
+    its(["Pet", "properties", "names", "example"]) { is_expected.to eq(["Bob", "Bobo", "Bobby"]) }
+    its(["Pet", "properties", "age", "example"]) { is_expected.to eq(8) }
+    its(["Pet", "properties", "birthday", "example"]) { is_expected.to eq("2018/10/31T00:00:00.000Z") }
 
     its(["Possession", "properties"]) { are_expected.to include("name", "value") }
 
     its(["Transport", "properties"]) { are_expected.to include("id", "wheels") }
+    its(["Transport", "example"]) { is_expected.to eq({"id"=>10, "wheels"=>4}) }
   end
 
   context "#/definitions/Pet" do

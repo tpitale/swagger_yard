@@ -65,6 +65,7 @@ module SwaggerYard
         h['description'] = resp && resp.description || op.summary || ''
         if resp && resp.type && (schema = resp.type.schema_with(model_path: model_path))
           h['content'] = { 'application/json' => { 'schema' => schema } }
+          h['content']['application/json']['example'] = resp.example if resp.example
         end
       end
     end
