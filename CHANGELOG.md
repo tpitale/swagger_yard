@@ -1,5 +1,19 @@
 # SwaggerYard Changelog #
 
+## 1.0.0 -- ##
+
+* PR #55 -- OpenAPI 3 support
+
+- Breaking release! Removed unused and deprecated configuration properties (`reload`, `enabled`, `swagger_spec_base_path`, `api_path`) and tags (`@response_path`).
+- SwaggerYard now supports the OpenAPI 3 format. To generate OpenAPI 3 formatted json with your existing `swagger_yard` and `swagger_yard-rails` apps, simply add the `openapi_version` or change the `swagger_version` config property to be `'3.0.0'`.
+      SwaggerYard.configure do |config|
+	    config.openapi_version = '3.0.0'
+	  end
+- Add `@response` tag as preferred tag for controller actions to specify alternate responses (previously called `@error_message`).
+- Internal object model refactor (rename ResourceListing -> Specification, ApiDeclaration -> ApiGroup, Api -> PathItem, introduced Tag, Paths and Response models)
+- Moved all internal object model `#to_h` methods to SwaggerYard::Swagger so that we can support multiple formats
+- Support OpenAPI security schemes (http instead of basic, support schemes from RFC7235)
+
 ## 0.4.4 -- 25-06-2018 ##
 
 * PR #54 -- Inherits improvement + Validation fixes
