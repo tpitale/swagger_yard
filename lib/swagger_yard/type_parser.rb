@@ -69,7 +69,7 @@ module SwaggerYard
         else
           name = Model.mangle(v)
           if /[[:upper:]]/.match(name)
-            { '$ref' => "#{Type::MODEL_PATH}#{name}" }
+            { '$ref' => "#{model_path}#{name}" }
           else
             { 'type' => name }
           end
@@ -81,7 +81,12 @@ module SwaggerYard
         unless url = SwaggerYard.config.external_schema[prefix]
           raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
         end
-        { '$ref' => "#{url}#{Type::MODEL_PATH}#{Model.mangle(name)}"}
+        uri = URI(url)
+        fragment = uri.fragment ? "##{uri.fragment}" : model_path
+        uri.fragment = nil
+        fragment += '/' unless fragment.end_with?('/')
+        url = uri.to_s
+        { '$ref' => "#{url}#{fragment}#{Model.mangle(name)}"}
       end
 
       rule(formatted: { name: simple(:name), format: simple(:format) }) do
@@ -122,9 +127,10 @@ module SwaggerYard
       end
     end
 
-    def initialize
+    def initialize(model_path = Type::MODEL_PATH)
       @parser = Parser.new
       @xform  = Transform.new
+      @model_path = model_path
     end
 
     def parse(str)
@@ -132,7 +138,7 @@ module SwaggerYard
     end
 
     def json_schema(str)
-      @xform.apply(parse(str))
+      @xform.apply(parse(str), model_path: @model_path)
     rescue Parslet::ParseFailed => e
       raise InvalidTypeError, "'#{str}': #{e.message}"
     end

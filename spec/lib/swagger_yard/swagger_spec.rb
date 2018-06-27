@@ -185,6 +185,30 @@ RSpec.describe SwaggerYard::Swagger do
           is_expected.to eq(schema)
         end
       end
+
+      context 'and an external schema with a fragment' do
+        let(:content) do
+          ["The description.",
+           "",
+           "@model MyModel",
+           "@inherits schema#OtherModel"].join("\n")
+        end
+        let(:url)  { 'http://example.com/schemas/v1.0#/components/schemas' }
+        before do
+          SwaggerYard.configure do |config|
+            config.external_schema schema: url
+          end
+        end
+
+        its(['MyModel']) do
+          schema = {
+            "allOf" => [{ "$ref" => "#{url}/OtherModel" }],
+            "description" => "The description."
+          }
+          is_expected.to eq(schema)
+        end
+      end
+
     end
 
     context 'inherited type with no properties' do
