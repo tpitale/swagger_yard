@@ -29,7 +29,8 @@ module SwaggerYard
       @schema ||= TypeParser.new.json_schema(source)
     end
 
-    def schema_with(model_path: MODEL_PATH)
+    def schema_with(options = {})
+      model_path = options && options[:model_path] || MODEL_PATH
       if model_path != MODEL_PATH
         TypeParser.new(model_path).json_schema(source)
       else
