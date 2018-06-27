@@ -70,7 +70,7 @@ module SwaggerYard
 
     def responses_by_status
       {}.tap do |hash|
-        hash['default'] = default_response
+        hash['default'] = default_response if @default_response || @responses.empty?
         responses.each do |response|
           hash[response.status] = response
         end
