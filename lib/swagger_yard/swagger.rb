@@ -10,6 +10,13 @@ module SwaggerYard
   end
 
   class Swagger
+    class << self; alias object_new new; end
+
+    def self.new(*args)
+      return OpenAPI.object_new(*args) if SwaggerYard.config.swagger_version.start_with?("3.0")
+      super
+    end
+
     attr_reader :specification
 
     def initialize(spec = Specification.new)

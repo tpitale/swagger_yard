@@ -7,6 +7,9 @@ module SwaggerYard
     attr_accessor :path_discovery_function
     attr_accessor :security_definitions
 
+    # openapi-compatible names
+    alias openapi_version swagger_version
+    alias openapi_version= swagger_version=
     alias security_schemes security_definitions
     alias security_schemes= security_definitions=
 

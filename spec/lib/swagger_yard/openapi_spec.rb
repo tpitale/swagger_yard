@@ -211,4 +211,12 @@ RSpec.describe SwaggerYard::OpenAPI do
     end
 
   end
+
+  context 'with config.openapi_version set and Swagger.new' do
+    subject { SwaggerYard::Swagger.new.to_h }
+    before { SwaggerYard.config.openapi_version = '3.0.0' }
+
+    it { is_expected.to include('openapi', 'paths', 'components') }
+    it { is_expected.to_not include('swagger', 'definitions') }
+  end
 end
