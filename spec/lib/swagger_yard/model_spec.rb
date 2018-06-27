@@ -53,4 +53,32 @@ RSpec.describe SwaggerYard::Model do
 
     it { is_expected.to_not be_valid }
   end
+
+  context "with an @example" do
+    let(:content) do
+      ["@model MyModel",
+       '@example',
+       '  {',
+       '    "key": "value"',
+       '  }'
+      ].join("\n")
+    end
+
+    its(:example) { is_expected.to eq('key' => 'value') }
+  end
+
+  context "with an @example tied to a property" do
+    let(:content) do
+      ['@model MyModel',
+       '@property [string] name',
+       '@example name',
+       '  "Nick"'
+      ].join("\n")
+    end
+
+    it 'sets the example on the property' do
+      prop = model.property('name')
+      expect(prop.example).to eq("Nick")
+    end
+  end
 end

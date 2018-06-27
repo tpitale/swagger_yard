@@ -4,6 +4,7 @@ module SwaggerYard
   #
   class Property
     attr_reader :name, :description, :required, :type, :nullable
+    attr_accessor :example
 
     def self.from_tag(tag)
       tag = SwaggerYard.requires_name_and_type(tag)

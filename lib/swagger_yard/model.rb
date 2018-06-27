@@ -4,7 +4,7 @@ module SwaggerYard
   #   complex model object as defined by swagger schema
   #
   class Model
-    attr_reader :id, :discriminator, :inherits, :description, :properties
+    attr_reader :id, :discriminator, :inherits, :description, :properties, :example
 
     def self.from_yard_object(yard_object)
       new.tap do |model|
@@ -31,6 +31,10 @@ module SwaggerYard
       @id = Model.mangle(yard_object.path)
     end
 
+    def property(key)
+      properties.detect {|prop| prop.name == key }
+    end
+
     def parse_tags(tags)
       tags.each do |tag|
         case tag.tag_name
@@ -48,6 +52,17 @@ module SwaggerYard
           end
         when "inherits"
           @inherits << tag.text
+        when "example"
+          value = JSON.parse(tag.text) rescue tag.text
+          if tag.name && !tag.name.empty?
+            if (prop = property(tag.name))
+              prop.example = value
+            else
+              SwaggerYard.log.warn("no property '#{tag.name}' defined yet to which to attach example: #{value.inspect}")
+            end
+          else
+            @example = value
+          end
         end
       end
 
