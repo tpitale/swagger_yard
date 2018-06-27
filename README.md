@@ -290,19 +290,10 @@ class PetController < ApplicationController
 end
 ```
 
-## UI ##
 
-We suggest using something like [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3) for your UI needs inside of Rails.
+### Better Rails integration with swagger_yard-rails
 
-To generate JSON from your code on request, checkout the [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails) project. This provides an engine to parse and render the json required for use by swagger-ui_rails.
-
-## More Information ##
-
-* [swagger-ui_rails](https://github.com/3scale/swagger-ui_rails/tree/dev-2.1.3)
-* [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails)
-* [Swagger-spec version 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md)
-* [OpenAPI version 3.0.0](https://swagger.io/docs/specification/about/)
-* [Yard](https://github.com/lsegal/yard)
+To generate specifications from your Rails app on request, check out the [swagger_yard-rails](https://github.com/livingsocial/swagger_yard-rails) project. This provides an engine that has a mountable endpoint that will parse the source code and render the specification as a json document.
 
 
 ### Path Discovery Function ##
@@ -324,4 +315,14 @@ end
 In [swagger_yard-rails][], this hook is used to set a function that inspects the
 Rails routing tables to reverse look up and compute paths.
 
+
+## More Information ##
+
+* [swagger_yard-rails][]
+* [Swagger-spec version 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md)
+* [OpenAPI version 3.0.0](https://swagger.io/docs/specification/about/)
+* [Yard](https://github.com/lsegal/yard)
+
+
 [swagger_yard-rails]: https://github.com/livingsocial/swagger_yard-rails
+
