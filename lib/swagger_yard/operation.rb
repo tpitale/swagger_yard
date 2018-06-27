@@ -25,7 +25,7 @@ module SwaggerYard
           when "response_type"
             tag = SwaggerYard.requires_type(tag)
             operation.add_response_type(Type.from_type_list(tag.types), tag.text) if tag
-          when "error_message"
+          when "error_message", "response"
             operation.add_response(tag)
           when "summary"
             operation.summary = tag.text

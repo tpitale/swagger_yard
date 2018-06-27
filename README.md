@@ -56,7 +56,7 @@ Documenting controllers and models is best illustrated by example.
 
 Each Swagger-ized controller must have a `@resource` tag naming the API to be documented. Without this tag, no endpoints will be generated.
 
-Then, document each controller action method that is an endpoint of the API. Each endpoint needs to have a `@path` tag at a minimum. `@parameter` tags and `@response_type`/`@response` tags specify the inputs and outputs to the endpoint. A request body is specified with the use of a single `@parameter` tag with a `(body)` option.
+Then, document each controller action method that is an endpoint of the API. Each endpoint needs to have a `@path` tag at a minimum. `@parameter` tags and `@response_type`/`@response` tags specify the inputs and outputs to the endpoint. A request body is specified with the use of a single `@parameter` tag with a `(body)` option. (`@response_type` is shorthand for the type of the default response, while `@response` allows you to specify the HTTP status.)
 
 ```ruby
 # @resource Account ownership
@@ -88,8 +88,8 @@ class Accounts::OwnershipsController < ActionController::Base
   #
   # @path [GET] /accounts/ownerships/{id}
   # @response_type [Ownership]
-  # @error_message [EmptyOwnership] 404 Ownership not found
-  # @error_message 400 Invalid ID supplied
+  # @response [EmptyOwnership] 404 Ownership not found
+  # @response 400 Invalid ID supplied
   #
   def show
   end

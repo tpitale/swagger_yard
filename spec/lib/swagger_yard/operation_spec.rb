@@ -121,4 +121,11 @@ RSpec.describe SwaggerYard::Operation do
 
     its(:parameters) { are_expected.to be_empty }
   end
+
+  context "with a response tag" do
+    let(:tags) { [yard_tag("@response [ClientError] 400")] }
+
+    its("responses.first.status") { is_expected.to eq(400) }
+    its("responses.first.type.source") { is_expected.to eq('ClientError') }
+  end
 end
