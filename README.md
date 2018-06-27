@@ -196,6 +196,69 @@ Possible parameters include:
   query string, e.g., `param=a&param=b&param=c`)
 - `body`/`query`/`path`/`formData`: Indicates where the parameter is located.
 
+### Examples
+
+The Swagger and OpenAPI specs both allow for [specifying example data](https://swagger.io/docs/specification/adding-examples/) at multiple levels. SwaggerYard allows you to use an `@example` tag to specify example JSON data at the response, model, and individual property levels.
+
+The basic format of an `@example` is:
+
+```ruby
+# @example [name]
+#    body content
+#    should be indented
+#    and can span
+#    multiple lines
+```
+
+#### Response examples
+
+Response examples should appear in a method documentation block inside a controller, alongside the parameters and response tags. Use a named `@example` to associate the example with a specific response, or use an unnammed example to associate the data to the default response (when using a `@response_type` tag).
+
+```ruby
+  # return a Pet
+  # @path [GET] /pets/{id}
+  # @parameter id [integer] The ID for the Pet
+  # @response_type [Pet]
+  # @response [ErrorPet] 404 Pet not found
+  # @example
+  #    {"id": 1, "names": ["Fido"], "age": 12}
+  # @example 404
+  #    {"error": 404, "message": "Pet not found"}
+  def show
+  end
+```
+
+#### Model examples
+
+Use a model example to specify an example for the entire model at once. The example tag should omit any name to associate the data with the model itself and not a single property.
+
+```ruby
+# @model
+# @property id(required)  [integer]
+# @property name          [string]
+# @example
+#   {"id": 42, "name": "Fred Flintstone"}
+class Person
+end
+```
+
+### Property examples
+
+Use property examples to specify data for individual properties. To associate the example data, the `@example` tag must use the same name as the property and appear _after_ the property.
+
+```ruby
+# @model
+# @property id(required)  [integer]
+# @example id
+#    42
+# @property name          [string]
+# @example name
+#   "Fred Flintstone"
+class Person
+end
+```
+
+
 ### External Schema ###
 
 Types can be specified that refer to external JSON schema documents for their definition. External schema documents are expected to also define their models under a `definitions` top-level key like so:

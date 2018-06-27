@@ -2,6 +2,10 @@
 
 ## 1.0.0 -- ##
 
+* PR #56 -- Examples
+
+- Example data can be defined at the response, model, or property level and that data will be included in the swagger or openapi document per the [specification](https://swagger.io/docs/specification/adding-examples/).
+
 * PR #55 -- OpenAPI 3 support
 
 - Breaking release! Removed unused and deprecated configuration properties (`reload`, `enabled`, `swagger_spec_base_path`, `api_path`) and tags (`@response_path`).
