@@ -21,10 +21,6 @@ module SwaggerYard
       @name
     end
 
-    def ref?
-      schema["$ref"]
-    end
-
     def schema
       @schema ||= TypeParser.new.json_schema(source)
     end
