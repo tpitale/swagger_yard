@@ -17,7 +17,7 @@ RSpec.describe SwaggerYard::Type do
     expect(type('MyApp__Greeting').name).to eq('MyApp__Greeting')
   end
 
-  describe '#to_h' do
+  describe '#schema' do
     it 'handles additionalProperties with uniform simple key-values' do
       expect(type('object<string>').schema).to eq({
         "type" => "object",
