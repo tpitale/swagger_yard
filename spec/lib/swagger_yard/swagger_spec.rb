@@ -271,7 +271,7 @@ RSpec.describe SwaggerYard::Swagger do
     context 'securityDefinitions' do
       let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
       let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
-                        security_objects: { auth.name => auth }, model_objects: {}) }
+                        security_objects: { auth.id => auth }, model_objects: {}) }
       let (:security_definitions) { {'key' => {'type' => 'basic'} } }
 
       subject { described_class.new(spec).to_h['securityDefinitions'] }
@@ -280,6 +280,8 @@ RSpec.describe SwaggerYard::Swagger do
 
       context 'api key' do
         let(:content) { '@authorization [api_key] header X-My-Header' }
+
+        it { is_expected.to include('header_x_my_header') }
 
         its(['header_x_my_header']) {
           is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header')
@@ -290,14 +292,19 @@ RSpec.describe SwaggerYard::Swagger do
         end
       end
 
-      context 'api key with name' do
-        let(:content) { '@authorization [api_key] header X-My-Header header_auth' }
+      context 'api key with description' do
+        let(:content) { '@authorization [api_key] header X-My-Header Header auth' }
 
-        its(['header_auth']) { is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header') }
+        it { is_expected.to include('header_x_my_header') }
+
+        its(['header_x_my_header']) { is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header',
+                                                        'in' => 'header', 'description' => 'Header auth') }
       end
 
       context 'basic' do
         let(:content) { '@authorization [basic] mybasic' }
+
+        it { is_expected.to include('mybasic') }
 
         its(['mybasic']) { is_expected.to eq('type' => 'basic') }
       end

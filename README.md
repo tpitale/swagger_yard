@@ -226,7 +226,7 @@ Then refer to models in the schema using the syntax `[mymodels#MyStandardModel]`
 
 ### API Key auth ###
 
-SwaggerYard supports API Key auth descriptions. Start by adding `@authorization` to your `ApplicationController`.
+SwaggerYard supports several authorization styles. Start by adding `@authorization` to your `ApplicationController`.
 
 ```ruby
 #
@@ -236,7 +236,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-Then you can use these authorizations from your controller or actions in a controller. The name comes from either header or query plus the name of the key downcased/underscored.
+Then you can use these authorizations from your controller or actions in a controller.
 
 ```ruby
 #
@@ -246,13 +246,28 @@ class PetController < ApplicationController
 end
 ```
 
-### Other security schemes (OAuth2) ###
+Supported formats for the `@authorization` tag are as follows:
 
-Additionally SwaggerYard also supports custom [security schemes](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-scheme-object). You can define these in your configuration like:
+```ruby
+# @authorization [apiKey] (query|header|cookie) key-name The rest is a description
+# @authorization [bearer] mybearerauth bearer-format The rest is a description
+# @authorization [basic] mybasicauth The rest is a description
+# @authorization [digest] digestauth The rest is a description
+# @authorization [<any-rfc7235-auth>] myrfcauth The rest is a description
+
+- For `apiKey` the name of the authorization is formed as `"#{location}_#{key_name}".downcase.gsub('-','_')`.
+  Example: `@authorization [apiKey] header X-API-Key` is named `header_x_api_key`. (This naming scheme is kept for backwards compatibility.)
+
+- All others are named by the tag name following the `[type]`.
+  Example: `@authorization [bearer] myBearerAuth Format Description` is named `myBearerAuth`.
+
+### Custom security schemes ###
+
+SwaggerYard also supports custom [security schemes](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#security-scheme-object). You can define these in your configuration like:
 
 ```ruby
 SwaggerYard.configure do |config|
-  config.security_definitions['petstore_oauth'] = {
+  config.security_schemes['petstore_oauth'] = {
     type: "oauth2",
     flows: {
       implicit: {

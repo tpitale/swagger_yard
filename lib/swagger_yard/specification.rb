@@ -28,7 +28,7 @@ module SwaggerYard
 
     def security_objects
       api_groups # triggers controller parsing in case it did not happen before
-      Hash[authorizations.map {|auth| [auth.name, auth]}]
+      Hash[authorizations.map {|auth| [auth.id, auth]}]
     end
 
     private

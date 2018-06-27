@@ -127,38 +127,45 @@ RSpec.describe SwaggerYard::OpenAPI do
   context 'securityDefinitions' do
     let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
     let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
-                      security_objects: { auth.name => auth }, model_objects: {}) }
-    let (:security_schemes) { {'key' => {'type' => 'basic'} } }
-    let(:content) { '@authorization [api_key] header X-My-Header header_auth' }
+                      security_objects: { auth.id => auth }, model_objects: {}) }
+    let (:security_schemes) { {'key' => {'type' => 'basic', 'description' => 'Basic authentication'} } }
+    let(:content) { '@authorization [api_key] header X-My-Header' }
 
     subject { described_class.new(spec).to_h['components']['securitySchemes'] }
 
     before { SwaggerYard.config.security_schemes = security_schemes }
 
     context 'api key' do
-      its(['header_auth']) {
+      it { is_expected.to include('header_x_my_header') }
+
+      its(['header_x_my_header']) {
         is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header')
       }
 
       it 'merges config authorizations' do
-        expect(subject).to include('key' => { 'type' => 'http', 'scheme' => 'basic' })
+        expect(subject).to include('key' => { 'type' => 'http', 'scheme' => 'basic', 'description' => 'Basic authentication' })
       end
     end
 
     context 'basic' do
-      let(:content) { '@authorization [basic] mybasic' }
+      let(:content) { '@authorization [basic] myBasic This app uses basic authentication' }
 
-      its(['mybasic']) { is_expected.to eq('type' => 'http', 'scheme' => 'basic') }
+      it { is_expected.to include('myBasic') }
+
+      its(['myBasic']) { is_expected.to eq('type' => 'http', 'scheme' => 'basic', 'description' => 'This app uses basic authentication') }
     end
 
     context 'bearer' do
-      let(:content) { '@authorization [bearer] mybearer JWT' }
+      let(:content) { '@authorization [bearer] myBearer JWT This app uses JWT authentication' }
 
-      its(['mybearer_jwt']) { is_expected.to eq('type' => 'http', 'scheme' => 'bearer', 'bearerFormat' => 'JWT') }
+      it { is_expected.to include('myBearer') }
+
+      its(['myBearer']) { is_expected.to eq('type' => 'http', 'scheme' => 'bearer', 'bearerFormat' => 'JWT',
+                                            'description' => 'This app uses JWT authentication') }
     end
 
     context 'http' do
-      let(:security_schemes) { {'key' => {'type' => 'http', 'scheme' => 'basic' } } }
+      let(:security_schemes) { {'key' => {'type' => 'http', 'scheme' => 'basic', 'description' => 'Basic authentication' } } }
 
       its(['key']) { is_expected.to eq(security_schemes['key']) }
     end

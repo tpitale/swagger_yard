@@ -79,9 +79,13 @@ module SwaggerYard
     def security(obj)
       case obj.type
       when /api_?key/i
-        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.pass_as }
+        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.name }
+      when /bearer/i
+        { 'type' => obj.type, 'name' => obj.name, 'format' => obj.key }
       else
-        { 'type' => obj.type, 'name' => obj.key }
+        { 'type' => obj.type, 'name' => obj.name }
+      end.tap do |result|
+        result['description'] = obj.description if obj.description && !obj.description.empty?
       end
     end
 
@@ -105,8 +109,10 @@ module SwaggerYard
         end
       else
         { 'type' => 'http', 'scheme' => type }.tap do |result|
-          result['bearerFormat'] = h['name'] if h['name'] && type.downcase == 'bearer'
+          result['bearerFormat'] = h['format'] if h['format']
         end
+      end.tap do |result|
+        result['description'] = h['description'] unless h['description'].nil? || h['description'].empty?
       end
     end
   end

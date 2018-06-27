@@ -182,9 +182,11 @@ module SwaggerYard
     def security(obj)
       case obj.type
       when /api_?key/i
-        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.pass_as }
+        { 'type' => 'apiKey', 'name' => obj.key, 'in' => obj.name }
       else
         { 'type' => 'basic' }
+      end.tap do |result|
+        result['description'] = obj.description if obj.description && !obj.description.empty?
       end
     end
   end
