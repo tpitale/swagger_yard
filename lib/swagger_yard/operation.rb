@@ -77,23 +77,6 @@ module SwaggerYard
       end
     end
 
-    def default_response
-      @default_response ||= Response.new.tap do |r|
-        r.status = 'default'
-      end
-    end
-
-    def response(name)
-      status = Integer(name)
-      resp = responses.detect { |r| r.status == status }
-      unless resp
-        resp = Response.new
-        resp.status = status
-        responses << resp
-      end
-      resp
-    end
-
     def extended_attributes
       {}.tap do |h|
         # Rails controller/action: if constantize/controller_path methods are
@@ -149,6 +132,12 @@ module SwaggerYard
       end
     end
 
+    def default_response
+      @default_response ||= Response.new.tap do |r|
+        r.status = 'default'
+      end
+    end
+
     ##
     # Example:
     # @response_type [Ownership] the requested ownership
@@ -157,14 +146,24 @@ module SwaggerYard
       default_response.description = desc
     end
 
+    def response(name)
+      status = Integer(name)
+      resp = responses.detect { |r| r.status == status }
+      unless resp
+        resp = Response.new
+        resp.status = status
+        responses << resp
+      end
+      resp
+    end
+
     def add_response(tag)
       tag = SwaggerYard.requires_name(tag)
       return unless tag
-      @responses << Response.new.tap do |r|
-        r.status = Integer(tag.name)
-        r.description = tag.text if tag.text
-        r.type = Type.from_type_list(Array(tag.types)) if tag.types
-      end
+      r = response(tag.name)
+      r.description = tag.text if tag.text
+      r.type = Type.from_type_list(Array(tag.types)) if tag.types
+      r
     end
 
     def sort_parameters
