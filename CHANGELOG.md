@@ -1,6 +1,6 @@
 # SwaggerYard Changelog #
 
-## 1.0.0 -- ##
+## 1.0.0 -- 28-06-2018 ##
 
 * PR #56 -- Examples
 
