@@ -12,7 +12,9 @@ module SwaggerYard
         model.add_info(yard_object)
         model.parse_tags(yard_object.tags)
         yard_object.children.each do |child|
-          model.parse_tags(child.tags)
+          next unless child.is_a?(YARD::CodeObjects::MethodObject)
+          prop = Property.from_method(child)
+          model.properties << prop if prop
         end
       end
     end

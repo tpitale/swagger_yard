@@ -18,6 +18,11 @@ module SwaggerYard
       end
     end
 
+    def self.from_method(yard_method)
+      tags = yard_method.tags
+      from_tag(tags.first) unless tags.empty?
+    end
+
     def self.from_tag(tag)
       tag = SwaggerYard.requires_type(tag)
       return nil unless tag

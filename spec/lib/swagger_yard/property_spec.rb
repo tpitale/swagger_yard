@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SwaggerYard::Property do
+describe SwaggerYard::Property, 'from_tag' do
   subject(:property) { described_class.from_tag(tag) }
   subject { property.type.schema }
 
@@ -97,5 +97,26 @@ describe SwaggerYard::Property do
     include SilenceLogger
     let(:tag) { yard_tag '@property myProperty' }
     it { is_expected.to be_nil }
+  end
+end
+
+describe SwaggerYard::Property, 'from_method' do
+  let(:content) { '' }
+  let(:method) { yard_method('foo', content) }
+  subject(:property) { described_class.from_method(method) }
+
+  context 'with no content' do
+    it { is_expected.to be_nil }
+  end
+
+  context 'with no @property tag' do
+    let(:content) { 'Hello Foo' }
+    it { is_expected.to be_nil }
+  end
+
+  context 'with no name' do
+    let(:content) { '@property [string]' }
+    its(:name) { is_expected.to eq('foo') }
+    its('type.name') { is_expected.to eq('string') }
   end
 end
