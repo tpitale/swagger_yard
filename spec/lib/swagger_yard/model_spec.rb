@@ -83,11 +83,8 @@ RSpec.describe SwaggerYard::Model do
   end
 
   context 'with method properties' do
-    let(:objects) do
-      SwaggerYard.yard_class_objects_from_file((FIXTURE_PATH + 'models' + 'person.rb').to_s)
-    end
-
-    subject(:model) { SwaggerYard::Model.from_yard_object(objects.first) }
+    include_context 'person.rb model'
+    subject { model }
 
     its('properties') { is_expected.to include(a_property_named('address'),
                                                a_property_named('parent'),

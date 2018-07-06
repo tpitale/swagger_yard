@@ -33,4 +33,9 @@ RSpec.configure do |config|
 
   config.include SaveConfig
   config.include YARDHelpers
+
+  config.after do
+    SwaggerYard::Handlers::DSLHandler.reset
+    YARD::Registry.clear
+  end
 end

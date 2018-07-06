@@ -28,5 +28,9 @@ module SwaggerYard
       end if mappings
       @external_schema
     end
+
+    def register_dsl_method(meth, options = {})
+      SwaggerYard::Handlers::DSLHandler.register_dsl_method(meth, options)
+    end
   end
 end

@@ -14,6 +14,7 @@ require "swagger_yard/model"
 require "swagger_yard/path_item"
 require "swagger_yard/swagger"
 require "swagger_yard/openapi"
+require "swagger_yard/handlers"
 
 module SwaggerYard
   class Error < StandardError; end
