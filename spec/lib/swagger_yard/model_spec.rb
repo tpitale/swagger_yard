@@ -81,4 +81,34 @@ RSpec.describe SwaggerYard::Model do
       expect(prop.example).to eq("Nick")
     end
   end
+
+  context 'with method properties' do
+    let(:objects) do
+      SwaggerYard.yard_class_objects_from_file((FIXTURE_PATH + 'models' + 'person.rb').to_s)
+    end
+
+    subject(:model) { SwaggerYard::Model.from_yard_object(objects.first) }
+
+    its('properties') { is_expected.to include(a_property_named('address'),
+                                               a_property_named('parent'),
+                                               a_property_named('age')) }
+
+    its('properties') { is_expected.to_not include(a_property_named('some_non_model_method'),
+                                                   a_property_named('get_parent')) }
+
+    it 'captures the type' do
+      address = model.property('address')
+      expect(address.type.name).to eq('Address')
+    end
+
+    it 'captures the description' do
+      address = model.property('address')
+      expect(address.description).to eq("the person's address")
+    end
+
+    it 'captures requiredness' do
+      age = model.property('age')
+      expect(age).to be_required
+    end
+  end
 end

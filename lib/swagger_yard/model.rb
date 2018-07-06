@@ -11,6 +11,9 @@ module SwaggerYard
       new.tap do |model|
         model.add_info(yard_object)
         model.parse_tags(yard_object.tags)
+        yard_object.children.each do |child|
+          model.parse_tags(child.tags)
+        end
       end
     end
 
