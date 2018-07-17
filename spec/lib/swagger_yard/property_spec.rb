@@ -119,4 +119,39 @@ describe SwaggerYard::Property, 'from_method' do
     its(:name) { is_expected.to eq('foo') }
     its('type.name') { is_expected.to eq('string') }
   end
+
+  context 'with a name' do
+    let(:content) { '@property [string] hello' }
+    its(:name) { is_expected.to eq('foo') }
+    its(:description) { is_expected.to eq('hello') }
+  end
+
+  context 'with options' do
+    let(:content) { '@property [string] (required)' }
+    its(:name) { is_expected.to eq('foo') }
+    its('type.name') { is_expected.to eq('string') }
+    its(:required) { is_expected.to be_truthy }
+  end
+
+  context 'with some other tag' do
+    let(:content) { '@return [IO] the IO object' }
+    it { is_expected.to be_nil }
+  end
+
+  context 'with a docstring and a property tag' do
+    let(:content) { ['The "foo" property', '@property [Foo]'].join("\n") }
+    its(:name) { is_expected.to eq('foo') }
+    its('type.name') { is_expected.to eq('Foo') }
+    its(:description) { is_expected.to eq('The "foo" property') }
+  end
+
+  context 'with an @example' do
+    let(:content) { ['@property [Foo]', '@example 1'].join("\n") }
+    its(:example) { is_expected.to eq(1) }
+  end
+
+  context 'with another @example' do
+    let(:content) { ['@property [Foo]', '@example', '  {"type": "Foo"}'].join("\n") }
+    its(:example) { is_expected.to eq('type' => 'Foo') }
+  end
 end

@@ -4,7 +4,8 @@ module SwaggerYard
   #
   class Property
     include Example
-    attr_reader :name, :description, :required, :type, :nullable
+    attr_reader :name, :required, :type, :nullable
+    attr_accessor :description
 
     NAME_OPTIONS_REGEXP = /[\(\)]/
 
@@ -19,8 +20,15 @@ module SwaggerYard
     end
 
     def self.from_method(yard_method)
-      tags = yard_method.tags
-      from_tag(tags.first) unless tags.empty?
+      tags = (yard_method.tags ||[]).dup
+      prop_tag = tags.detect { |t| t.tag_name == 'property' }
+      return nil unless prop_tag
+      tags.reject { |t| t.tag_name == 'property' }
+      from_tag(prop_tag).tap do |prop|
+        ex = tags.detect { |t| t.tag_name == 'example' }
+        prop.example = ex.text.empty? ? ex.name : ex.text if ex
+        prop.description = yard_method.docstring unless prop.description
+      end
     end
 
     def self.from_tag(tag)
