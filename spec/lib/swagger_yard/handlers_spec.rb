@@ -4,6 +4,20 @@ describe SwaggerYard::Handlers do
   include_context 'person.rb model'
   subject { model }
 
+  its('properties') { is_expected.to include(a_property_named('address'),
+                                             a_property_named('age')) }
+
+  its('properties') { is_expected.to include(a_property_named('country')) }
+
+  its('properties') { is_expected.to_not include(a_property_named('age=')) }
+
+  its('properties') { is_expected.to_not include(a_property_named('country=')) }
+
+  it 'uses the docstring description' do
+    country = model.property('country')
+    expect(country.description).to eq("The person's country")
+  end
+
   describe 'method properties with a DSL method registered' do
     before do
       SwaggerYard.configure do |config|

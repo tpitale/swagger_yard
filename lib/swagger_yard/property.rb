@@ -20,6 +20,7 @@ module SwaggerYard
     end
 
     def self.from_method(yard_method)
+      return nil unless yard_method.explicit || yard_method.parameters.empty?
       tags = (yard_method.tags ||[]).dup
       prop_tag = tags.detect { |t| t.tag_name == 'property' }
       return nil unless prop_tag

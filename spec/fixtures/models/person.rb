@@ -13,6 +13,14 @@ class Person
   # @property [integer] (required) the person's age
   attr_reader :age
 
+  # The person's country
+  # @property [string]
+  attr_accessor :country
+
+  # This should not be included in the model
+  # @property [integer]
+  attr_writer :age
+
   def some_non_model_method
   end
 
