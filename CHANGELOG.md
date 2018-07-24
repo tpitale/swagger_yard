@@ -1,5 +1,11 @@
 # SwaggerYard Changelog #
 
+## 1.0.0 -- 24-07-2018 ##
+
+* PR #57 -- Properties on model methods
+
+- Allow `@property` tags to exist in comment blocks above model methods in addition to the class comment block.
+
 ## 1.0.0 -- 28-06-2018 ##
 
 * PR #56 -- Examples
