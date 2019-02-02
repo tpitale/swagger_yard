@@ -58,9 +58,9 @@ module SwaggerYard
       rule(identifier: simple(:id)) do
         v = id.to_s
         case v
-        when /array/i
+        when /^array$/i
           { 'type' => 'array', 'items' => { 'type' => 'string' } }
-        when /object/i
+        when /^object$/i
           { 'type' => 'object' }
         when "float", "double"
           { 'type' => 'number', 'format' => v }

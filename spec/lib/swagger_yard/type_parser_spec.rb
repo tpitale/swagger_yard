@@ -67,6 +67,8 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { expect_parse_to 'prefix#Foo::Bar' => { external_identifier: { namespace: 'prefix', identifier: 'Foo::Bar' } } }
 
+    it { expect_parse_to 'AnObject' => { identifier: 'AnObject' } }
+
     it { expect_parse_to 'object' => { identifier: 'object' } }
 
     it { expect_parse_to 'array<string>' => { array: { identifier: 'string' } } }
@@ -156,6 +158,10 @@ RSpec.describe SwaggerYard::TypeParser do
     it { expect_json_schema 'regexp< a b c >' => { "type" => "string", "pattern" => " a b c " } }
 
     it { expect_json_schema 'Foo' => { "$ref" => "#/definitions/Foo" } }
+
+    it { expect_json_schema 'AnArray' => { "$ref" => "#/definitions/AnArray" } }
+
+    it { expect_json_schema 'AnObject' => { "$ref" => "#/definitions/AnObject" } }
 
     it { expect_json_schema 'Foo::Bar' => { "$ref" => "#/definitions/Foo_Bar" } }
 
