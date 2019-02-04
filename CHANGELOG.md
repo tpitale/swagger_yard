@@ -1,6 +1,10 @@
 # SwaggerYard Changelog #
 
-## 1.0.0 -- 24-07-2018 ##
+## 1.0.2 -- 04-02-2019 ##
+
+* PR #58 -- Bugfix: anchored match array or object
+
+## 1.0.1 -- 24-07-2018 ##
 
 * PR #57 -- Properties on model methods
 
