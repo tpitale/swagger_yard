@@ -41,8 +41,12 @@ module SwaggerYard
       properties.detect {|prop| prop.name == key }
     end
 
+    TAG_ORDER = %w(model inherits discriminator property example)
+
     def parse_tags(tags)
-      tags.each do |tag|
+      sorted_tags = tags.each_with_index.sort_by { |t,i|
+        [TAG_ORDER.index(t.tag_name), i] }.map(&:first)
+      sorted_tags.each do |tag|
         case tag.tag_name
         when "model"
           @has_model_tag = true
@@ -63,7 +67,7 @@ module SwaggerYard
             if (prop = property(tag.name))
               prop.example = tag.text
             else
-              SwaggerYard.log.warn("no property '#{tag.name}' defined yet to which to attach example: #{value.inspect}")
+              SwaggerYard.log.warn("no property '#{tag.name}' defined yet to which to attach example: #{tag.text.inspect}")
             end
           else
             self.example = tag.text
