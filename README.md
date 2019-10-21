@@ -41,6 +41,9 @@ Then start to annotate controllers and models as described below.
 To generate a Swagger or OpenAPI specification, use one of the `SwaggerYard::Swagger` or `SwaggerYard::OpenAPI` classes as follows in a script or Rake task (or use [swagger_yard-rails](/livingsocial/swagger_yard-rails)):
 
 ```
+# Register the yard tags
+SwaggerYard.register_custom_yard_tags!
+
 spec = SwaggerYard::OpenAPI.new
 # Generate YAML
 File.open("openapi.yml", "w") { |f| f << YAML.dump(spec.to_h) }
