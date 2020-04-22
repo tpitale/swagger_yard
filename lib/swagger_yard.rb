@@ -15,6 +15,7 @@ require "swagger_yard/path_item"
 require "swagger_yard/swagger"
 require "swagger_yard/openapi"
 require "swagger_yard/handlers"
+require "swagger_yard/directives"
 
 module SwaggerYard
   class Error < StandardError; end
@@ -115,6 +116,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Authorization Use", :authorize_with)
       # @example is a core YARD tag, let's use it
       # ::YARD::Tags::Library.define_tag("Example", :example, :with_title_and_text)
+      ::YARD::Tags::Library.define_directive(:model, :with_title_and_text, Directives::ParamClassDirective)
     end
   end
 end

@@ -261,6 +261,24 @@ class Person
 end
 ```
 
+### Standalone Model ###
+
+Types can be specified without being associated to an existing model with the `@!model` directive. It is useful when documenting a create and an update of the same class:
+
+```ruby
+# @!model CreatePet
+# @property id(required)    [integer]
+# @property name(required)  [string]
+#
+# @!model UpdatePet
+# @property id(required)    [integer]
+# @property name            [string]
+```
+
+It can also be needed when the body parameter of a path is not totally matching a model.
+
+Note that a model name must be given to the directive.
+
 
 ### External Schema ###
 
