@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 1.0.3 -- 04-22-2020 ##
+
+* PR #66 -- Add @!model directive, thanks Quentin Wentzler
+
 ## 1.0.2 -- 04-02-2019 ##
 
 * PR #58 -- Bugfix: anchored match array or object
