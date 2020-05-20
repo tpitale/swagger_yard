@@ -230,5 +230,24 @@ RSpec.describe SwaggerYard::TypeParser do
 
       it { expect_json_schema 'prefix#Length' => { "$ref" => "#{url}#/definitions/Length" } }
     end
+
+    context 'with external file' do
+      let(:file1) { 'file:///etc/schemas/v1.0/file.json#/defs' }
+      let(:file2) { 'file:/etc/schemas/v1.0/file.json#/defs' }
+
+      before do
+        SwaggerYard.configure do |config|
+          config.external_schema prefix1: file1
+          config.external_schema prefix2: file2
+        end
+      end
+
+      # URI('file:') differs in the number of slashes between Ruby 2.4 and 2.5.
+      # <= 2.4 would convert to 'file:/' with a single slash
+      # >= 2.5 would convert to 'file:///' with three slashes
+      # Test here that SY does not change the uri that was registered.
+      it { expect_json_schema 'prefix1#Length' => { "$ref" => "#{file1}/Length" } }
+      it { expect_json_schema 'prefix2#Length' => { "$ref" => "#{file2}/Length" } }
+    end
   end
 end

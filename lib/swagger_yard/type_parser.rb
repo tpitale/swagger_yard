@@ -77,16 +77,9 @@ module SwaggerYard
       end
 
       rule(external_identifier: { namespace: simple(:namespace), identifier: simple(:identifier) }) do
-        prefix, name = namespace.to_s, identifier.to_s
-        unless url = SwaggerYard.config.external_schema[prefix]
-          raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
-        end
-        uri = URI(url)
-        fragment = uri.fragment ? "##{uri.fragment}" : model_path
-        uri.fragment = nil
-        fragment += '/' unless fragment.end_with?('/')
-        url = uri.to_s
-        { '$ref' => "#{url}#{fragment}#{Model.mangle(name)}"}
+        prefix, name  = namespace.to_s, identifier.to_s
+        url, fragment = resolve_uri.call(name, prefix)
+        { '$ref' => "#{url}#{fragment}#{Model.mangle(name)}" }
       end
 
       rule(formatted: { name: simple(:name), format: simple(:format) }) do
@@ -138,9 +131,21 @@ module SwaggerYard
     end
 
     def json_schema(str)
-      @xform.apply(parse(str), model_path: @model_path)
+      @xform.apply(parse(str),
+                   model_path: @model_path,
+                   resolve_uri: ->(name, prefix) { resolve_uri(name, prefix) })
     rescue Parslet::ParseFailed => e
       raise InvalidTypeError, "'#{str}': #{e.message}"
+    end
+
+    def resolve_uri(name, prefix)
+      unless url = SwaggerYard.config.external_schema[prefix]
+        raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
+      end
+      uri, fragment = url.split '#'
+      fragment = fragment ? "##{fragment}" : @model_path
+      fragment += '/' unless fragment.end_with?('/')
+      [uri, fragment]
     end
   end
 end
