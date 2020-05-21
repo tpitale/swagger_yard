@@ -179,6 +179,8 @@ Types of things (parameters or responses of an operation, properties of a model)
 - Structured data like objects, arrays, pairs, etc., definitions can also be nested; E.g., `[object<pairs:array<object<right:integer,left:integer>>>]`
 - JSON-Schema `format` attributes can be specified for basic types using `<...>`. For example, `[integer<int64>]` produces JSON `{ "type": "integer", "format": "int64" }`.
 - Regex pattern constraints can be specified for strings using `[regex<PATTERN>]`. For example, `[regex<^.{3}$>]` produces JSON `{ "type": "string", "pattern": "^.{3}$" }`.
+- A union of two or more sub-types is expressed as `(A | B)` (parentheses required). This translates to `oneOf:` in JSON Schema.
+- An intersection of two or more sub-types is expressed as `(A & B)` (parentheses required). This translates to `allOf:` in JSON Schema.
 
 ### Options ###
 

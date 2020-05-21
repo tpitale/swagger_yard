@@ -11,6 +11,14 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { parses 'Foo::Bar' }
 
+    it { parses '(Foo | Bar)' }
+
+    it { parses '(Foo & Bar)' }
+
+    it { parses '(Foo | Bar | Baz)' }
+
+    it { parses '(Foo | (Bar & Baz))' }
+
     it { parses 'prefix#Length' }
 
     it { parses 'prefix#Foo::Bar' }
@@ -20,6 +28,10 @@ RSpec.describe SwaggerYard::TypeParser do
     it { parses 'array< string >' }
 
     it { parses 'array<Foo::Bar>' }
+
+    it { parses '(array<Foo::Bar>|array<Quux>)' }
+
+    it { parses '(prefix#Bar&prefix#Quux)' }
 
     it { parses 'array<prefix#Foo::Bar>' }
 
@@ -56,6 +68,8 @@ RSpec.describe SwaggerYard::TypeParser do
     it { does_not_parse 'enum<array<string>>' }
 
     it { does_not_parse 'integer<int32,int64>' }
+
+    it { does_not_parse '( Foo | Bar & Baz )'}
 
     it { does_not_parse 'regexp<.>.>' }
 
@@ -95,6 +109,16 @@ RSpec.describe SwaggerYard::TypeParser do
     it {
       expect_parse_to 'array<prefix#Length>' => { array: { external_identifier: { namespace: 'prefix', identifier: 'Length' } } }
     }
+
+    it { expect_parse_to '(Foo | Bar)' => { union: [{ identifier: 'Foo' },
+                                                    { identifier: 'Bar' }]} }
+
+    it { expect_parse_to '(Foo & Bar)' => { intersect: [{ identifier: 'Foo' },
+                                                        { identifier: 'Bar' }]} }
+
+    it { expect_parse_to '(Foo | (Bar & Baz))' => { union: [{ identifier: 'Foo' },
+                                                            { intersect: [{ identifier: 'Bar' },
+                                                                          { identifier: 'Baz' }]}]} }
 
     it {
       expect_parse_to 'object<pairs:array<object<right:integer,left:integer>>>' => {
@@ -205,6 +229,28 @@ RSpec.describe SwaggerYard::TypeParser do
             "a" => { "type" => "integer" },
             "b" => { "type" => "boolean" } }
         }
+      }
+    }
+
+    it {
+      expect_json_schema '(Foo | Bar)' => {
+        'oneOf' => [{ "$ref" => "#/definitions/Foo" },
+                    { "$ref" => "#/definitions/Bar" }]
+      }
+    }
+
+    it {
+      expect_json_schema '(Foo & Bar)' => {
+        'allOf' => [{ "$ref" => "#/definitions/Foo" },
+                    { "$ref" => "#/definitions/Bar" }]
+      }
+    }
+
+    it {
+      expect_json_schema '(Foo | (Bar & Baz))' => {
+        'oneOf' => [{ "$ref" => "#/definitions/Foo" },
+                    { 'allOf' => [{ "$ref" => "#/definitions/Bar" },
+                                  { "$ref" => "#/definitions/Baz" }]}]
       }
     }
 

@@ -43,10 +43,16 @@ module SwaggerYard
 
       rule(:formatted)  { name.as(:name) >> spaced('<') >> name.as(:format) >> spaced('>') }
 
+      rule(:union)      { spaced('(') >> type >> (spaced('|') >> type).repeat >> spaced(')') }
+
+      rule(:intersect)  { spaced('(') >> type >> (spaced('&') >> type).repeat >> spaced(')') }
+
       rule(:type)       { enum.as(:enum) |
                           array.as(:array) |
                           object.as(:object) |
                           formatted.as(:formatted) |
+                          union.as(:union) |
+                          intersect.as(:intersect) |
                           external_identifier.as(:external_identifier) |
                           identifier.as(:identifier) |
                           regexp }
@@ -117,6 +123,14 @@ module SwaggerYard
           end
           result.update additional.first unless additional.empty?
         end
+      end
+
+      rule(union: subtree(:types)) do
+        { 'oneOf' => Array(types) }
+      end
+
+      rule(intersect: subtree(:types)) do
+        { 'allOf' => Array(types) }
       end
     end
 
