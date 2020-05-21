@@ -31,6 +31,8 @@ RSpec.configure do |config|
 
   config.order = 'random'
 
+  config.example_status_persistence_file_path = '.rspec_examples'
+
   config.include SaveConfig
   config.include YARDHelpers
 

@@ -4,6 +4,7 @@ log/*.log
 swagger-ui.sublime-workspace
 .idea
 .project
+.rspec_examples
 coverage
 Gemfile.lock
 pkg
