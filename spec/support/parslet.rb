@@ -12,7 +12,8 @@ RSpec::Matchers.define :parse do |str,*rest|
       else
         @result == rest.first
       end
-    rescue Parslet::ParseFailed
+    rescue Parslet::ParseFailed => e
+      @error = e
       false
     end
   end
@@ -22,6 +23,7 @@ RSpec::Matchers.define :parse do |str,*rest|
       unless rest.empty?
         msg << " result:\n  expected: #{rest.first.inspect}\n  actual:   #{@result.inspect}"
       end
+      msg << "\n error: #{@error}\n" if @error
     end
   end
 
