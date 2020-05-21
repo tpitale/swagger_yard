@@ -258,6 +258,19 @@ RSpec.describe SwaggerYard::Swagger do
       end
     end
 
+    context 'with additional properties' do
+      let(:content) do
+        [
+          "@model MyModel",
+          "@additional_properties false"
+        ].join("\n")
+      end
+
+      its(['MyModel']) do
+        is_expected.to eq('type' => 'object', 'properties' => {}, 'additionalProperties' => false)
+      end
+    end
+
     context 'nullables' do
       subject { super()['MyModel']['properties'] }
       context "with a nullable flag" do

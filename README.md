@@ -110,7 +110,7 @@ end
 
 ### Model ###
 
-Each model to be exposed in the specification must have a `@model` tag. Model properties are specified with `@property` tags.
+Each model to be exposed in the specification must have a `@model` tag. Model properties are specified with `@property` tags. JSON Schema `additionalProperties` can be specified with `@additional_properties <type>` where `<type>` is any type defined elsewhere, or simply `false` to denote a closed model (`additionalProperties: false`).
 
 ```ruby
 #
@@ -120,6 +120,7 @@ Each model to be exposed in the specification must have a `@model` tag. Model pr
 # @property name  [Array<string>]    the names for the pet
 # @property age   [integer]   the age of the pet
 # @property relatives(required) [Array<Pet>] other Pets in its family
+# @additional_properties string
 #
 class Pet
 end

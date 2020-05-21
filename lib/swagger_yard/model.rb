@@ -5,7 +5,8 @@ module SwaggerYard
   #
   class Model
     include Example
-    attr_reader :id, :discriminator, :inherits, :description, :properties
+    attr_reader :id, :discriminator, :inherits,
+      :description, :properties, :additional_properties
 
     def self.from_yard_object(yard_object)
       new.tap do |model|
@@ -41,7 +42,7 @@ module SwaggerYard
       properties.detect {|prop| prop.name == key }
     end
 
-    TAG_ORDER = %w(model inherits discriminator property example)
+    TAG_ORDER = %w(model inherits discriminator property example additional_properties)
 
     def parse_tags(tags)
       sorted_tags = tags.each_with_index.sort_by { |t,i|
@@ -72,6 +73,8 @@ module SwaggerYard
           else
             self.example = tag.text
           end
+        when "additional_properties"
+          @additional_properties = Type.new(tag.text).schema
         end
       end
 

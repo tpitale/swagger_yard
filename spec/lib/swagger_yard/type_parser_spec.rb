@@ -7,6 +7,8 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { parses 'object' }
 
+    it { parses 'false' }
+
     it { parses 'Foo' }
 
     it { parses 'Foo::Bar' }
@@ -74,6 +76,8 @@ RSpec.describe SwaggerYard::TypeParser do
     it { does_not_parse 'regexp<.>.>' }
 
     it { does_not_parse 'regexp<.\\\\>.>' }
+
+    it { expect_parse_to 'false' => { false: 'false' } }
 
     it { expect_parse_to 'Foo' => { identifier: 'Foo' } }
 
@@ -151,6 +155,8 @@ RSpec.describe SwaggerYard::TypeParser do
       end
     end
 
+    it { expect_json_schema 'false' => false }
+
     it { expect_json_schema 'integer' => { "type" => "integer" } }
 
     it { expect_json_schema 'object' => { "type" => "object" } }
@@ -217,6 +223,16 @@ RSpec.describe SwaggerYard::TypeParser do
           "a" => { "type" => "integer" },
           "b" => { "type" => "boolean" } },
         "additionalProperties" => { "type" => "string" }
+      }
+    }
+
+    it {
+      expect_json_schema 'object<a:integer,b:boolean,false>' => {
+        "type" => "object",
+        "properties" => {
+          "a" => { "type" => "integer" },
+          "b" => { "type" => "boolean" } },
+        "additionalProperties" => false
       }
     }
 

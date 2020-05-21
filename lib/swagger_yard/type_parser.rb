@@ -26,6 +26,8 @@ module SwaggerYard
 
       rule(:external_identifier) { name.as(:namespace) >> str('#') >> identifier.as(:identifier) }
 
+      rule(:_false)      { str('false').as(:false) }
+
       rule(:regexp)     { stri('regex') >> match['Pp'].maybe >> space >>
                           str('<') >> (str('\\\\') | str('\\>') | match['[^>]']).repeat.as(:regexp) >> str('>') }
 
@@ -53,6 +55,7 @@ module SwaggerYard
                           formatted.as(:formatted) |
                           union.as(:union) |
                           intersect.as(:intersect) |
+                          _false |
                           external_identifier.as(:external_identifier) |
                           identifier.as(:identifier) |
                           regexp }
@@ -97,6 +100,8 @@ module SwaggerYard
       end
 
       rule(value: simple(:value)) { value.to_s }
+
+      rule(false: simple(:false)) { false }
 
       rule(enum: subtree(:values)) do
         { 'type' => 'string', 'enum' => Array(values) }

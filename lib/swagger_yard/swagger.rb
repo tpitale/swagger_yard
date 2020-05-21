@@ -158,6 +158,7 @@ module SwaggerYard
 
       h["example"] = mod.example if mod.example
 
+      h["additionalProperties"] = mod.additional_properties if !mod.additional_properties.nil?
       h
     end
 

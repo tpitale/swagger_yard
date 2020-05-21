@@ -82,6 +82,18 @@ RSpec.describe SwaggerYard::Model do
     end
   end
 
+  context "with @additional_properties" do
+    let(:content) do
+      ['@model MyModel',
+       '@property [string] name',
+       '@additional_properties false'].join("\n")
+    end
+
+    it 'sets additional_properties on the model' do
+      expect(model.additional_properties).to be false
+    end
+  end
+
   context 'with method properties' do
     include_context 'person.rb model'
     subject { model }

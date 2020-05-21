@@ -112,6 +112,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Model superclass", :inherits)
       ::YARD::Tags::Library.define_tag("Model property", :property, :with_types_name_and_default)
       ::YARD::Tags::Library.define_tag("Model discriminator", :discriminator, :with_types_name_and_default)
+      ::YARD::Tags::Library.define_tag("Additional properties", :additional_properties)
       ::YARD::Tags::Library.define_tag("Authorization", :authorization, :with_types_and_name)
       ::YARD::Tags::Library.define_tag("Authorization Use", :authorize_with)
       # @example is a core YARD tag, let's use it
