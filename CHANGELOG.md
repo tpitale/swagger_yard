@@ -1,5 +1,11 @@
 # SwaggerYard Changelog #
 
+## 1.0.4 -- 05-20-2020 ##
+
+- Add `@additional_properties` tag
+- Add union `(A|B)` and intersection `(A&B)` types
+- Preserve uris registered as external schemas
+
 ## 1.0.3 -- 04-22-2020 ##
 
 * PR #66 -- Add @!model directive, thanks Quentin Wentzler
