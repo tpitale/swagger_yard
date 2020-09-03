@@ -9,7 +9,7 @@ module SwaggerYard
     attr_writer :summary
     attr_reader :path, :http_method
     attr_reader :parameters
-    attr_reader :path_item, :responses
+    attr_reader :path_item, :responses, :extensions
 
     # TODO: extract to operation builder?
     def self.from_yard_object(yard_object, path_item)
@@ -30,6 +30,8 @@ module SwaggerYard
             operation.add_response(tag)
           when "summary"
             operation.summary = tag.text
+          when "extension"
+            operation.add_extension(tag)
           when "example"
             if tag.name && !tag.name.empty?
               operation.response(tag.name).example = tag.text
@@ -50,6 +52,7 @@ module SwaggerYard
       @parameters     = []
       @default_response = nil
       @responses = []
+      @extensions = {}
     end
 
     def summary
@@ -78,7 +81,7 @@ module SwaggerYard
     end
 
     def extended_attributes
-      {}.tap do |h|
+      @extensions.tap do |h|
         # Rails controller/action: if constantize/controller_path methods are
         # unavailable or constant is not defined, catch exception and skip these
         # attributes.
@@ -168,6 +171,19 @@ module SwaggerYard
 
     def sort_parameters
       @parameters.sort_by! {|p| p.name}
+    end
+
+    ##
+    # Example:
+    # @extension x-internal: true
+    def add_extension(tag)
+      key, value = tag.text.split(":", 2).map(&:strip)
+
+      unless key.start_with?("x-")
+        SwaggerYard.log.warn("extension '#{tag.text}' must being with 'x-'")
+      end
+
+      @extensions[key] = value
     end
 
     private

@@ -104,6 +104,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Api resource", :resource)
       ::YARD::Tags::Library.define_tag("Api path", :path, :with_types)
       ::YARD::Tags::Library.define_tag("Parameter", :parameter, :with_types_name_and_default)
+      ::YARD::Tags::Library.define_tag("Extension", :extension)
       ::YARD::Tags::Library.define_tag("Response type", :response_type, :with_types)
       ::YARD::Tags::Library.define_tag("Error response message", :error_message, :with_types_and_name)
       ::YARD::Tags::Library.define_tag("Response", :response, :with_types_and_name)

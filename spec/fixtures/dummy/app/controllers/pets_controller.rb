@@ -33,6 +33,13 @@ class PetsController < ApplicationController
   # def update
   # end
 
-  # def destroy
-  # end
+  # delete a Pet
+  # @path [DELETE] /pets/{id}
+  # @parameter id [integer] The ID for the Pet
+  # @extension x-internal: true
+  # @response 204 successfully deleted
+  # @response 404 Not Found
+  # @response 401 Unauthorized
+  def destroy
+  end
 end

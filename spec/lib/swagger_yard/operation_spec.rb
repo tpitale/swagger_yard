@@ -129,6 +129,17 @@ RSpec.describe SwaggerYard::Operation do
     its("responses.first.type.source") { is_expected.to eq('ClientError') }
   end
 
+  context "with an extensions tag" do
+    let(:tags) { [yard_tag("@path [GET] /hello"),
+                  yard_tag("@extension x-internal: true"),
+                  yard_tag("@extension x-displayName: User")] }
+
+    subject(:hash) { operation.extended_attributes }
+
+    its(['x-internal'])    { is_expected.to eq('true') }
+    its(['x-displayName']) { is_expected.to eq('User') }
+  end
+
   context "examples" do
     let(:yard_object) { yard_method('index', content) }
 

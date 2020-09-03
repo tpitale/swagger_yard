@@ -30,7 +30,7 @@ RSpec.describe SwaggerYard::Swagger do
 
     it { is_expected.to_not be_empty }
 
-    its(:keys) { are_expected.to eq(["get"]) }
+    its(:keys) { are_expected.to eq(["get", "delete"]) }
 
     its(["get", "summary"]) { is_expected.to eq("return a Pet") }
 
@@ -43,6 +43,12 @@ RSpec.describe SwaggerYard::Swagger do
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("id")) }
 
     its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
+
+    its(["delete", "summary"]) { is_expected.to eq("delete a Pet") }
+
+    its(["delete", "operationId"]) { is_expected.to eq("Pet-destroy") }
+
+    its(["delete", "x-internal"]) { is_expected.to eq("true") }
   end
 
   context "#/paths//pets" do
