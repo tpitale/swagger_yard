@@ -80,8 +80,9 @@ module SwaggerYard
 
     def add_path_item(yard_object)
       path = path_from_yard_object(yard_object)
+      operation = Operation.from_yard_object(yard_object, self)
 
-      return if path.nil?
+      return if path.nil? || (operation.internal? && SwaggerYard.config.ignore_internal)
 
       path_item = (path_items[path] ||= PathItem.new(self))
       path_item.add_operation(yard_object)

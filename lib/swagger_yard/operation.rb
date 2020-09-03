@@ -186,6 +186,10 @@ module SwaggerYard
       @extensions[key] = value
     end
 
+    def internal?
+      extensions["x-internal"] == 'true'
+    end
+
     private
     def parse_path_params(path)
       path.scan(/\{([^\}]+)\}/).flatten

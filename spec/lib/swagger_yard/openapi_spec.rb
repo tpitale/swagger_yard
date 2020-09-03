@@ -42,6 +42,12 @@ RSpec.describe SwaggerYard::OpenAPI do
     its(["delete", "operationId"]) { is_expected.to eq("Pet-destroy") }
 
     its(["delete", "x-internal"]) { is_expected.to eq("true") }
+
+    context "when ignoring internal paths" do
+      before { SwaggerYard.config.ignore_internal = true }
+
+      its(:keys) { are_expected.to eq(["get"]) }
+    end
   end
 
   context "#/paths//pets" do
