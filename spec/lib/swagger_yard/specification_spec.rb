@@ -44,6 +44,34 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
     SRC
   end
 
+  let(:tag_groups) do
+    <<-SRC
+      # @resource Foo
+      # @tag_group One
+      class FooController
+        # @path [GET] /hello
+        def index
+        end
+      end
+
+      # @resource Bar
+      # @tag_group One
+      class BarController
+        # @path [GET] /hello
+        def index
+        end
+      end
+
+      # @resource Baz
+      # @tag_group Two
+      class BazController
+        # @path [GET] /hello
+        def index
+        end
+      end
+    SRC
+  end
+
   it "reparses after changes to a file" do
     File.open(filename, "w") { |f| f.write first_pass }
 
@@ -80,6 +108,20 @@ RSpec.describe SwaggerYard::Specification, "reparsing" do
       spec = specification
       spec.instance_variable_set(:@api_groups, [api_group])
       spec.path_objects
+    end
+  end
+
+  context '#group_tags' do
+    it 'returns array when tag groups are present' do
+      File.open(filename, "w") { |f| f.write tag_groups }
+
+      expect(specification.tag_groups).to eq([{:name=>"One", :tags=>["Foo", "Bar"]}, {:name=>"Two", :tags=>["Baz"]}])
+    end
+
+    it 'returns nil when tag groups are not present' do
+      File.open(filename, "w") { |f| f.write first_pass }
+
+      expect(specification.tag_groups).to be_nil
     end
   end
 end

@@ -22,6 +22,23 @@ module SwaggerYard
       api_groups.map(&:tag)
     end
 
+    def tag_groups
+      return if api_groups.none?(&:tag_group)
+
+      groups = {}
+      api_groups.each do |group|
+        groups[group.tag_group] ||= []
+        groups[group.tag_group] << group.resource
+      end
+
+      groups.map do |name, tags|
+        {
+          name: name,
+          tags: tags
+        }
+      end
+    end
+
     def model_objects
       Hash[models.map {|m| [m.id, m]}]
     end
@@ -37,7 +54,7 @@ module SwaggerYard
     end
 
     def api_groups
-      @api_groups ||= parse_controllers
+      @api_groups ||= parse_controllers.select { |group| group.path_items.present? }
     end
 
     def parse_models

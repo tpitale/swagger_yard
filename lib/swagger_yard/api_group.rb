@@ -24,7 +24,7 @@ module SwaggerYard
 
   class ApiGroup
     attr_accessor :description, :resource
-    attr_reader :path_items, :authorizations, :class_name
+    attr_reader :path_items, :authorizations, :class_name, :tag_group
 
     def self.from_yard_object(yard_object)
       new.add_yard_object(yard_object)
@@ -69,6 +69,10 @@ module SwaggerYard
 
       if tag = yard_object.tags.detect {|t| t.tag_name == "resource"}
         @resource = tag.text
+      end
+
+      if tag = yard_object.tags.detect {|t| t.tag_name == "tag_group"}
+        @tag_group = tag.text
       end
 
       # we only have api_key auth, the value for now is always empty array

@@ -3,6 +3,7 @@
 # This document describes the API for interacting with Pet resources
 #
 # @authorize_with header_x_application_api_key
+# @tag_group Test Tag Group
 #
 class PetsController < ApplicationController
   # return a list of Pets

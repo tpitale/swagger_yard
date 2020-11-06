@@ -133,6 +133,12 @@ RSpec.describe SwaggerYard::OpenAPI do
     it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport"))}
   end
 
+  context "#/tag_groups" do
+    subject { openapi["x-tagGroups"] }
+
+    it { is_expected.to eq([{:name=>"Test Tag Group", :tags=>["Pet", "Transport"]}])}
+  end
+
   context "#/components/securitySchemes" do
     subject { openapi["components"]["securitySchemes"] }
 
@@ -145,7 +151,8 @@ RSpec.describe SwaggerYard::OpenAPI do
   context 'securityDefinitions' do
     let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
     let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
-                      security_objects: { auth.id => auth }, model_objects: {}) }
+                      security_objects: { auth.id => auth }, model_objects: {},
+                      tag_groups: []) }
     let (:security_schemes) { {'key' => {'type' => 'basic', 'description' => 'Basic authentication'} } }
     let(:content) { '@authorization [api_key] header X-My-Header' }
 

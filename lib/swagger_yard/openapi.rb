@@ -17,11 +17,13 @@ module SwaggerYard
     end
 
     def definitions
-      {
+      defs = {
         "paths" => paths(specification.path_objects),
         "tags" => tags(specification.tag_objects),
         "components" => components
       }
+      defs["x-tagGroups"] = specification.tag_groups if specification.tag_groups
+      defs
     end
 
     def components

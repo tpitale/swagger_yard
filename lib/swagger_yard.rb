@@ -116,6 +116,7 @@ module SwaggerYard
       ::YARD::Tags::Library.define_tag("Additional properties", :additional_properties)
       ::YARD::Tags::Library.define_tag("Authorization", :authorization, :with_types_and_name)
       ::YARD::Tags::Library.define_tag("Authorization Use", :authorize_with)
+      ::YARD::Tags::Library.define_tag("Tag group", :tag_group)
       # @example is a core YARD tag, let's use it
       # ::YARD::Tags::Library.define_tag("Example", :example, :with_title_and_text)
       ::YARD::Tags::Library.define_directive(:model, :with_title_and_text, Directives::ParamClassDirective)
