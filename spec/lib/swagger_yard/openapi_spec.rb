@@ -99,10 +99,17 @@ RSpec.describe SwaggerYard::OpenAPI do
 
     its(["AnimalThing", "properties"]) { are_expected.to include("id", "type", "possessions") }
 
-    its(["Pet", "properties"]) { are_expected.to include("id", "names", "age", "relatives") }
+    its(["Pet", "properties"]) { are_expected.to include("id", "names", "age", "relatives", "secret_name") }
     its(["Pet", "properties", "names", "example"]) { is_expected.to eq(["Bob", "Bobo", "Bobby"]) }
     its(["Pet", "properties", "age", "example"]) { is_expected.to eq(8) }
     its(["Pet", "properties", "birthday", "example"]) { is_expected.to eq("2018/10/31T00:00:00.000Z") }
+    its(["Pet", "properties", "secret_name", "x-internal"]) { is_expected.to eq("true") }
+
+    context "when ignoring internal properties" do
+      before { SwaggerYard.config.ignore_internal = true }
+
+      its(["Pet", "properties"]) { are_expected.to_not include("secret_name") }
+    end
 
     its(["Possession", "properties"]) { are_expected.to include("name", "value") }
 

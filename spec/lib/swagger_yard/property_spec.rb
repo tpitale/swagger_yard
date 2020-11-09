@@ -73,6 +73,14 @@ describe SwaggerYard::Property, 'from_tag' do
     it { is_expected.to be_required }
   end
 
+  context "with a extensions" do
+    subject { property }
+    let(:tag) { yard_tag '@property name(required,x-internal:true) [string]  Name' }
+
+    it { is_expected.to be_required }
+    it { is_expected.to be_internal }
+  end
+
   context "with no description" do
     let(:tag) { yard_tag '@property myProperty [string]' }
 

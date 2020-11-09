@@ -54,7 +54,9 @@ module SwaggerYard
           @id = Model.mangle(tag.text) unless tag.text.empty?
         when "property"
           prop = Property.from_tag(tag)
-          @properties << prop if prop
+          if prop && !(prop.internal? && SwaggerYard.config.ignore_internal)
+            @properties << prop
+          end
         when "discriminator"
           prop = Property.from_tag(tag)
           if prop

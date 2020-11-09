@@ -14,6 +14,7 @@
 # @property birthday            [date]                the pet's birthday
 # @example birthday
 #   "2018/10/31T00:00:00.000Z"
+# @property secret_name(x-internal:true) [string]          the pet's secret name
 #
 class Pet
 end

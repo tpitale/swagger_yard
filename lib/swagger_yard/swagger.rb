@@ -172,6 +172,9 @@ module SwaggerYard
               h["type"] = [h["type"], "null"]
             end
           end
+          if prop.extensions.present?
+            h.merge!(prop.extensions)
+          end
           h["example"] = prop.example if prop.example
         end
       end

@@ -4,7 +4,7 @@ module SwaggerYard
   #
   class Property
     include Example
-    attr_reader :name, :required, :type, :nullable
+    attr_reader :name, :required, :type, :nullable, :extensions
     attr_accessor :description
 
     NAME_OPTIONS_REGEXP = /[\(\)]/
@@ -60,11 +60,29 @@ module SwaggerYard
       @name, @description = name, description
       @required = options.include?('required')
       @nullable = options.include?('nullable')
+      @extensions = parse_extensions(options.select { |option| option.start_with?("x-") })
       @type = Type.from_type_list(types)
     end
 
-     def required?
+    def required?
       @required
+    end
+
+    def internal?
+      extensions["x-internal"] == 'true'
+    end
+
+    private
+
+    def parse_extensions(options)
+      return {} unless options.present?
+
+      extensions = {}
+      options.each do |option|
+        key, value = option.split(":", 2).map(&:strip)
+        extensions[key] = value
+      end
+      extensions
     end
   end
 end
