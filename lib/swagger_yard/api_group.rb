@@ -49,6 +49,8 @@ module SwaggerYard
     end
 
     def add_yard_object(yard_object)
+      return self if yard_object.visibility == :private && !SwaggerYard.config.include_private
+
       case yard_object.type
       when :class # controller
         add_info(yard_object)
