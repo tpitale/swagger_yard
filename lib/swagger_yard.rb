@@ -85,6 +85,7 @@ module SwaggerYard
     # @return [YARD] objects representing class/methods and tags from the file
     #
     def yard_objects_from_file(file_path, *types)
+      ::YARD::Registry.clear
       ::YARD.parse(file_path)
       ::YARD::Registry.all(*types).select {|co| co.file == file_path }
     end
