@@ -31,6 +31,18 @@ class PetsController < ApplicationController
   def create
   end
 
+  # update a Pet
+  # @path [PUT] /pets/{id}
+  # @operation_id updatePet
+  # @parameter id [integer] The ID for the Pet
+  # @parameter pet(required,body) [Pet] The pet object
+  # @response_type [Pet]
+  # @error_message [EmptyPet] 404 Pet not found
+  # @error_message 400 Invalid ID supplied
+  def update
+  end
+
+
   # def update
   # end
 

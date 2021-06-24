@@ -23,7 +23,7 @@ RSpec.describe SwaggerYard::OpenAPI do
 
     it { is_expected.to_not be_empty }
 
-    its(:keys) { are_expected.to eq(["get", "delete"]) }
+    its(:keys) { are_expected.to eq(["get", "put", "delete"]) }
 
     its(["get", "summary"]) { is_expected.to eq("return a Pet") }
 
@@ -37,6 +37,10 @@ RSpec.describe SwaggerYard::OpenAPI do
 
     its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
 
+    its(["put", "summary"]) { is_expected.to eq("update a Pet") }
+
+    its(["put", "operationId"]) { is_expected.to eq("updatePet") }
+
     its(["delete", "summary"]) { is_expected.to eq("delete a Pet") }
 
     its(["delete", "operationId"]) { is_expected.to eq("Pet-destroy") }
@@ -46,7 +50,13 @@ RSpec.describe SwaggerYard::OpenAPI do
     context "when ignoring internal paths" do
       before { SwaggerYard.config.ignore_internal = true }
 
-      its(:keys) { are_expected.to eq(["get"]) }
+      its(:keys) { are_expected.to eq(["get", "put"]) }
+    end
+
+    context "when not defaulting summary to description" do
+      before { SwaggerYard.config.default_summary_to_description = false }
+
+      its(["put", "summary"]) { is_expected.to be_nil }
     end
   end
 
@@ -141,9 +151,10 @@ RSpec.describe SwaggerYard::OpenAPI do
   end
 
   context "#/tag_groups" do
-    subject { openapi["x-tagGroups"] }
+    subject { openapi["x-tagGroups"][0] }
 
-    it { is_expected.to eq([{:name=>"Test Tag Group", :tags=>["Pet", "Transport"]}])}
+    its([:name]) { is_expected.to eq("Test Tag Group")}
+    its([:tags]) { is_expected.to match_array(["Pet", "Transport"])}
   end
 
   context "#/components/securitySchemes" do

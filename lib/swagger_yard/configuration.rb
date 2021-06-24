@@ -7,6 +7,7 @@ module SwaggerYard
     attr_accessor :path_discovery_function
     attr_accessor :security_definitions
     attr_accessor :ignore_internal
+    attr_accessor :default_summary_to_description
 
     # openapi-compatible names
     alias openapi_version swagger_version
@@ -22,6 +23,7 @@ module SwaggerYard
       @security_definitions = {}
       @external_schema = {}
       @ignore_internal = false
+      @default_summary_to_description = true
     end
 
     def external_schema(mappings = nil)
