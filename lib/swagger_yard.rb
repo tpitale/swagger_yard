@@ -19,6 +19,7 @@ require "swagger_yard/directives"
 
 module SwaggerYard
   class Error < StandardError; end
+  class UnknownConstant < Error; end
   class InvalidTypeError < Error; end
   class UndefinedSchemaError < Error; end
 

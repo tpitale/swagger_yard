@@ -49,6 +49,10 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { parses 'object<pairs:array<object<right:integer,left:integer>>>' }
 
+    it { parses 'enum<one,{TWO},three>' }
+
+    it { parses 'enum<one,{Namespace::TWO},three>' }
+
     it { parses 'enum<one,two,three>' }
 
     it { parses 'enum< one, two, three >' }
@@ -96,6 +100,12 @@ RSpec.describe SwaggerYard::TypeParser do
     it { expect_parse_to 'regexp<^.*$>' => { regexp: '^.*$' } }
 
     it { expect_parse_to 'enum<one, two, three>' => { enum: [{ value: 'one' }, { value: 'two'}, { value: 'three'}] } }
+
+    it { expect_parse_to 'enum<{FOOBAR}>' => { enum: { constant: 'FOOBAR' } } }
+
+    it { expect_parse_to 'enum<{NS::FOOBAR}>' => { enum: { constant: 'NS::FOOBAR' } } }
+
+    it { expect_parse_to 'enum<one,{FOOBAR},three>' => { enum: [{ value: 'one' }, { constant: 'FOOBAR' }, { value: 'three' }] } }
 
     it { expect_parse_to 'regexp<^.*$>' => { regexp: '^.*$' } }
 
@@ -280,6 +290,38 @@ RSpec.describe SwaggerYard::TypeParser do
       expect do
         subject.json_schema('prefix#Length')
       end.to raise_error(SwaggerYard::UndefinedSchemaError)
+    end
+
+    context 'with constants' do
+      before { CURRENCIES = %w(usd eur) }
+      after { Object.send(:remove_const, :CURRENCIES) }
+
+      it { expect_json_schema 'enum<{CURRENCIES}>' => { "type" => "string", "enum" => %w(usd eur) } }
+      it { expect_json_schema 'enum<{CURRENCIES},isk>' => { "type" => "string", "enum" => %w(usd eur isk) } }
+
+      it 'raises an error when the constant is not defined' do
+        expect do
+          subject.json_schema('enum<{SOME_CONSTANT}>')
+        end.to raise_error(SwaggerYard::UnknownConstant, /SOME_CONSTANT/)
+      end
+    end
+
+    context 'with namespaced constants' do
+      before do
+        module Constants
+          CURRENCIES = %w(usd eur)
+        end
+      end
+      after { Object.send(:remove_const, :Constants) }
+
+      it { expect_json_schema 'enum<{Constants::CURRENCIES}>' => { "type" => "string", "enum" => %w(usd eur) } }
+      it { expect_json_schema 'enum<{Constants::CURRENCIES},isk>' => { "type" => "string", "enum" => %w(usd eur isk) } }
+
+      it 'raises an error when the constant is not defined' do
+        expect do
+          subject.json_schema('enum<{Constants::SOME_CONSTANT}>')
+        end.to raise_error(SwaggerYard::UnknownConstant, /Constants::SOME_CONSTANT/)
+      end
     end
 
     context 'with external schema' do
