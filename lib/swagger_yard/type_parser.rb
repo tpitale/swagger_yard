@@ -24,6 +24,8 @@ module SwaggerYard
 
       rule(:identifier) { name >> (str('::') >> name).repeat }
 
+      rule(:constant)   { spaced('{') >> identifier.as(:constant) >> spaced('}') }
+
       rule(:external_identifier) { name.as(:namespace) >> str('#') >> identifier.as(:identifier) }
 
       rule(:_false)      { str('false').as(:false) }
@@ -31,7 +33,7 @@ module SwaggerYard
       rule(:regexp)     { stri('regex') >> match['Pp'].maybe >> space >>
                           str('<') >> (str('\\\\') | str('\\>') | match['[^>]']).repeat.as(:regexp) >> str('>') }
 
-      rule(:enum_list)  { name.as(:value) >> (spaced(',') >> name.as(:value)).repeat }
+      rule(:enum_list)  { (name.as(:value) | constant) >> (spaced(',') >> (name.as(:value) | constant)).repeat }
 
       rule(:enum)       { stri('enum') >> spaced('<') >> enum_list >> spaced('>') }
 
@@ -85,6 +87,12 @@ module SwaggerYard
         end
       end
 
+      rule(constant: simple(:constant)) do
+        constant.to_s.constantize
+      rescue NameError => e
+        raise UnknownConstant, e.message
+      end
+
       rule(external_identifier: { namespace: simple(:namespace), identifier: simple(:identifier) }) do
         prefix, name  = namespace.to_s, identifier.to_s
         url, fragment = resolve_uri.call(name, prefix)
@@ -104,7 +112,7 @@ module SwaggerYard
       rule(false: simple(:false)) { false }
 
       rule(enum: subtree(:values)) do
-        { 'type' => 'string', 'enum' => Array(values) }
+        { 'type' => 'string', 'enum' => Array(values).flatten }
       end
 
       rule(array: subtree(:type)) do
