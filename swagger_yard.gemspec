@@ -17,19 +17,17 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,public,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
+  s.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
+
   s.add_runtime_dependency 'yard'
   s.add_runtime_dependency 'parslet'
 
-  # TODO: drop the constraint when we drop 1.9 support
-  s.add_development_dependency 'rake', '< 12'
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-its'
-  # TODO: drop the constraint when we drop 1.9 support
-  s.add_development_dependency 'apivore', '< 1.6'
-  # TODO: drop explicit nokogiri dependency when we drop 1.9 support
-  s.add_development_dependency 'nokogiri', '< 1.8'
-  # TODO: Drop this dependency when we drop 1.9 support
-  s.add_development_dependency 'addressable', "<= 2.4.0"
+  s.add_development_dependency 'apivore'
+  s.add_development_dependency 'nokogiri'
+  s.add_development_dependency 'addressable'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'mocha'
   s.add_development_dependency 'bourne'

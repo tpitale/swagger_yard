@@ -1,4 +1,4 @@
-# SwaggerYard [![Build Status](https://travis-ci.org/livingsocial/swagger_yard.svg?branch=master)](https://travis-ci.org/livingsocial/swagger_yard) #
+# SwaggerYard [![Build Status](https://github.com/livingsocial/swagger_yard/actions/workflows/rspec.yml/badge.svg)](https://github.com/livingsocial/swagger_yard/actions/workflows/rspec.yml)
 
 SwaggerYard is a gem to convert custom YARD tags in comments into Swagger 2.0 or OpenAPI 3.0.0 specs.
 
