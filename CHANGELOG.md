@@ -1,5 +1,10 @@
 # SwaggerYard Changelog #
 
+## 1.1.0 -- 10-27-2020 ##
+
+- Require Ruby 2.5.0 or greater (drop Ruby 1.9 support) - #69, thanks Stef Schenkelaars
+- Add `enum<{CONSTANT}>` support - #70, thanks Stef Schenkelaars
+
 ## 1.0.4 -- 05-20-2020 ##
 
 - Add `@additional_properties` tag
