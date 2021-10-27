@@ -66,6 +66,32 @@ describe SwaggerYard::Property, 'from_tag' do
     its(['enum'])           { is_expected.to eq(['one', 'two', 'three']) }
   end
 
+  context 'with constant' do
+    before do
+      CURRENCIES = %w(usd eur)
+      module Constants
+        LANGUAGES = %w(en nl de)
+      end
+    end
+
+    after { Object.send(:remove_const, :CURRENCIES) }
+    after { Object.send(:remove_const, :Constants) }
+
+    context "with a constant enum" do
+      let(:tag) { yard_tag '@property currency [enum<isk,{CURRENCIES}>] Used currency' }
+
+      its(['type'])           { is_expected.to eq('string') }
+      its(['enum'])           { is_expected.to eq(%w[isk usd eur]) }
+    end
+
+    context "with a namespaced constant enum" do
+      let(:tag) { yard_tag '@property currency [enum<{Constants::LANGUAGES}, fr>] Used language' }
+
+      its(['type'])           { is_expected.to eq('string') }
+      its(['enum'])           { is_expected.to eq(%w[en nl de fr]) }
+    end
+  end
+
   context "with a required flag" do
     subject { property }
     let(:tag) { yard_tag '@property name(required) [string]  Name' }
