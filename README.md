@@ -32,6 +32,11 @@ Place configuration in a Rails initializer or suitable configuration file:
 
       # Where to find models (can be an array)
       config.model_path = ::Rails.root + 'app/decorators/**/*'
+
+      # Whether to include controller methods marked as private
+	  # (either with ruby `private` or YARD `# @visibility private`
+	  # Default: true
+	  config.include_private = true
     end
 
 Then start to annotate controllers and models as described below.
@@ -107,6 +112,18 @@ class Accounts::OwnershipsController < ActionController::Base
   end
 end
 ```
+
+#### Private controllers/actions
+
+When you set `include_private = false` in the SwaggerYard configuration, you can mark action methods as private, so that they won't be documented, using `@visibility private` in comments.
+
+```ruby
+  ##
+  # @visibility private
+  def show
+  end
+```
+
 
 ### Model ###
 

@@ -1,5 +1,9 @@
 # SwaggerYard Changelog #
 
+## 1.1.1 -- 10-28-2020 ##
+
+- Add `include_private` and the ability to mark action methods as not documented - #67, thanks Daniel Areiza
+
 ## 1.1.0 -- 10-27-2020 ##
 
 - Require Ruby 2.5.0 or greater (drop Ruby 1.9 support) - #69, thanks Stef Schenkelaars
