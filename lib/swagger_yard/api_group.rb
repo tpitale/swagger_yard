@@ -69,7 +69,7 @@ module SwaggerYard
       @description = yard_object.docstring
       @class_name = yard_object.path
 
-      if tag = yard_object.tags.detect { |t| t.tag_name == "resource" }
+      if (tag = yard_object.tags.detect { |t| t.tag_name == "resource" })
         @resource = tag.text
       end
 
@@ -91,9 +91,9 @@ module SwaggerYard
     end
 
     def path_from_yard_object(yard_object)
-      if tag = yard_object.tags.detect { |t| t.tag_name == "path" }
+      if (tag = yard_object.tags.detect { |t| t.tag_name == "path" })
         tag.text
-      elsif fn = SwaggerYard.config.path_discovery_function
+      elsif (fn = SwaggerYard.config.path_discovery_function)
         begin
           method, path = fn[yard_object]
           yard_object.add_tag YARD::Tags::Tag.new("path", path, [method]) if path

@@ -303,8 +303,12 @@ RSpec.describe SwaggerYard::TypeParser do
     end
 
     context "with constants" do
-      before { CURRENCIES = %w[usd eur] }
-      after { Object.send(:remove_const, :CURRENCIES) }
+      around do |example|
+        Object.const_set(:CURRENCIES, %w[usd eur])
+        example.run
+      ensure
+        Object.send(:remove_const, :CURRENCIES)
+      end
 
       it { expect_json_schema "enum<{CURRENCIES}>" => {"type" => "string", "enum" => %w[usd eur]} }
       it { expect_json_schema "enum<{CURRENCIES},isk>" => {"type" => "string", "enum" => %w[usd eur isk]} }
@@ -317,12 +321,13 @@ RSpec.describe SwaggerYard::TypeParser do
     end
 
     context "with namespaced constants" do
-      before do
-        module Constants
-          CURRENCIES = %w[usd eur]
-        end
+      around do |example|
+        Object.const_set(:Constants, Module.new)
+        Constants.const_set(:CURRENCIES, %w[usd eur])
+        example.run
+      ensure
+        Object.send(:remove_const, :Constants)
       end
-      after { Object.send(:remove_const, :Constants) }
 
       it { expect_json_schema "enum<{Constants::CURRENCIES}>" => {"type" => "string", "enum" => %w[usd eur]} }
       it { expect_json_schema "enum<{Constants::CURRENCIES},isk>" => {"type" => "string", "enum" => %w[usd eur isk]} }

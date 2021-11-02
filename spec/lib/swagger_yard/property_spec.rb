@@ -67,15 +67,15 @@ describe SwaggerYard::Property, "from_tag" do
   end
 
   context "with constant" do
-    before do
-      CURRENCIES = %w[usd eur]
-      module Constants
-        LANGUAGES = %w[en nl de]
-      end
+    around do |example|
+      Object.const_set(:CURRENCIES, %w[usd eur])
+      Object.const_set(:Constants, Module.new)
+      Constants.const_set(:LANGUAGES, %w[en nl de])
+      example.run
+    ensure
+      Object.send(:remove_const, :CURRENCIES)
+      Object.send(:remove_const, :Constants)
     end
-
-    after { Object.send(:remove_const, :CURRENCIES) }
-    after { Object.send(:remove_const, :Constants) }
 
     context "with a constant enum" do
       let(:tag) { yard_tag "@property currency [enum<isk,{CURRENCIES}>] Used currency" }

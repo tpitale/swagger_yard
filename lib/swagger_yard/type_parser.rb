@@ -170,7 +170,7 @@ module SwaggerYard
     end
 
     def resolve_uri(name, prefix)
-      unless url = SwaggerYard.config.external_schema[prefix]
+      unless (url = SwaggerYard.config.external_schema[prefix])
         raise UndefinedSchemaError, "unknown prefix #{prefix} for #{name}"
       end
       uri, fragment = url.split "#"

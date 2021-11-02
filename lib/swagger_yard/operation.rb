@@ -85,7 +85,8 @@ module SwaggerYard
 
         h["x-controller"] = api_group.class_name.constantize.controller_path.to_s
         h["x-action"] = ruby_method.to_s
-      rescue NameError, NoMethodError
+      rescue NameError
+        # Intentionally empty
       end
     end
 
@@ -118,7 +119,7 @@ module SwaggerYard
     end
 
     def add_or_update_parameter(parameter)
-      if existing = @parameters.detect { |param| param.name == parameter.name }
+      if (existing = @parameters.detect { |param| param.name == parameter.name })
         existing.description = parameter.description unless parameter.from_path?
         existing.param_type = parameter.param_type if parameter.from_path?
         existing.required ||= parameter.required

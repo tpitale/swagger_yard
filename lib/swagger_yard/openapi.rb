@@ -46,7 +46,7 @@ module SwaggerYard
 
     def operation(op)
       op_hash = super
-      if body_param = op.parameters.detect { |p| p.param_type == "body" }
+      if (body_param = op.parameters.detect { |p| p.param_type == "body" })
         op_hash["requestBody"] = {
           "description" => body_param.description,
           "content" => {
@@ -96,9 +96,9 @@ module SwaggerYard
         h
       when "oauth2"
         # convert from swagger2-style oauth2
-        if (authUrl = h.delete("authorizationUrl")) && (flow = h.delete("flow"))
+        if (auth_url = h.delete("authorizationUrl")) && (flow = h.delete("flow"))
           {"type" => "oauth2", "flows" => {
-            flow => {"authorizationUrl" => authUrl}
+            flow => {"authorizationUrl" => auth_url}
           }}.tap do |result|
             (h.keys - ["type"]).each do |t|
               result["flows"][flow][t] = h[t]
