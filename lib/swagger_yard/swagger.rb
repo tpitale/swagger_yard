@@ -116,8 +116,8 @@ module SwaggerYard
     def response(resp, op)
       {}.tap do |h|
         h["description"] = resp && resp.description || op.summary || ""
-        h["schema"] = resp.type.schema_with(model_path: model_path) if resp && resp.type
-        if resp && resp.example
+        h["schema"] = resp.type.schema_with(model_path: model_path) if resp&.type
+        if resp&.example
           h["examples"] = {
             "application/json" => resp.example
           }

@@ -25,10 +25,8 @@ module SwaggerYard
     end
 
     def external_schema(mappings = nil)
-      if mappings
-        mappings.each do |prefix, url|
-          @external_schema[prefix.to_s] = url
-        end
+      mappings&.each do |prefix, url|
+        @external_schema[prefix.to_s] = url
       end
       @external_schema
     end

@@ -9,7 +9,7 @@ module SwaggerYard
       end
 
       def stri(str)
-        key_chars = str.split("")
+        key_chars = str.chars
         key_chars.collect! { |char| match["#{char.upcase}#{char.downcase}"] }
           .reduce(:>>)
       end
@@ -28,7 +28,7 @@ module SwaggerYard
 
       rule(:external_identifier) { name.as(:namespace) >> str("#") >> identifier.as(:identifier) }
 
-      rule(:_false) { str("false").as(:false) }
+      rule(:_false) { str("false").as(:_false) }
 
       rule(:regexp) {
         stri("regex") >> match["Pp"].maybe >> space >>
@@ -113,7 +113,7 @@ module SwaggerYard
 
       rule(value: simple(:value)) { value.to_s }
 
-      rule(false: simple(:false)) { false }
+      rule(_false: simple(:_false)) { false }
 
       rule(enum: subtree(:values)) do
         {"type" => "string", "enum" => Array(values).flatten}

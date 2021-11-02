@@ -80,7 +80,7 @@ RSpec.describe SwaggerYard::TypeParser do
 
     it { does_not_parse "regexp<.\\\\>.>" }
 
-    it { expect_parse_to "false" => {false: "false"} }
+    it { expect_parse_to "false" => {_false: "false"} }
 
     it { expect_parse_to "Foo" => {identifier: "Foo"} }
 
