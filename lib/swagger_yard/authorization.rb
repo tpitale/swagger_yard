@@ -15,8 +15,8 @@ module SwaggerYard
     def key
       return @key if @key
       return nil unless @description
-      return nil unless @type =~ /api_?key|bearer/i
-      @key, @description = @description.split(' ', 2)
+      return nil unless /api_?key|bearer/i.match?(@type)
+      @key, @description = @description.split(" ", 2)
       @key
     end
 
@@ -25,12 +25,11 @@ module SwaggerYard
     end
 
     private
+
     def api_key_id
       case type
       when /api_?key/i
-        [name, key].compact.join('_').downcase.gsub('-', '_')
-      else
-        nil
+        [name, key].compact.join("_").downcase.tr("-", "_")
       end
     end
   end

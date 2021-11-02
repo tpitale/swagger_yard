@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe SwaggerYard::Directives do
   describe SwaggerYard::Directives::ParamClassDirective do
@@ -22,8 +22,8 @@ describe SwaggerYard::Directives do
           # @property name
         EOF
         yard_object = YARD::Registry.at("Foo")
-        
-        %w(id name).each do |property|
+
+        %w[id name].each do |property|
           expect(yard_object.tags.find do |tag|
             tag.tag_name == "property" && tag.name == property
           end).to_not be_nil
@@ -36,7 +36,7 @@ describe SwaggerYard::Directives do
           # @!model Boo
         EOF
 
-        %w(Foo Boo).each do |model|
+        %w[Foo Boo].each do |model|
           yard_object = YARD::Registry.at(model)
           expect(yard_object).to be_a(YARD::CodeObjects::ClassObject)
           expect(yard_object.tags.first.tag_name).to eq("model")

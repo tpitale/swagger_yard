@@ -25,6 +25,7 @@ class Person
   end
 
   private
+
   def get_parent
   end
 end

@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe SwaggerYard::Swagger do
   subject(:swagger) { SwaggerYard::Swagger.new.to_h }
@@ -8,7 +8,7 @@ RSpec.describe SwaggerYard::Swagger do
   it "is valid" do
     errors = Apivore::Swagger.new(swagger).validate
     unless errors.empty?
-      require 'pp'
+      require "pp"
       pp swagger
       puts(*errors)
     end
@@ -42,7 +42,7 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("id")) }
 
-    its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
+    its(["get", "security"]) { is_expected.to eq([{"header_x_application_api_key" => []}]) }
   end
 
   context "#/paths//pets" do
@@ -60,7 +60,7 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("client_name")) }
 
-    its(["get", "responses", "default", "examples", "application/json"]) { is_expected.to eq([{"id"=>1, "names"=>["Fido"], "age"=>12}]) }
+    its(["get", "responses", "default", "examples", "application/json"]) { is_expected.to eq([{"id" => 1, "names" => ["Fido"], "age" => 12}]) }
 
     its(["post", "operationId"]) { is_expected.to eq("Pet-create") }
 
@@ -74,8 +74,8 @@ RSpec.describe SwaggerYard::Swagger do
 
     its(["get", "parameters"]) { are_expected.to include(a_parameter_named("sort")) }
 
-    it 'has a sort query parameter containing an enum' do
-      param = subject["get"]["parameters"].detect {|p| p["name"] = "sort" }
+    it "has a sort query parameter containing an enum" do
+      param = subject["get"]["parameters"].detect { |p| p["name"] = "sort" }
       expect(param["enum"]).to eq(["id", "wheels"])
       expect(param["type"]).to eq("string")
       expect(param["in"]).to eq("query")
@@ -99,7 +99,7 @@ RSpec.describe SwaggerYard::Swagger do
     its(["Possession", "properties"]) { are_expected.to include("name", "value") }
 
     its(["Transport", "properties"]) { are_expected.to include("id", "wheels") }
-    its(["Transport", "example"]) { is_expected.to eq({"id"=>10, "wheels"=>4}) }
+    its(["Transport", "example"]) { is_expected.to eq({"id" => 10, "wheels" => 4}) }
   end
 
   context "#/definitions/Pet" do
@@ -107,40 +107,44 @@ RSpec.describe SwaggerYard::Swagger do
 
     it { is_expected.to_not be_empty }
 
-    its(["required"]) { is_expected.to eq(["id", "relatives"])}
+    its(["required"]) { is_expected.to eq(["id", "relatives"]) }
 
-    its(["description"]) { is_expected.to eq("This is the Pet model.")}
+    its(["description"]) { is_expected.to eq("This is the Pet model.") }
   end
 
   context "#/definitions/Pets_Dog" do
     subject { swagger["definitions"]["Pets_Dog"] }
 
     its(["allOf"]) { is_expected.to_not be_empty }
-    its(["description"]) { is_expected.to eq("A dog model.")}
+    its(["description"]) { is_expected.to eq("A dog model.") }
   end
-
 
   context "#/tags" do
     subject { swagger["tags"] }
 
-    it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport"))}
+    it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport")) }
   end
 
   context "#/securityDefinitions" do
     subject { swagger["securityDefinitions"] }
 
-    it { is_expected.to eq("header_x_application_api_key" => {
-                             "type" => "apiKey",
-                             "name" => "X-APPLICATION-API-KEY",
-                             "in" => "header"}) }
+    it {
+      is_expected.to eq("header_x_application_api_key" => {
+        "type" => "apiKey",
+        "name" => "X-APPLICATION-API-KEY",
+        "in" => "header"
+      })
+    }
   end
 
   context "models" do
-    let(:model) { SwaggerYard::Model.from_yard_object(yard_class('MyModel', content)) }
-    let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
-                      security_objects: [], model_objects: { model.id => model }) }
+    let(:model) { SwaggerYard::Model.from_yard_object(yard_class("MyModel", content)) }
+    let(:spec) {
+      stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+        security_objects: [], model_objects: {model.id => model})
+    }
 
-    subject { described_class.new(spec).to_h['definitions'] }
+    subject { described_class.new(spec).to_h["definitions"] }
 
     context "inherited class with polymorphism" do
       let(:content) do
@@ -151,7 +155,7 @@ RSpec.describe SwaggerYard::Swagger do
         ].join("\n")
       end
 
-      its(['MyBiggerModel']) do
+      its(["MyBiggerModel"]) do
         is_expected.to eq(
           "allOf" => [
             {
@@ -161,7 +165,7 @@ RSpec.describe SwaggerYard::Swagger do
               "type" => "object",
               "properties" => {
                 "myOtherProperty" => {
-                  "type"=>"string"
+                  "type" => "string"
                 }
               }
             }
@@ -169,68 +173,67 @@ RSpec.describe SwaggerYard::Swagger do
         )
       end
 
-      context 'and an external schema' do
+      context "and an external schema" do
         let(:content) do
           ["The description.",
-           "",
-           "@model MyModel",
-           "@inherits schema#OtherModel"].join("\n")
+            "",
+            "@model MyModel",
+            "@inherits schema#OtherModel"].join("\n")
         end
-        let(:url)  { 'http://example.com/schemas/v1.0' }
+        let(:url) { "http://example.com/schemas/v1.0" }
         before do
           SwaggerYard.configure do |config|
             config.external_schema schema: url
           end
         end
 
-        its(['MyModel']) do
+        its(["MyModel"]) do
           schema = {
-            "allOf" => [{ "$ref" => "#{url}#/definitions/OtherModel" }],
+            "allOf" => [{"$ref" => "#{url}#/definitions/OtherModel"}],
             "description" => "The description."
           }
           is_expected.to eq(schema)
         end
       end
 
-      context 'and an external schema with a fragment' do
+      context "and an external schema with a fragment" do
         let(:content) do
           ["The description.",
-           "",
-           "@model MyModel",
-           "@inherits schema#OtherModel"].join("\n")
+            "",
+            "@model MyModel",
+            "@inherits schema#OtherModel"].join("\n")
         end
-        let(:url)  { 'http://example.com/schemas/v1.0#/components/schemas' }
+        let(:url) { "http://example.com/schemas/v1.0#/components/schemas" }
         before do
           SwaggerYard.configure do |config|
             config.external_schema schema: url
           end
         end
 
-        its(['MyModel']) do
+        its(["MyModel"]) do
           schema = {
-            "allOf" => [{ "$ref" => "#{url}/OtherModel" }],
+            "allOf" => [{"$ref" => "#{url}/OtherModel"}],
             "description" => "The description."
           }
           is_expected.to eq(schema)
         end
       end
-
     end
 
-    context 'inherited type with no properties' do
+    context "inherited type with no properties" do
       let(:content) do
         [
-         "@model MyEnum",
-         "@inherits enum<one,two,three>"
+          "@model MyEnum",
+          "@inherits enum<one,two,three>"
         ].join("\n")
       end
 
-      its(['MyEnum']) do
-        is_expected.to eq('type' => 'string', 'enum' => ['one', 'two', 'three'])
+      its(["MyEnum"]) do
+        is_expected.to eq("type" => "string", "enum" => ["one", "two", "three"])
       end
     end
 
-    context 'with an empty property' do
+    context "with an empty property" do
       include SilenceLogger
       let(:content) do
         [
@@ -239,12 +242,12 @@ RSpec.describe SwaggerYard::Swagger do
         ].join("\n")
       end
 
-      its(['MyModel']) do
-        is_expected.to eq('type' => 'object', 'properties' => {})
+      its(["MyModel"]) do
+        is_expected.to eq("type" => "object", "properties" => {})
       end
     end
 
-    context 'with a typeless property' do
+    context "with a typeless property" do
       include SilenceLogger
       let(:content) do
         [
@@ -253,12 +256,12 @@ RSpec.describe SwaggerYard::Swagger do
         ].join("\n")
       end
 
-      its(['MyModel']) do
-        is_expected.to eq('type' => 'object', 'properties' => {})
+      its(["MyModel"]) do
+        is_expected.to eq("type" => "object", "properties" => {})
       end
     end
 
-    context 'with additional properties' do
+    context "with additional properties" do
       let(:content) do
         [
           "@model MyModel",
@@ -266,66 +269,70 @@ RSpec.describe SwaggerYard::Swagger do
         ].join("\n")
       end
 
-      its(['MyModel']) do
-        is_expected.to eq('type' => 'object', 'properties' => {}, 'additionalProperties' => false)
+      its(["MyModel"]) do
+        is_expected.to eq("type" => "object", "properties" => {}, "additionalProperties" => false)
       end
     end
 
-    context 'nullables' do
-      subject { super()['MyModel']['properties'] }
+    context "nullables" do
+      subject { super()["MyModel"]["properties"] }
       context "with a nullable flag" do
-        let(:content) { ['@model MyModel', '@property name(nullable) [string]  Name'] }
+        let(:content) { ["@model MyModel", "@property name(nullable) [string]  Name"] }
 
-        its(['name', 'type'])           { is_expected.to eq(['string', 'null']) }
-        its(['name', 'x-nullable'])     { is_expected.to eq(true) }
+        its(["name", "type"]) { is_expected.to eq(["string", "null"]) }
+        its(["name", "x-nullable"]) { is_expected.to eq(true) }
       end
 
       context "with a nullable model" do
-        let(:content) { ['@model MyModel', '@property name(nullable) [Name]  Name'] }
+        let(:content) { ["@model MyModel", "@property name(nullable) [Name]  Name"] }
 
-        its(['name']) { is_expected.to eq('$ref' => '#/definitions/Name') }
+        its(["name"]) { is_expected.to eq("$ref" => "#/definitions/Name") }
       end
     end
 
-    context 'securityDefinitions' do
+    context "securityDefinitions" do
       let(:auth) { SwaggerYard::Authorization.from_yard_object(yard_tag(content)) }
-      let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
-                        security_objects: { auth.id => auth }, model_objects: {}) }
-      let (:security_definitions) { {'key' => {'type' => 'basic'} } }
+      let(:spec) {
+        stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+          security_objects: {auth.id => auth}, model_objects: {})
+      }
+      let(:security_definitions) { {"key" => {"type" => "basic"}} }
 
-      subject { described_class.new(spec).to_h['securityDefinitions'] }
+      subject { described_class.new(spec).to_h["securityDefinitions"] }
 
       before { SwaggerYard.config.security_definitions = security_definitions }
 
-      context 'api key' do
-        let(:content) { '@authorization [api_key] header X-My-Header' }
+      context "api key" do
+        let(:content) { "@authorization [api_key] header X-My-Header" }
 
-        it { is_expected.to include('header_x_my_header') }
+        it { is_expected.to include("header_x_my_header") }
 
-        its(['header_x_my_header']) {
-          is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header', 'in' => 'header')
+        its(["header_x_my_header"]) {
+          is_expected.to eq("type" => "apiKey", "name" => "X-My-Header", "in" => "header")
         }
 
-        it 'merges config authorizations' do
+        it "merges config authorizations" do
           expect(subject).to include(security_definitions)
         end
       end
 
-      context 'api key with description' do
-        let(:content) { '@authorization [api_key] header X-My-Header Header auth' }
+      context "api key with description" do
+        let(:content) { "@authorization [api_key] header X-My-Header Header auth" }
 
-        it { is_expected.to include('header_x_my_header') }
+        it { is_expected.to include("header_x_my_header") }
 
-        its(['header_x_my_header']) { is_expected.to eq('type' => 'apiKey', 'name' => 'X-My-Header',
-                                                        'in' => 'header', 'description' => 'Header auth') }
+        its(["header_x_my_header"]) {
+          is_expected.to eq("type" => "apiKey", "name" => "X-My-Header",
+            "in" => "header", "description" => "Header auth")
+        }
       end
 
-      context 'basic' do
-        let(:content) { '@authorization [basic] mybasic' }
+      context "basic" do
+        let(:content) { "@authorization [basic] mybasic" }
 
-        it { is_expected.to include('mybasic') }
+        it { is_expected.to include("mybasic") }
 
-        its(['mybasic']) { is_expected.to eq('type' => 'basic') }
+        its(["mybasic"]) { is_expected.to eq("type" => "basic") }
       end
     end
   end

@@ -18,7 +18,6 @@
 class Pet
 end
 
-
 module Pets
   # A dog model.
   # @model

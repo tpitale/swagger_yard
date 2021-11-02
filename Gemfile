@@ -12,4 +12,4 @@ gemspec
 
 # To use debugger
 # gem 'debugger'
-gem 'byebug' if RUBY_VERSION > "2"
+gem "byebug" if RUBY_VERSION > "2"

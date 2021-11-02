@@ -5,7 +5,11 @@ module SwaggerYard
     end
 
     def example=(val)
-      @example = JSON.parse(val) rescue val
+      @example = begin
+        JSON.parse(val)
+      rescue
+        val
+      end
     end
   end
 end

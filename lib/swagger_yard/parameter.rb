@@ -6,7 +6,7 @@ module SwaggerYard
       tag = SwaggerYard.requires_name_and_type(tag)
       return nil unless tag
 
-      name, options_string = tag.name.split(/[\(\)]/)
+      name, options_string = tag.name.split(/[()]/)
       description = tag.text
       description = name if description.nil? || description.strip.empty?
       type = Type.from_type_list(tag.types)
@@ -14,9 +14,9 @@ module SwaggerYard
       options = {}
 
       unless options_string.nil?
-        options_string.split(',').map(&:strip).tap do |arr|
-          options[:required] = !arr.delete('required').nil?
-          options[:allow_multiple] = !arr.delete('multiple').nil?
+        options_string.split(",").map(&:strip).tap do |arr|
+          options[:required] = !arr.delete("required").nil?
+          options[:allow_multiple] = !arr.delete("multiple").nil?
           options[:param_type] = arr.last
         end
       end
@@ -34,13 +34,13 @@ module SwaggerYard
       })
     end
 
-    def initialize(name, type, description, options={})
+    def initialize(name, type, description, options = {})
       @name, @type, @description = name, type, description
 
       @required = options[:required] || false
-      @param_type = options[:param_type] || 'query'
+      @param_type = options[:param_type] || "query"
       @allow_multiple = options[:allow_multiple] || false
-      @from_path      = options[:from_path] || false
+      @from_path = options[:from_path] || false
     end
 
     def from_path?

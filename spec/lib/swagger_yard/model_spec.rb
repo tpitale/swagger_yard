@@ -1,12 +1,12 @@
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe SwaggerYard::Model do
   let(:content) do
-    [ "@model MyModel",
-      "@discriminator myType(required) [string]" ].join("\n")
+    ["@model MyModel",
+      "@discriminator myType(required) [string]"].join("\n")
   end
 
-  let(:object)    { yard_class('MyModel', content) }
+  let(:object) { yard_class("MyModel", content) }
 
   subject(:model) { described_class.from_yard_object(object) }
 
@@ -34,14 +34,14 @@ RSpec.describe SwaggerYard::Model do
     its(:id) { is_expected.to eq("MyModel") }
 
     context "and a namespaced class name" do
-      let(:object) { yard_class('MyApp::MyModel', content) }
+      let(:object) { yard_class("MyApp::MyModel", content) }
 
-      its(:id) { is_expected.to eq('MyApp_MyModel') }
+      its(:id) { is_expected.to eq("MyApp_MyModel") }
     end
   end
 
   context "with a description" do
-    let(:desc) {"This is my class. Not your class."}
+    let(:desc) { "This is my class. Not your class." }
     let(:content) do
       [desc, "", "@model MyModel"].join("\n")
     end
@@ -57,66 +57,68 @@ RSpec.describe SwaggerYard::Model do
   context "with an @example" do
     let(:content) do
       ["@model MyModel",
-       '@example',
-       '  {',
-       '    "key": "value"',
-       '  }'
-      ].join("\n")
+        "@example",
+        "  {",
+        '    "key": "value"',
+        "  }"].join("\n")
     end
 
-    its(:example) { is_expected.to eq('key' => 'value') }
+    its(:example) { is_expected.to eq("key" => "value") }
   end
 
   context "with an @example tied to a property" do
     let(:content) do
-      ['@model MyModel',
-       '@property [string] name',
-       '@example name',
-       '  "Nick"'
-      ].join("\n")
+      ["@model MyModel",
+        "@property [string] name",
+        "@example name",
+        '  "Nick"'].join("\n")
     end
 
-    it 'sets the example on the property' do
-      prop = model.property('name')
+    it "sets the example on the property" do
+      prop = model.property("name")
       expect(prop.example).to eq("Nick")
     end
   end
 
   context "with @additional_properties" do
     let(:content) do
-      ['@model MyModel',
-       '@property [string] name',
-       '@additional_properties false'].join("\n")
+      ["@model MyModel",
+        "@property [string] name",
+        "@additional_properties false"].join("\n")
     end
 
-    it 'sets additional_properties on the model' do
+    it "sets additional_properties on the model" do
       expect(model.additional_properties).to be false
     end
   end
 
-  context 'with method properties' do
-    include_context 'person.rb model'
+  context "with method properties" do
+    include_context "person.rb model"
     subject { model }
 
-    its('properties') { is_expected.to include(a_property_named('address'),
-                                               a_property_named('parent'),
-                                               a_property_named('age')) }
+    its("properties") {
+      is_expected.to include(a_property_named("address"),
+        a_property_named("parent"),
+        a_property_named("age"))
+    }
 
-    its('properties') { is_expected.to_not include(a_property_named('some_non_model_method'),
-                                                   a_property_named('get_parent')) }
+    its("properties") {
+      is_expected.to_not include(a_property_named("some_non_model_method"),
+        a_property_named("get_parent"))
+    }
 
-    it 'captures the type' do
-      address = model.property('address')
-      expect(address.type.name).to eq('Address')
+    it "captures the type" do
+      address = model.property("address")
+      expect(address.type.name).to eq("Address")
     end
 
-    it 'captures the description' do
-      address = model.property('address')
+    it "captures the description" do
+      address = model.property("address")
       expect(address.description).to eq("the person's address")
     end
 
-    it 'captures requiredness' do
-      age = model.property('age')
+    it "captures requiredness" do
+      age = model.property("age")
       expect(age).to be_required
     end
   end

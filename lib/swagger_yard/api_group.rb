@@ -31,8 +31,8 @@ module SwaggerYard
     end
 
     def initialize
-      @resource       = nil
-      @path_items     = {}
+      @resource = nil
+      @path_items = {}
       @authorizations = {}
     end
 
@@ -67,17 +67,17 @@ module SwaggerYard
 
     def add_info(yard_object)
       @description = yard_object.docstring
-      @class_name  = yard_object.path
+      @class_name = yard_object.path
 
-      if tag = yard_object.tags.detect {|t| t.tag_name == "resource"}
+      if tag = yard_object.tags.detect { |t| t.tag_name == "resource" }
         @resource = tag.text
       end
 
       # we only have api_key auth, the value for now is always empty array
-      @authorizations = Hash[yard_object.tags.
-                             select {|t| t.tag_name == "authorize_with"}.
-                             map(&:text).uniq.
-                             map {|k| [k, []]}]
+      @authorizations = yard_object.tags
+        .select { |t| t.tag_name == "authorize_with" }
+        .map(&:text).uniq
+        .map { |k| [k, []] }.to_h
     end
 
     def add_path_item(yard_object)
@@ -91,7 +91,7 @@ module SwaggerYard
     end
 
     def path_from_yard_object(yard_object)
-      if tag = yard_object.tags.detect {|t| t.tag_name == "path"}
+      if tag = yard_object.tags.detect { |t| t.tag_name == "path" }
         tag.text
       elsif fn = SwaggerYard.config.path_discovery_function
         begin
