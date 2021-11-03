@@ -78,7 +78,7 @@ module SwaggerYard
         when "date-time", "date", "time", "uuid"
           { 'type' => 'string', 'format' => v }
         else
-          name = Model.mangle(v)
+          name = ModelParser.mangle(v)
           if /[[:upper:]]/.match(name)
             { '$ref' => "#{model_path}#{name}" }
           else
@@ -96,7 +96,7 @@ module SwaggerYard
       rule(external_identifier: { namespace: simple(:namespace), identifier: simple(:identifier) }) do
         prefix, name  = namespace.to_s, identifier.to_s
         url, fragment = resolve_uri.call(name, prefix)
-        { '$ref' => "#{url}#{fragment}#{Model.mangle(name)}" }
+        { '$ref' => "#{url}#{fragment}#{ModelParser.mangle(name)}" }
       end
 
       rule(formatted: { name: simple(:name), format: simple(:format) }) do

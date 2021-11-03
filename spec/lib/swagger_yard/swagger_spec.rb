@@ -136,7 +136,7 @@ RSpec.describe SwaggerYard::Swagger do
   end
 
   context "models" do
-    let(:model) { SwaggerYard::Model.from_yard_object(yard_class('MyModel', content)) }
+    let(:model) { SwaggerYard::ModelParser.from_yard_object(yard_class('MyModel', content)) }
     let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
                       security_objects: [], model_objects: { model.id => model }) }
 

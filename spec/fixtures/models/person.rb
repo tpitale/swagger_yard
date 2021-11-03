@@ -1,5 +1,6 @@
 # @model Person
 # @property [Person] parent
+# @discriminator myType(required) [string]
 class Person
   extend Forwardable
 
