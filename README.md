@@ -359,6 +359,7 @@ Supported formats for the `@authorization` tag are as follows:
 # @authorization [basic] mybasicauth The rest is a description
 # @authorization [digest] digestauth The rest is a description
 # @authorization [<any-rfc7235-auth>] myrfcauth The rest is a description
+```
 
 - For `apiKey` the name of the authorization is formed as `"#{location}_#{key_name}".downcase.gsub('-','_')`.
   Example: `@authorization [apiKey] header X-API-Key` is named `header_x_api_key`. (This naming scheme is kept for backwards compatibility.)
