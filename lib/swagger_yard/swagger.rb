@@ -84,7 +84,7 @@ module SwaggerYard
       op_hash["description"] = op.description unless op.description.empty?
       op_hash["summary"]     = op.summary unless op.summary.empty?
 
-      authorizations = op.api_group.authorizations
+      authorizations = op.authorizations
       unless authorizations.empty?
         op_hash["security"] = authorizations.map {|k,v| { k => v} }
       end
