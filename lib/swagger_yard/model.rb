@@ -21,7 +21,7 @@ module SwaggerYard
     end
 
     def self.mangle(name)
-      name.gsub(/[^[:alnum:]_]+/, '_')
+      name.gsub(/[^[:alnum:]_]+/, "_")
     end
 
     def initialize
@@ -39,14 +39,15 @@ module SwaggerYard
     end
 
     def property(key)
-      properties.detect {|prop| prop.name == key }
+      properties.detect { |prop| prop.name == key }
     end
 
-    TAG_ORDER = %w(model inherits discriminator property example additional_properties)
+    TAG_ORDER = %w[model inherits discriminator property example additional_properties]
 
     def parse_tags(tags)
-      sorted_tags = tags.each_with_index.sort_by { |t,i|
-        [TAG_ORDER.index(t.tag_name), i] }.map(&:first)
+      sorted_tags = tags.each_with_index.sort_by { |t, i|
+        [TAG_ORDER.index(t.tag_name), i]
+      }.map(&:first)
       sorted_tags.each do |tag|
         case tag.tag_name
         when "model"

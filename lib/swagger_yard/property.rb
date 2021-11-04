@@ -7,7 +7,7 @@ module SwaggerYard
     attr_reader :name, :required, :type, :nullable
     attr_accessor :description
 
-    NAME_OPTIONS_REGEXP = /[\(\)]/
+    NAME_OPTIONS_REGEXP = /[()]/
 
     def self.tag_name(tag)
       if tag.object.is_a?(YARD::CodeObjects::MethodObject)
@@ -21,12 +21,12 @@ module SwaggerYard
 
     def self.from_method(yard_method)
       return nil unless yard_method.explicit || yard_method.parameters.empty?
-      tags = (yard_method.tags ||[]).dup
-      prop_tag = tags.detect { |t| t.tag_name == 'property' }
+      tags = (yard_method.tags || []).dup
+      prop_tag = tags.detect { |t| t.tag_name == "property" }
       return nil unless prop_tag
-      tags.reject { |t| t.tag_name == 'property' }
+      tags.reject { |t| t.tag_name == "property" }
       from_tag(prop_tag).tap do |prop|
-        ex = tags.detect { |t| t.tag_name == 'example' }
+        ex = tags.detect { |t| t.tag_name == "example" }
         prop.example = ex.text.empty? ? ex.name : ex.text if ex
         prop.description = yard_method.docstring unless prop.description
       end
@@ -41,29 +41,29 @@ module SwaggerYard
 
       text = tag.text
 
-      if (options_src = (tag.name || '')) =~ NAME_OPTIONS_REGEXP
+      if NAME_OPTIONS_REGEXP.match?((options_src = (tag.name || "")))
         _, options_string = options_src.split(NAME_OPTIONS_REGEXP)
       elsif tag.name && tag.object.is_a?(YARD::CodeObjects::MethodObject)
-        if text
-          text = tag.name + ' ' + text
+        text = if text
+          tag.name + " " + text
         else
-          text = tag.name
+          tag.name
         end
       end
 
-      options = options_string.to_s.split(',').map(&:strip)
+      options = options_string.to_s.split(",").map(&:strip)
 
       new(name, tag.types, text, options)
     end
 
     def initialize(name, types, description, options)
       @name, @description = name, description
-      @required = options.include?('required')
-      @nullable = options.include?('nullable')
+      @required = options.include?("required")
+      @nullable = options.include?("nullable")
       @type = Type.from_type_list(types)
     end
 
-     def required?
+    def required?
       @required
     end
   end

@@ -1,8 +1,8 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe SwaggerYard::ApiGroup do
   context "with a parsed yard object" do
-    let(:yard_object) { yard_method(:index, ['A Description', *tags].join("\n")) }
+    let(:yard_object) { yard_method(:index, ["A Description", *tags].join("\n")) }
     let(:api_group) { SwaggerYard::ApiGroup.new }
     subject(:path) { api_group.add_path_item(yard_object) }
 
@@ -16,21 +16,21 @@ describe SwaggerYard::ApiGroup do
       let(:tags) { [] }
 
       before(:each) do
-        SwaggerYard.config.path_discovery_function = -> obj do
+        SwaggerYard.config.path_discovery_function = ->(obj) do
           expect(obj).to respond_to(:tags)
-          ['GET', '/blah']
+          ["GET", "/blah"]
         end
       end
 
-      it { is_expected.to eq('/blah') }
+      it { is_expected.to eq("/blah") }
 
-      it 'calls the provided function to determine the path' do
+      it "calls the provided function to determine the path" do
         yard_object.expects(:add_tag)
-        expect(api_group.path_from_yard_object(yard_object)).to eq('/blah')
+        expect(api_group.path_from_yard_object(yard_object)).to eq("/blah")
       end
 
       context "when the function returns nil" do
-        before { SwaggerYard.config.path_discovery_function = ->(obj) { nil } }
+        before { SwaggerYard.config.path_discovery_function = ->(obj) {} }
         it { is_expected.to be_nil }
       end
 
@@ -42,9 +42,9 @@ describe SwaggerYard::ApiGroup do
     end
   end
 
-  describe 'visibility' do
+  describe "visibility" do
     let(:fixture_files) do
-      controllers_fixtures_path = "#{FIXTURE_PATH.to_s}/specification"
+      controllers_fixtures_path = "#{FIXTURE_PATH}/specification"
       %w[hello_controller.rb goodbye_controller.rb fully_private_controller.rb semi_private_controller.rb].map { |f| "#{controllers_fixtures_path}/#{f}" }
     end
 
@@ -52,9 +52,9 @@ describe SwaggerYard::ApiGroup do
       fixture_files.map { |f| SwaggerYard.yard_objects_from_file(f, :class) }.flatten
     end
 
-    context 'include private' do
+    context "include private" do
       before { SwaggerYard.config.include_private = true }
-      it 'should add private resources if include_private is true' do
+      it "should add private resources if include_private is true" do
         groups = []
         expect(yard_objects.count).to eq 4
         yard_objects.each { |o| groups << SwaggerYard::ApiGroup.new.add_yard_object(o) }
@@ -65,9 +65,9 @@ describe SwaggerYard::ApiGroup do
       end
     end
 
-    context 'exclude private' do
+    context "exclude private" do
       before { SwaggerYard.config.include_private = false }
-      it 'should ignore private resources if include_private is false' do
+      it "should ignore private resources if include_private is false" do
         groups = []
         expect(yard_objects.count).to eq 4
         yard_objects.each { |o| groups << SwaggerYard::ApiGroup.new.add_yard_object(o) }

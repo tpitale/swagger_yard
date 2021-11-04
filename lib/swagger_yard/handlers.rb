@@ -16,9 +16,9 @@ module SwaggerYard::Handlers
     end
 
     def self.register_dsl_method(name, options = {})
-      return if self.method_options[name.to_s]
+      return if method_options[name.to_s]
       options[:args] ||= 0..-1
-      self.method_options[name.to_s] = options
+      method_options[name.to_s] = options
       handles method_call(name)
     end
 

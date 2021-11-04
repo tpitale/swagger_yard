@@ -9,10 +9,10 @@ module SwaggerYard
     attr_accessor :include_private
 
     # openapi-compatible names
-    alias openapi_version swagger_version
-    alias openapi_version= swagger_version=
-    alias security_schemes security_definitions
-    alias security_schemes= security_definitions=
+    alias_method :openapi_version, :swagger_version
+    alias_method :openapi_version=, :swagger_version=
+    alias_method :security_schemes, :security_definitions
+    alias_method :security_schemes=, :security_definitions=
 
     def initialize
       @swagger_version = "2.0"
@@ -25,9 +25,9 @@ module SwaggerYard
     end
 
     def external_schema(mappings = nil)
-      mappings.each do |prefix, url|
+      mappings&.each do |prefix, url|
         @external_schema[prefix.to_s] = url
-      end if mappings
+      end
       @external_schema
     end
 

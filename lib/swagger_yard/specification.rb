@@ -3,7 +3,7 @@ module SwaggerYard
     attr_accessor :authorizations
 
     def initialize(controller_path = SwaggerYard.config.controller_path,
-                   model_path = SwaggerYard.config.model_path)
+      model_path = SwaggerYard.config.model_path)
       @model_paths = [*model_path].compact
       @controller_paths = [*controller_path].compact
 
@@ -23,15 +23,16 @@ module SwaggerYard
     end
 
     def model_objects
-      Hash[models.map {|m| [m.id, m]}]
+      models.map { |m| [m.id, m] }.to_h
     end
 
     def security_objects
       api_groups # triggers controller parsing in case it did not happen before
-      Hash[authorizations.map {|auth| [auth.id, auth]}]
+      authorizations.map { |auth| [auth.id, auth] }.to_h
     end
 
     private
+
     def models
       @models ||= parse_models
     end
@@ -54,7 +55,7 @@ module SwaggerYard
       @controller_paths.map do |controller_path|
         Dir[controller_path.to_s].map do |file_path|
           SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-            obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
+            obj.tags.select { |t| t.tag_name == "authorization" }.each do |t|
               @authorizations << Authorization.from_yard_object(t)
             end
             ApiGroup.from_yard_object(obj)
@@ -65,7 +66,7 @@ module SwaggerYard
 
     def warn_duplicate_operations(paths)
       operation_ids = []
-      paths.path_items.each do |path,pi|
+      paths.path_items.each do |path, pi|
         pi.operations.each do |_, op|
           if operation_ids.include?(op.operation_id)
             SwaggerYard.log.warn("duplicate operation #{op.operation_id}")

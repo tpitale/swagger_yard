@@ -5,19 +5,19 @@ module SwaggerYard
     end
 
     # Default model location path
-    MODEL_PATH = '#/definitions/'.freeze
+    MODEL_PATH = "#/definitions/".freeze
 
     attr_reader :source
 
     def initialize(string)
-      @source  = string
-      @name    = nil
+      @source = string
+      @name = nil
     end
 
     def name
       return @name if @name
       @name = name_for(schema)
-      @name = name_for(schema['items']) if @name == 'array'
+      @name = name_for(schema["items"]) if @name == "array"
       @name
     end
 
@@ -35,8 +35,9 @@ module SwaggerYard
     end
 
     private
+
     def name_for(schema)
-      schema["type"] || schema["$ref"][%r'.*/([^/]*)$', 1]
+      schema["type"] || schema["$ref"][%r{.*/([^/]*)$}, 1]
     end
   end
 end

@@ -1,0 +1,19 @@
+name: Standard RB
+
+on: push
+
+jobs:
+  standardrb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          bundler-cache: true
+
+      - name: Run standard RB
+        run: bundle exec standardrb

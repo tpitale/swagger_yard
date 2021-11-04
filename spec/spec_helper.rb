@@ -1,27 +1,27 @@
-require 'simplecov'
+require "simplecov"
 SimpleCov.start do
-  add_filter '/spec/'
-  add_filter '/.bundle/'
+  add_filter "/spec/"
+  add_filter "/.bundle/"
 end
 
 ENV["RAILS_ENV"] = "development"
 
-FIXTURE_PATH = Pathname.new(File.expand_path('../fixtures', __FILE__))
+FIXTURE_PATH = Pathname.new(File.expand_path("../fixtures", __FILE__))
 
-require 'bundler/setup'
+require "bundler/setup"
 Bundler.require
 
-require 'rspec/its'
-require 'apivore'
+require "rspec/its"
+require "apivore"
 # we don't care about these hashie warnings in our test suite
 Apivore::Swagger.disable_warnings
 
-require File.expand_path('../../lib/swagger_yard', __FILE__)
-require File.expand_path('../fixtures/dummy/config/initializers/swagger_yard.rb', __FILE__)
+require File.expand_path("../../lib/swagger_yard", __FILE__)
+require File.expand_path("../fixtures/dummy/config/initializers/swagger_yard.rb", __FILE__)
 
 SwaggerYard.register_custom_yard_tags!
 
-Dir["./spec/support/**/*.rb"].each {|f| require f}
+Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
@@ -29,9 +29,9 @@ RSpec.configure do |config|
 
   config.mock_with :mocha
 
-  config.order = 'random'
+  config.order = "random"
 
-  config.example_status_persistence_file_path = '.rspec_examples'
+  config.example_status_persistence_file_path = ".rspec_examples"
 
   config.include SaveConfig
   config.include YARDHelpers

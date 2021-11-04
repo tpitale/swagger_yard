@@ -1,10 +1,9 @@
 module SwaggerYard::Directives
-  
   # A directive used to create a model tag with a dummy class.
   # based on https://github.com/lsegal/yard/blob/master/lib/yard/tags/directives.rb#L361
   class ParamClassDirective < YARD::Tags::Directive
-
-    def call; end
+    def call
+    end
 
     def after_parse
       return unless handler
@@ -19,10 +18,10 @@ module SwaggerYard::Directives
       handler.register_source(obj)
       handler.register_group(obj)
       obj.docstring = YARD::Docstring.new!(parser.text,
-                                           parser.tags,
-                                           obj,
-                                           nil,
-                                           parser.reference)
+        parser.tags,
+        obj,
+        nil,
+        parser.reference)
       obj.add_tag(YARD::Tags::Tag.new(:model, name))
       parser.object = obj
       parser.post_process

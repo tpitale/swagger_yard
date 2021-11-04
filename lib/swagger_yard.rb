@@ -19,8 +19,11 @@ require "swagger_yard/directives"
 
 module SwaggerYard
   class Error < StandardError; end
+
   class UnknownConstant < Error; end
+
   class InvalidTypeError < Error; end
+
   class UndefinedSchemaError < Error; end
 
   class << self
@@ -56,8 +59,8 @@ module SwaggerYard
       end
       unless valid
         if tag.object
-          object   = " in #{tag.object.to_s}"
-          location = " near #{tag.object.files.first.join(':')}" if tag.object.files.first
+          object = " in #{tag.object}"
+          location = " near #{tag.object.files.first.join(":")}" if tag.object.files.first
         end
         log.warn "invalid @#{tag.tag_name} tag#{object}#{location}"
         return nil
@@ -86,7 +89,7 @@ module SwaggerYard
     #
     def yard_objects_from_file(file_path, *types)
       ::YARD.parse(file_path)
-      ::YARD::Registry.all(*types).select {|co| co.file == file_path }
+      ::YARD::Registry.all(*types).select { |co| co.file == file_path }
     end
 
     #

@@ -3,19 +3,17 @@ class Parslet::ParseFailed
   remove_method :cause if instance_methods(false).include?(:cause)
 end
 
-RSpec::Matchers.define :parse do |str,*rest|
+RSpec::Matchers.define :parse do |str, *rest|
   match do |parser|
-    begin
-      @result = parser.parse(str)
-      if rest.empty?
-        @result
-      else
-        @result == rest.first
-      end
-    rescue Parslet::ParseFailed => e
-      @error = e
-      false
+    @result = parser.parse(str)
+    if rest.empty?
+      @result
+    else
+      @result == rest.first
     end
+  rescue Parslet::ParseFailed => e
+    @error = e
+    false
   end
 
   failure_message do
@@ -28,12 +26,10 @@ RSpec::Matchers.define :parse do |str,*rest|
   end
 
   match_when_negated do |parser|
-    begin
-      parser.parse(str)
-      false
-    rescue Parslet::ParseFailed
-      true
-    end
+    parser.parse(str)
+    false
+  rescue Parslet::ParseFailed
+    true
   end
 
   failure_message_when_negated do
@@ -43,7 +39,7 @@ end
 
 module ParseHelpers
   def expect_parse_to(hash)
-    hash.each do |k,v|
+    hash.each do |k, v|
       expect(subject).to parse(k, v)
     end
   end

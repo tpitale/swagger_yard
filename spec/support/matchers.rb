@@ -1,6 +1,6 @@
 hash_like_named = proc do |name|
   match do |actual|
-    name == (actual.respond_to?(:name) ? actual.name : actual['name'])
+    name == (actual.respond_to?(:name) ? actual.name : actual["name"])
   end
 
   diffable
