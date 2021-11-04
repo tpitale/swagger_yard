@@ -17,27 +17,33 @@ Install the gem with Bunder:
 
 Place configuration in a Rails initializer or suitable configuration file:
 
-    # config/initializers/swagger_yard.rb
-    SwaggerYard.configure do |config|
-      config.api_version = "1.0"
+```ruby
+# config/initializers/swagger_yard.rb
+SwaggerYard.configure do |config|
+  config.api_version = "1.0"
 
-      config.title = 'Your API'
-      config.description = 'Your API does this'
+  config.title = 'Your API'
+  config.description = 'Your API does this'
 
-      # where your actual api is hosted from
-      config.api_base_path = "http://localhost:3000/api"
+  # Where your actual api is hosted from
+  config.api_base_path = "http://localhost:3000/api"
 
-      # Where to find controllers (can be an array of paths/globs)
-      config.controller_path = ::Rails.root + 'app/controllers/**/*'
+  # Where to find controllers (can be an array of paths/globs)
+  config.controller_path = ::Rails.root + 'app/controllers/**/*'
 
-      # Where to find models (can be an array)
-      config.model_path = ::Rails.root + 'app/decorators/**/*'
+  # Where to find models (can be an array)
+  config.model_path = ::Rails.root + 'app/decorators/**/*'
 
-      # Whether to include controller methods marked as private
-	  # (either with ruby `private` or YARD `# @visibility private`
-	  # Default: true
-	  config.include_private = true
-    end
+  # Whether to include controller methods marked as private
+  # (either with ruby `private` or YARD `# @visibility private`
+  # Default: true
+  config.include_private = true
+
+  # When you are using multiple files with same class name
+  # (for ex: Sinatra with routes splited in multiples files)
+  config.use_yard_cache = false
+end
+```
 
 Then start to annotate controllers and models as described below.
 
@@ -45,7 +51,7 @@ Then start to annotate controllers and models as described below.
 
 To generate a Swagger or OpenAPI specification, use one of the `SwaggerYard::Swagger` or `SwaggerYard::OpenAPI` classes as follows in a script or Rake task (or use [swagger_yard-rails](/livingsocial/swagger_yard-rails)):
 
-```
+```ruby
 # Register the yard tags
 SwaggerYard.register_custom_yard_tags!
 
@@ -380,7 +386,7 @@ SwaggerYard.configure do |config|
         authorizationUrl: "http://swagger.io/api/oauth/dialog",
         scopes: {
           "write:pets": "modify pets in your account",
-          "read:pets": "read your pets"		
+          "read:pets": "read your pets"
         }
       }
     }
@@ -431,4 +437,3 @@ Rails routing tables to reverse look up and compute paths.
 
 
 [swagger_yard-rails]: https://github.com/livingsocial/swagger_yard-rails
-

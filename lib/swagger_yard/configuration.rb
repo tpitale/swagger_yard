@@ -7,6 +7,7 @@ module SwaggerYard
     attr_accessor :path_discovery_function
     attr_accessor :security_definitions
     attr_accessor :include_private
+    attr_accessor :use_yard_cache
 
     # openapi-compatible names
     alias openapi_version swagger_version
@@ -22,6 +23,7 @@ module SwaggerYard
       @security_definitions = {}
       @external_schema = {}
       @include_private = true
+      @use_yard_cache = true
     end
 
     def external_schema(mappings = nil)
