@@ -70,6 +70,16 @@ module SwaggerYard
       end
     end
 
+    def property(prop)
+      prop.type.schema_with(model_path: model_path).tap do |h|
+        unless h['$ref']
+          h["description"] = prop.description if prop.description && !prop.description.strip.empty?
+          h["nullable"] = true if prop.nullable
+          h["example"] = prop.example if prop.example
+        end
+      end
+    end
+
     def security_defs(security_objects)
       defs = super
       Hash[defs.map do |name, d|
