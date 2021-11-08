@@ -225,6 +225,31 @@ RSpec.describe SwaggerYard::OpenAPI do
 
   end
 
+  context "models" do
+    let(:model) { SwaggerYard::Model.from_yard_object(yard_class('MyModel', content)) }
+    let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+                      security_objects: [], model_objects: { model.id => model }) }
+
+    subject { described_class.new(spec).to_h["components"]["schemas"] }
+
+    context 'nullables' do
+      subject { super()['MyModel']['properties'] }
+
+      context "with a nullable flag" do
+        let(:content) { ['@model MyModel', '@property name(nullable) [string]  Name'] }
+
+        its(['name', 'type'])     { is_expected.to eq('string') }
+        its(['name', 'nullable']) { is_expected.to eq(true) }
+      end
+
+      context "with a nullable model" do
+        let(:content) { ['@model MyModel', '@property name(nullable) [Name]  Name'] }
+
+        its(['name']) { is_expected.to eq('$ref' => '#/components/schemas/Name') }
+      end
+    end
+  end
+
   context 'with config.openapi_version set and Swagger.new' do
     subject { SwaggerYard::Swagger.new.to_h }
     before { SwaggerYard.config.openapi_version = '3.0.0' }
