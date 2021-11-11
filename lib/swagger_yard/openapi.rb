@@ -39,6 +39,7 @@ module SwaggerYard
           "in"          => param.param_type
         }.tap do |h|
           schema = param.type.schema_with(model_path: model_path)
+          schema["example"] = param.example unless param.example.nil?
           h["schema"] = schema
           h["explode"] = true if !Array(param.allow_multiple).empty? && schema["items"]
         end
