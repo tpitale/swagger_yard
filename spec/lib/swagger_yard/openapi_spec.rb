@@ -33,7 +33,7 @@ RSpec.describe SwaggerYard::OpenAPI do
 
     its(["get", "responses"]) { are_expected.to include("default", 404, 400) }
 
-    its(["get", "parameters"]) { are_expected.to include(a_parameter_named("id")) }
+    its(["get", "parameters"]) { are_expected.to include(include("name" => "id", "schema" => include("example" => "1"))) }
 
     its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
   end

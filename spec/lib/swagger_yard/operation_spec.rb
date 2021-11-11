@@ -69,6 +69,26 @@ RSpec.describe SwaggerYard::Operation do
     its("parameters.last.description") { is_expected.to eq("name") }
   end
 
+  context "with a declared parameter that has a description and an example" do
+    let(:tags) { [yard_tag("@path [GET] /hello"),
+                  yard_tag("@parameter name [string] Description -- Example Name")] }
+
+    its("parameters.count") { is_expected.to eq(1) }
+    its("parameters.last.name") { is_expected.to eq("name") }
+    its("parameters.last.description") { is_expected.to eq("Description") }
+    its("parameters.last.example") { is_expected.to eq("Example Name") }
+  end
+
+  context "with a declared parameter that has no description but has an example" do
+    let(:tags) { [yard_tag("@path [GET] /hello"),
+                  yard_tag("@parameter name [string] -- Example Name")] }
+
+    its("parameters.count") { is_expected.to eq(1) }
+    its("parameters.last.name") { is_expected.to eq("name") }
+    its("parameters.last.description") { is_expected.to eq("name") }
+    its("parameters.last.example") { is_expected.to eq("Example Name") }
+  end
+
   context "with a declared parameter that has no description (reversed name/type)" do
     let(:tags) { [yard_tag("@path [GET] /hello"),
                   yard_tag("@parameter [string] name")] }

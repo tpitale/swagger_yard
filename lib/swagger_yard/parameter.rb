@@ -1,14 +1,15 @@
 module SwaggerYard
   class Parameter
-    attr_accessor :name, :type, :description, :param_type, :required, :allow_multiple
+    attr_accessor :name, :type, :description, :param_type, :required, :allow_multiple, :example
 
     def self.from_yard_tag(tag)
       tag = SwaggerYard.requires_name_and_type(tag)
       return nil unless tag
 
       name, options_string = tag.name.split(/[\(\)]/)
-      description = tag.text
+      description, example = tag.text.to_s.split(/\s*--\s*/)
       description = name if description.nil? || description.strip.empty?
+      example = nil if !example.nil? && example.strip.empty?
       type = Type.from_type_list(tag.types)
 
       options = {}
@@ -21,12 +22,12 @@ module SwaggerYard
         end
       end
 
-      new(name, type, description, options)
+      new(name, type, description, example, options)
     end
 
     # TODO: support more variation in scope types
     def self.from_path_param(name)
-      new(name, Type.new("string"), "Scope response to #{name}", {
+      new(name, Type.new("string"), "Scope response to #{name}", nil, {
         required: true,
         allow_multiple: false,
         param_type: "path",
@@ -34,8 +35,8 @@ module SwaggerYard
       })
     end
 
-    def initialize(name, type, description, options={})
-      @name, @type, @description = name, type, description
+    def initialize(name, type, description, example, options={})
+      @name, @type, @description, @example = name, type, description, example
 
       @required = options[:required] || false
       @param_type = options[:param_type] || 'query'
