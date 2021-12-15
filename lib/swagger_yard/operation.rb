@@ -6,6 +6,7 @@ module SwaggerYard
 
   class Operation
     attr_accessor :description, :ruby_method
+    attr_accessor :authorizations
     attr_writer :summary
     attr_reader :path, :http_method
     attr_reader :parameters
@@ -36,6 +37,8 @@ module SwaggerYard
             else
               operation.default_response.example = tag.text
             end
+          when "authorize_with"
+            operation.authorizations[tag.text] ||= []
           end
         end
 
@@ -50,6 +53,7 @@ module SwaggerYard
       @parameters     = []
       @default_response = nil
       @responses = []
+      @authorizations = {}.merge(api_group.authorizations.to_h)
     end
 
     def summary

@@ -39,6 +39,7 @@ module SwaggerYard
           "in"          => param.param_type
         }.tap do |h|
           schema = param.type.schema_with(model_path: model_path)
+          schema["example"] = param.example unless param.example.nil?
           h["schema"] = schema
           h["explode"] = true if !Array(param.allow_multiple).empty? && schema["items"]
         end
@@ -66,6 +67,16 @@ module SwaggerYard
         if resp && resp.type && (schema = resp.type.schema_with(model_path: model_path))
           h['content'] = { 'application/json' => { 'schema' => schema } }
           h['content']['application/json']['example'] = resp.example if resp.example
+        end
+      end
+    end
+
+    def property(prop)
+      prop.type.schema_with(model_path: model_path).tap do |h|
+        unless h['$ref']
+          h["description"] = prop.description if prop.description && !prop.description.strip.empty?
+          h["nullable"] = true if prop.nullable
+          h["example"] = prop.example if prop.example
         end
       end
     end

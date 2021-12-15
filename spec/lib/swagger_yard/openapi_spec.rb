@@ -33,7 +33,7 @@ RSpec.describe SwaggerYard::OpenAPI do
 
     its(["get", "responses"]) { are_expected.to include("default", 404, 400) }
 
-    its(["get", "parameters"]) { are_expected.to include(a_parameter_named("id")) }
+    its(["get", "parameters"]) { are_expected.to include(include("name" => "id", "schema" => include("example" => "1"))) }
 
     its(["get", "security"]) { is_expected.to eq([{'header_x_application_api_key' => []}])}
   end
@@ -223,6 +223,31 @@ RSpec.describe SwaggerYard::OpenAPI do
       }
     end
 
+  end
+
+  context "models" do
+    let(:model) { SwaggerYard::Model.from_yard_object(yard_class('MyModel', content)) }
+    let(:spec) { stub(path_objects: SwaggerYard::Paths.new([]), tag_objects: [],
+                      security_objects: [], model_objects: { model.id => model }) }
+
+    subject { described_class.new(spec).to_h["components"]["schemas"] }
+
+    context 'nullables' do
+      subject { super()['MyModel']['properties'] }
+
+      context "with a nullable flag" do
+        let(:content) { ['@model MyModel', '@property name(nullable) [string]  Name'] }
+
+        its(['name', 'type'])     { is_expected.to eq('string') }
+        its(['name', 'nullable']) { is_expected.to eq(true) }
+      end
+
+      context "with a nullable model" do
+        let(:content) { ['@model MyModel', '@property name(nullable) [Name]  Name'] }
+
+        its(['name']) { is_expected.to eq('$ref' => '#/components/schemas/Name') }
+      end
+    end
   end
 
   context 'with config.openapi_version set and Swagger.new' do
