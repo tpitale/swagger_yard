@@ -34,7 +34,7 @@ module SwaggerYard
       groups.map do |name, tags|
         {
           name: name,
-          tags: tags
+          tags: tags.uniq
         }
       end
     end

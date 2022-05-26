@@ -22,7 +22,7 @@ RSpec.describe SwaggerYard::Swagger do
   context "#/paths" do
     subject { swagger["paths"] }
 
-    its(:size) { is_expected.to eq(3) }
+    its(:size) { is_expected.to eq(4) }
   end
 
   context "#/paths//pets/{id}" do
@@ -146,6 +146,7 @@ RSpec.describe SwaggerYard::Swagger do
     subject { swagger["tags"] }
 
     it { is_expected.to include(a_tag_named("Pet"), a_tag_named("Transport"))}
+    its(:size) { is_expected.to eq(2) }
   end
 
   context "#/securityDefinitions" do

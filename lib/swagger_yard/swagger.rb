@@ -181,7 +181,7 @@ module SwaggerYard
     end
 
     def tags(tag_objects)
-      tag_objects.sort_by {|t| t.name.upcase }.map do |t|
+      tag_objects.sort_by {|t| t.name.upcase }.uniq { |t| t.name.upcase }.map do |t|
         { 'name' => t.name, 'description' => t.description }
       end
     end
