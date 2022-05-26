@@ -9,11 +9,13 @@ module SwaggerYard
     end
 
     def metadata
-      {
+      metadata = {
         'openapi' => '3.0.0',
         'info' => Info.new.to_h,
         'servers' => [{'url' => SwaggerYard.config.api_base_path}]
       }
+      metadata["externalDocs"] = external_docs if external_docs
+      metadata
     end
 
     def definitions

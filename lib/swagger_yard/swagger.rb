@@ -1,10 +1,22 @@
 module SwaggerYard
   class Info
     def to_h
+      hash = {
+        "title"          => SwaggerYard.config.title,
+        "description"    => SwaggerYard.config.description,
+        "version"        => SwaggerYard.config.api_version
+      }
+      hash["termsOfService"] = SwaggerYard.config.terms_of_service if SwaggerYard.config.terms_of_service
+      hash["x-logo"] = x_logo if x_logo
+      hash
+    end
+
+    def x_logo
+      return nil if SwaggerYard.config.x_logo_url.nil?
       {
-        "title"       => SwaggerYard.config.title,
-        "description" => SwaggerYard.config.description,
-        "version"     => SwaggerYard.config.api_version
+        "url"     => SwaggerYard.config.x_logo_url,
+        "href"    => SwaggerYard.config.x_logo_href,
+        "altText" => SwaggerYard.config.x_logo_alt_text,
       }
     end
   end
@@ -43,10 +55,12 @@ module SwaggerYard
     end
 
     def metadata
-      {
-        "swagger"  => "2.0",
-        "info"     => Info.new.to_h
+      metadata = {
+        "swagger"      => "2.0",
+        "info"         => Info.new.to_h
       }.merge(uri_info)
+      metadata["externalDocs"] = external_docs if external_docs
+      metadata
     end
 
     def uri_info
@@ -58,6 +72,14 @@ module SwaggerYard
         'host' => host,
         'basePath' => uri.request_uri,
         'schemes' => [uri.scheme]
+      }
+    end
+
+    def external_docs
+      return nil if SwaggerYard.config.external_docs_url.nil?
+      {
+        "description" => SwaggerYard.config.external_docs_description,
+        "url" => SwaggerYard.config.external_docs_url,
       }
     end
 

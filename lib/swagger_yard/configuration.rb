@@ -8,6 +8,9 @@ module SwaggerYard
     attr_accessor :security_definitions
     attr_accessor :ignore_internal
     attr_accessor :default_summary_to_description
+    attr_accessor :terms_of_service
+    attr_accessor :x_logo_url, :x_logo_href, :x_logo_alt_text
+    attr_accessor :external_docs_description, :external_docs_url
 
     # openapi-compatible names
     alias openapi_version swagger_version
