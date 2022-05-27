@@ -15,7 +15,7 @@ RSpec.describe SwaggerYard::OpenAPI do
   context "#/paths" do
     subject { openapi["paths"] }
 
-    its(:size) { is_expected.to eq(4) }
+    its(:size) { is_expected.to eq(5) }
   end
 
   context "#/paths//pets/{id}" do

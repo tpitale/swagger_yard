@@ -108,6 +108,31 @@ class Accounts::OwnershipsController < ActionController::Base
 end
 ```
 
+### Standalone Path ###
+
+When one controller action method supports multiple paths, the additional path can be documented by using `@!path` directive.
+
+```ruby
+  # Returns a extra ownership for an account by id
+  #
+  # @!path [GET] /extra/accounts/ownerships/{id}
+  # @response_type [Ownership]
+  # @response [EmptyOwnership] 404 Ownership not found
+  # @response 400 Invalid ID supplied
+
+  # Returns an ownership for an account by id
+  #
+  # @path [GET] /accounts/ownerships/{id}
+  # @response_type [Ownership]
+  # @response [EmptyOwnership] 404 Ownership not found
+  # @response 400 Invalid ID supplied
+  #
+  def show
+  end
+```
+
+Note that it needs to be documented in the controller.
+
 ### Model ###
 
 Each model to be exposed in the specification must have a `@model` tag. Model properties are specified with `@property` tags. JSON Schema `additionalProperties` can be specified with `@additional_properties <type>` where `<type>` is any type defined elsewhere, or simply `false` to denote a closed model (`additionalProperties: false`).

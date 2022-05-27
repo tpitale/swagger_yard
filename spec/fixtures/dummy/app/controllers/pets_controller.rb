@@ -25,6 +25,10 @@ class PetsController < ApplicationController
   def show
   end
 
+  # create an extra Pet
+  # @!path [POST] /extra/pets
+  # @parameter foo [string]
+
   # create a Pet
   # @path [POST] /pets
   # @parameter pet(required,body) [Pet] The pet object

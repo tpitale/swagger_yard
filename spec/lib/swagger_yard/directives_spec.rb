@@ -22,7 +22,7 @@ describe SwaggerYard::Directives do
           # @property name
         EOF
         yard_object = YARD::Registry.at("Foo")
-        
+
         %w(id name).each do |property|
           expect(yard_object.tags.find do |tag|
             tag.tag_name == "property" && tag.name == property
@@ -41,6 +41,24 @@ describe SwaggerYard::Directives do
           expect(yard_object).to be_a(YARD::CodeObjects::ClassObject)
           expect(yard_object.tags.first.tag_name).to eq("model")
         end
+      end
+    end
+  end
+
+  describe SwaggerYard::Directives::PathDirective do
+    describe "#call" do
+      after { YARD::Registry.clear }
+
+      it "create ClassObject with @path tag" do
+        YARD.parse_string <<-EOF
+          # @!path [GET] /endpoint
+        EOF
+        yard_object = YARD::Registry.at("#/endpoint_GET")
+
+        expect(yard_object).to be_a(YARD::CodeObjects::MethodObject)
+        expect(yard_object.tags.first.tag_name).to eq("path")
+        expect(yard_object.tags.first.text).to eq("/endpoint")
+        expect(yard_object.tags.first.types.first).to eq("GET")
       end
     end
   end

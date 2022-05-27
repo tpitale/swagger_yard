@@ -22,7 +22,7 @@ RSpec.describe SwaggerYard::Swagger do
   context "#/paths" do
     subject { swagger["paths"] }
 
-    its(:size) { is_expected.to eq(4) }
+    its(:size) { is_expected.to eq(5) }
   end
 
   context "#/paths//pets/{id}" do

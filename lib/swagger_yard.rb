@@ -121,6 +121,7 @@ module SwaggerYard
       # @example is a core YARD tag, let's use it
       # ::YARD::Tags::Library.define_tag("Example", :example, :with_title_and_text)
       ::YARD::Tags::Library.define_directive(:model, :with_title_and_text, Directives::ParamClassDirective)
+      ::YARD::Tags::Library.define_directive(:path, :with_types, Directives::PathDirective)
     end
   end
 end
