@@ -12,7 +12,8 @@ module SwaggerYard
       metadata = {
         'openapi' => '3.0.0',
         'info' => Info.new.to_h,
-        'servers' => [{'url' => SwaggerYard.config.api_base_path}]
+        'servers' => [{'url' => SwaggerYard.config.api_base_path}],
+        'security' => security_requirement,
       }
       metadata["externalDocs"] = external_docs if external_docs
       metadata
@@ -31,7 +32,7 @@ module SwaggerYard
     def components
       {
         "schemas" => models(specification.model_objects),
-        "securitySchemes" => security_defs(specification.security_objects)
+        "securitySchemes" => security_schemes(specification.security_objects)
       }
     end
 
@@ -74,8 +75,15 @@ module SwaggerYard
       end
     end
 
-    def security_defs(security_objects)
-      defs = super
+    def security_requirement
+      security_defs(specification.security_objects).map do |name, _|
+        { name => [] }
+      end
+    end
+
+
+    def security_schemes(security_objects)
+      defs = security_defs(security_objects)
       Hash[defs.map do |name, d|
              [name, map_security(d)]
            end]

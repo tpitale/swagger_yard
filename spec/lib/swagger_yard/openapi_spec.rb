@@ -12,6 +12,12 @@ RSpec.describe SwaggerYard::OpenAPI do
     its([0]) { is_expected.to include('url' => 'http://localhost:3000/api') }
   end
 
+  context "#/security" do
+    subject { openapi["security"] }
+
+    it { is_expected.to eq([{ "header_x_application_api_key" => [] }]) }
+  end
+
   context "#/paths" do
     subject { openapi["paths"] }
 
