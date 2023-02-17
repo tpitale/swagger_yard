@@ -11,5 +11,5 @@ RSpec.shared_context 'person.rb model' do
     SwaggerYard.yard_class_objects_from_file((FIXTURE_PATH + 'models' + 'person.rb').to_s)
   end
 
-  let(:model) { SwaggerYard::Model.from_yard_object(objects.first) }
+  let(:model) { SwaggerYard::ModelParser.from_yard_object(objects.first) }
 end

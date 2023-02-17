@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe SwaggerYard::Model do
+RSpec.describe SwaggerYard::ModelParser do
   let(:content) do
     [ "@model MyModel",
       "@discriminator myType(required) [string]" ].join("\n")
@@ -51,7 +51,7 @@ RSpec.describe SwaggerYard::Model do
   context "with no @model tag" do
     let(:content) { "Some description without a SwaggerYard model tag" }
 
-    it { is_expected.to_not be_valid }
+    it { is_expected.to be_nil }
   end
 
   context "with an @example" do
@@ -100,6 +100,7 @@ RSpec.describe SwaggerYard::Model do
 
     its('properties') { is_expected.to include(a_property_named('address'),
                                                a_property_named('parent'),
+                                               a_property_named('myType'),
                                                a_property_named('age')) }
 
     its('properties') { is_expected.to_not include(a_property_named('some_non_model_method'),
