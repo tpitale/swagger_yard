@@ -46,7 +46,7 @@ module SwaggerYard
 
     def parse_tags(tags)
       sorted_tags = tags.each_with_index.sort_by { |t,i|
-        [TAG_ORDER.index(t.tag_name), i] }.map(&:first)
+        [TAG_ORDER.index(t.tag_name) || 0, i] }.map(&:first)
       sorted_tags.each do |tag|
         case tag.tag_name
         when "model"
