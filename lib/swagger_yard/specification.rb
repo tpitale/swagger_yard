@@ -41,26 +41,26 @@ module SwaggerYard
     end
 
     def parse_models
-      @model_paths.map do |model_path|
-        Dir[model_path.to_s].map do |file_path|
-          SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-            Model.from_yard_object(obj)
-          end
-        end
-      end.flatten.compact.select(&:valid?)
+      ::YARD::Registry.clear
+      paths = @model_paths.map { |path| Dir.glob(path.to_s) }.flatten
+      ::YARD.parse(paths)
+      ::YARD::Registry.all(:class).map do |obj|
+        next unless paths.include?(obj.file)
+        Model.from_yard_object(obj)
+      end.compact.select(&:valid?)
     end
 
     def parse_controllers
-      @controller_paths.map do |controller_path|
-        Dir[controller_path.to_s].map do |file_path|
-          SwaggerYard.yard_class_objects_from_file(file_path).map do |obj|
-            obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
-              @authorizations << Authorization.from_yard_object(t)
-            end
-            ApiGroup.from_yard_object(obj)
-          end
+      ::YARD::Registry.clear
+      paths = @controller_paths.map { |path| Dir.glob(path.to_s) }.flatten
+      ::YARD.parse(paths)
+      ::YARD::Registry.all(:class).map do |obj|
+        next unless paths.include?(obj.file)
+        obj.tags.select {|t| t.tag_name == "authorization"}.each do |t|
+          @authorizations << Authorization.from_yard_object(t)
         end
-      end.flatten.select(&:valid?)
+        ApiGroup.from_yard_object(obj)
+      end.compact.select(&:valid?)
     end
 
     def warn_duplicate_operations(paths)
